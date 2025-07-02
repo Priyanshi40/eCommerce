@@ -11,6 +11,10 @@ public class OrderProduct
     public int ProductId { get; set; }
     public int Quantity { get; set; }
     public decimal Price { get; set; }
+    public int CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public int ModifiedBy { get; set; }
+    public DateTime ModifiedAt { get; set; }
 
     [ForeignKey(nameof(ProductId))]
     public virtual Product Product { get; set; }

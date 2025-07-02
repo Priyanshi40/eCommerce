@@ -84,5 +84,18 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("ModifiedAt");
         });
+
+        modelBuilder.Entity<OrderProduct>(entity =>
+        {
+            entity.ToTable("OrderProduct");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("CreatedAt");
+            entity.Property(e => e.ModifiedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("ModifiedAt");
+        });
     }
 }
