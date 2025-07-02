@@ -1,0 +1,77 @@
+@{
+    ViewData["Title"] = "Register";
+    var activeTab = ViewBag.ActiveTab as string ?? "customer";
+}
+
+
+<div class="container mt-5">
+    <div class="card p-4 shadow rounded-4">
+        <h2 class="text-center mb-4">Create Your Account</h2>
+
+        <ul class="nav nav-tabs" id="registerTabs">
+            <li class="nav-item">
+                <button class="nav-link active"
+                        data-bs-toggle="tab"
+                        data-bs-target="#customerTab">Customer</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link"
+                        data-bs-toggle="tab"
+                        data-bs-target="#vendorTab">Vendor</button>
+            </li>
+        </ul>
+
+        <div class="tab-content border border-top-0 p-4">
+            <div class="tab-pane fade" id="customerTab">
+                <form asp-action="RegisterCustomer" method="post">
+                    <div class="mb-3">
+                        <label></label>
+                        <input class="form-control" />
+                        <span  class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  class="form-control" />
+                        <span  class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  class="form-control" />
+                        <span  class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  class="form-control" />
+                        <span  class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Register as Customer</button>
+                </form>
+            </div>
+
+            <div class="tab-pane fade @(activeTab == "vendor" ? "show active" : "")" id="vendorTab">
+                <form asp-action="VendorStep1" method="post">
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  name="FullName" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  name="Email" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label ></label>
+                        <input  name="Password" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100">Continue to Business Info</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
