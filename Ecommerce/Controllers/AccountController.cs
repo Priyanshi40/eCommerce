@@ -101,22 +101,4 @@ public class AccountController : Controller
         }
         return View("Register", model);
     }
-    
-    // public async Task<IActionResult> CreateRole()
-    // {
-    //     IdentityRole identityRole = new()
-    //     {
-    //         Name = "Vendor"
-    //     };
-    //     IdentityResult result = await _roleManager.CreateAsync(identityRole);
-    //     if (result.Succeeded)
-    //     {
-    //         TempData["Message"] = "Role Created";
-    //     }
-    //     else
-    //     {
-    //         TempData["Error"] = "Error Creating Role";
-    //     }
-    //     return RedirectToAction("Login", "Account");
-    // }
 }
