@@ -2,3 +2,16 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+$(document).ready(function () {
+    $(document).ajaxStart(function () {
+        $('#loader').show();
+    });
+
+    $(document).ajaxStop(function () {
+        $('#loader').hide();
+    });
+
+    $(document).on('submit', 'form', function () {
+        $('#loader').show();
+    });
+});

@@ -5,11 +5,11 @@ namespace Ecommerce.Areas.Admin.Controllers;
 
 
 [Area("Admin")]
-public class AccountController : Controller
+public class HomeController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -17,5 +17,10 @@ public class AccountController : Controller
     public IActionResult Index()
     {
         return View();
+    }
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Login", "Account", new { area = "" });
     }
 }

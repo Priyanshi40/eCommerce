@@ -1,3 +1,10 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 html {
   font-size: 14px;
 }
@@ -8,17 +15,35 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.txtCustom {
+  color: #0c5ba3 !important;
 }
 
-body {
-  margin-bottom: 60px;
+.bgCustom,
+.btn-primary,
+.form-check-input:checked {
+  background-color: #0c5ba3 !important;
+  border-color: #0c5ba3 !important;
+}
+
+.btn-primary,
+.btn-outline-primary:hover {
+  background-color: #0c5ba3 !important;
+  border-color: #0c5ba3 !important;
 }
 
 .emailInput {
@@ -26,4 +51,113 @@ body {
   top: 10px;
   transition: transformY(140%);
   right: 15px;
+}
+
+.myContainer {
+  width: 600px;
+  margin: 200px auto;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  padding: 30px;
+}
+
+.myBody {
+  padding: 10px 20px;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  top: 56px;
+  padding: 12px;
+  position: fixed;
+  height: 100vh;
+  width: 250px;
+  left: 0;
+  z-index: 10;
+  transition: width 0.4s ease-in-out;
+  overflow-x: hidden;
+  box-shadow: 0 18px 32px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding-left: 0;
+  font-size: 1.2rem;
+}
+
+.sidebar ul a {
+  text-decoration: none;
+  color: #0c5ba3;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.sidebar ul a:hover,
+.sidebar ul a.active {
+  font-weight: bold;
+  color: #fff;
+  border-radius: 15px;
+  background-color: #0c5ba3;
+  width: 100%;
+  margin: 2px 0px;
+}
+
+.fileInput {
+  margin: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  height: auto;
+}
+
+.profileFilInput {
+  margin: auto;
+  left: 22px;
+  top: 43px;
+  opacity: 0;
+  transition: transformY(140%);
+}
+
+.searchInput {
+  color: #0c5ba3 !important;
+  margin: auto;
+  top: 2px;
+  transition: transformY(140%);
+  right: 3px;
+}
+
+.bi-camera {
+  margin: auto;
+  top: 50px;
+  left: 100px;
+}
+
+.sidebar ul a i {
+  margin-right: 10px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.sidebar ul a span {
+  transition: opacity 0.4s ease;
+}
+
+.content-wrapper {
+  margin: 60px 10px 0px 250px;
+}
+
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }

@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using DAL.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Repositories;
 
@@ -9,6 +10,10 @@ public class UserRepo : IUserRepo
     public UserRepo(E_CommerceContext context)
     {
         _context = context;
+    }
+    public UserDetails GetUserByIdentityId(string id)
+    {
+        return _context.UserDetails.Include(u => u.IUser).FirstOrDefault(u => u.IdentityUserId == id)!;
     }
     public void AddUser(UserDetails user)
     {

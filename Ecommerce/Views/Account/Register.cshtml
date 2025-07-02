@@ -3,86 +3,178 @@
     ViewData["Title"] = "Register";
 }
 
+<style>
+    .nav-link {
+        color: rgb(0, 0, 0) !important;
+    }
+
+    .nav-link.active {
+        color: #0066A7 !important;
+        border-bottom: #0066A7 solid 2px;
+    }
+
+    .nav-link:hover {
+        background-color: #f8f9fa;
+        color: #0066A7 !important;
+    }
+</style>
+
 <div class="container mt-5">
     <div class="card p-4 shadow rounded-4">
         <h2 class="text-center mb-4">Create Your Account</h2>
-
         <ul class="nav nav-tabs" id="registerTabs">
             <li class="nav-item">
-                <button class="nav-link active"
-                        data-bs-toggle="tab"
-                        data-bs-target="#customerTab">Customer</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#customerTab">Customer</button>
             </li>
-            <li class="nav-item">
-                <button class="nav-link"
-                        data-bs-toggle="tab"
-                        data-bs-target="#vendorTab">Vendor</button>
+            <li class="nav-item vendorDiv">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#vendorTab">Vendor</button>
             </li>
         </ul>
-
         <div class="tab-content border border-top-0 p-4">
-            <div class="tab-pane fade active" id="customerTab">
+            <div class="tab-pane fade show active" id="customerTab">
                 <form asp-action="RegisterCustomer" method="post">
-                    <div asp-validation-summary="All" class="text-danger"></div>
-                    <div class="mb-3">
-                        <input id="fname" asp-for="FirstName" class="fs-6 form-control form-control-lg" type="text"
-                            placeholder="First Name">
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <input id="lname" asp-for="LastName" class="fs-6 form-control form-control-lg" type="text"
-                            placeholder="Last Name">
-                        <span asp-validation-for="LastName" class="text-danger"></span>
-                    </div>
-                    <div class="position-relative mb-3" id="emailDiv">
-                        <input id="email" asp-for="Email" class="fs-6 form-control form-control-lg" type="email"
-                            placeholder="Email" aria-label="Email">
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                        <span class="position-absolute emailInput"><i class="fa-solid fa-user"></i></span>
-                    </div>
-                    <div class="position-relative mb-3" id="passwordDiv">
-                        <input asp-for="Password" class="fs-6 form-control form-control-lg" type="text" id="password"
-                            placeholder="Password">
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                        <span class="position-absolute emailInput"><i
-                                class="fa-regular fa-eye passwordIcon"></i></span>
-                    </div>
-                    <div class="position-relative mb-3" id="passwordDiv">
-                        <input asp-for="ConfirmPassword" class="fs-6 form-control form-control-lg" type="text"
-                            id="password" placeholder="Confirm Password">
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                        <span class="position-absolute emailInput"><i
-                                class="fa-regular fa-eye passwordIcon"></i></span>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" class="fs-6 form-control form-control-lg" asp-for="Phone"
-                            placeholder="Phone Number">
-                        <span asp-validation-for="Phone" class="text-danger"></span>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Register as Customer</button>
+                    <div id="customerRegistration"></div>
+                    <button type="submit" class="btn btn-primary w-100">Register</button>
                 </form>
             </div>
 
             <div class="tab-pane fade" id="vendorTab">
-                <form asp-action="VendorStep1" method="post">
-                    <div class="mb-3">
-                        <label></label>
-                        <input  name="FullName" class="form-control" />
+                <div class="m-3 ">
+                    <div class="bg-white p-3 shadow pb-1">
+                        <ul class="nav ">
+                            <li class="nav-item"><a data-bs-toggle="tab" href="#home"
+                                    class="text-black p-2 nav-link fw-semibold active"
+                                    style="text-decoration: none;"></i>Personal Details</a></li>
+                            <li id="vendorDiv2" class="nav-item"><a data-bs-toggle="tab" href="#vendor2"
+                                    class="nav-link text-black p-2 fw-semibold" style="text-decoration: none;">Business
+                                    Details</a></li>
+                            <li id="vendorDiv3" class="nav-item"><a data-bs-toggle="tab" href="#vendor3"
+                                    class="nav-link text-black p-2 fw-semibold"
+                                    style="text-decoration: none;">Document</a></li>
+                        </ul>
                     </div>
+                    <div class="tab-content ">
+                        <div id="home" class="tab-pane fade show active">
+                            <form class="VendorPersonalDetails" method="post">
+                                <div id="vendoRegistration1"></div>
+                                <button type="submit" class="btn btn-warning w-100">Continue to Business Info</button>
+                            </form>
+                        </div>
+                        <div id="vendor2" class="tab-pane fade">
+                            <form class="VendorBusinessDetails" method="post">
+                                <div id="vendoRegistration2">Business Details</div>
+                                <button type="submit" class="btn btn-warning w-100">Proceed to Documents</button>
+                            </form>
 
-                    <div class="mb-3">
-                        <label ></label>
-                        <input  name="Email" class="form-control" />
+                        </div>
+                        <div id="vendor3" class="tab-pane fade">
+                            <form class="VendorDocuments" asp-action="VendorStep3" method="post">
+                                <div id="vendoRegistration3">Document</div>
+                                <button type="submit" class="btn btn-primary w-100">Submit</button>
+                            </form>
+
+                        </div>
                     </div>
+                </div>
 
-                    <div class="mb-3">
-                        <label ></label>
-                        <input  name="Password" class="form-control" />
-                    </div>
-
-                    <button type="submit" class="btn btn-warning w-100">Continue to Business Info</button>
-                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("CommonRegistration", "Account")',
+            type: 'GET',
+            success: function (data) {
+                $("#customerRegistration").html(data);
+                $.validator.unobtrusive.parse("#customerRegistration");
+            },
+        });
+    });
+    $('.vendorDiv').click(function () {
+        $.ajax({
+            url: '@Url.Action("CommonRegistration", "Account")',
+            type: 'GET',
+            success: function (data) {
+                console.log("AJAX request successful.");
+                $("#vendoRegistration1").html(data);
+                $.validator.unobtrusive.parse("#vendoRegistration1");
+            },
+        });
+    });
+    
+    function loadBusinessDetails(formData) {
+        console.error("Inside loadBusinessDetails handler.");
+        $.ajax({
+            url: '@Url.Action("VendorBusinessDetails", "Account")',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log("AJAX request successful.");
+                $("#vendoRegistration2").html(data);
+                $.validator.unobtrusive.parse("#vendoRegistration2");
+            },
+        });
+    }
+
+    @* $('#vendorDiv2').click(function () {
+        console.error("Inside vendorDiv2 click handler.");
+        loadBusinessDetails(formData);
+    }); *@
+
+    $('#vendorDiv3').click(function () {
+        $.ajax({
+            url: '@Url.Action("VendorDocuments", "Account")',
+            type: 'GET',
+            success: function (data) {
+                console.log("AJAX request successful.");
+                $("#vendoRegistration3").html(data);
+                $.validator.unobtrusive.parse("#vendoRegistration3");
+            },
+        });
+    });
+
+    $('.VendorPersonalDetails').submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData($(this)[0]);
+        var result = $(this).valid();
+        if (result) {
+            $('#vendorDiv2').click(function () {
+                console.error("Inside vendorDiv2 click handler after form submission.");
+                loadBusinessDetails(formData);
+            });
+            @* loadBusinessDetails(formData); *@
+        }
+        else{
+            console.error("Form validation failed.");
+        }
+    });
+
+    $('.VendorBusinessDetails').submit(function (e) {
+        e.preventDefault();
+
+        let formData = new FormData($(this)[0]);
+        var result = $(this).valid();
+        if (result) {
+            $.ajax({
+                url: '@Url.Action("VendorDocuments", "Account")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    console.log("AJAX request successful.");
+                    $("#vendoRegistration3").html(data);
+                    $.validator.unobtrusive.parse("#vendoRegistration3");
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX request failed:", status, error);
+                }
+            });
+        }
+    });
+</script>

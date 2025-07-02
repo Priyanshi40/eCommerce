@@ -1,0 +1,15 @@
+@model DAL.ViewModels.VendorViewModel
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="mb-3">
+    <input id="fname" asp-for="BusinessName" class="fs-6 form-control form-control-lg" type="text"
+        placeholder="Business Name">
+    <span asp-validation-for="BusinessName" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <input id="lname" asp-for="GSTNumber" class="fs-6 form-control form-control-lg" type="text" placeholder="GST Number">
+    <span asp-validation-for="GSTNumber" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <textarea id="" class="fs-6 form-control form-control-lg" placeholder="Business Address" asp-for="BusinessAddress"></textarea>
+    <span asp-validation-for="BusinessAddress" class="text-danger"></span>
+</div>

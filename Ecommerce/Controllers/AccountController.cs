@@ -11,7 +11,6 @@ public class AccountController : Controller
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserService _userService;
-
     public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, IUserService userService)
     {
         _userManager = userManager;
@@ -25,19 +24,9 @@ public class AccountController : Controller
     {
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            if (User.IsInRole("Admin"))
-                return RedirectToAction("Index", "Account", new { area = "Admin" });
-
-            if (User.IsInRole("User"))
-                return RedirectToAction("Index", "Account", new { area = "User" });
-
-            if (User.IsInRole("Vendor"))
-                return RedirectToAction("Index", "Account", new { area = "Vendor" });
+            var userRole = _userManager.GetRolesAsync(_userManager.GetUserAsync(User).Result).Result;
+            return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
         }
-        return View();
-    }
-    public IActionResult Register()
-    {
         return View();
     }
 
@@ -49,26 +38,33 @@ public class AccountController : Controller
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
-                var role = await _userManager.GetRolesAsync(user);
-
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded && User.Identity.IsAuthenticated)
                 {
                     TempData["Message"] = "Welcome" + model.Email;
-
-                    if (User.IsInRole("Admin") || role.Contains("Admin"))
-                        return RedirectToAction("Index", "Account", new { area = "Admin" });
-
-                    if (User.IsInRole("User"))
-                        return RedirectToAction("Index", "Account", new { area = "User" });
-
-                    if (User.IsInRole("Vendor"))
-                        return RedirectToAction("Index", "Account", new { area = "Vendor" });
+                    var userRole = _userManager.GetRolesAsync(_userManager.GetUserAsync(User).Result).Result;
+                    return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
                 }
             }
             TempData["Error"] = "Invalid login attempt.";
         }
         return View(model);
+    }
+    public IActionResult Register()
+    {
+        return View();
+    }
+    public IActionResult CommonRegistration()
+    {
+        return PartialView("_commonRegistration");
+    }
+    public IActionResult VendorBusinessDetails(VendorViewModel model)
+    {
+        return PartialView("_vendorBusiness",model);
+    }
+    public IActionResult VendorDocuments(VendorViewModel model)
+    {
+        return PartialView("_vendorDocuments",model);
     }
 
     [HttpPost]
@@ -87,6 +83,35 @@ public class AccountController : Controller
             {
                 model.IdentityUserId = user.Id;
                 _userService.AddUser(model);
+
+                await _userManager.AddToRoleAsync(user, "User");
+
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                TempData["Message"] = "User Registered Successfully";
+                return RedirectToAction("Login", "Account");
+            }
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+        }
+        return View("Register", model);
+    }
+    public async Task<IActionResult> RegisterVendor(VendorViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            IdentityUser user = new()
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                PhoneNumber = model.Phone,
+            };
+            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                model.IdentityUserId = user.Id;
+                // _userService.AddUser(model);
 
                 await _userManager.AddToRoleAsync(user, "User");
 

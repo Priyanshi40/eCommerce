@@ -17,6 +17,9 @@ public class Order
     public int Id { get; set; }
     public DateTime OrderDate { get; set; }
     public OrderStatus Status { get; set; }
+
+    [MaxLength(500)]
+    public string Comment { get; set; }
     public int UserId { get; set; }
     public int AddressId { get; set; } 
     public int CreatedBy { get; set; }

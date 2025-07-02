@@ -13,6 +13,50 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Default_pfp.svg.png",
+      "PackagePath": "staticwebassets\\images\\Default_pfp.svg.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\admin.png",
+      "PackagePath": "staticwebassets\\images\\admin.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\cart.png",
+      "PackagePath": "staticwebassets\\images\\cart.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\email_verified.png",
+      "PackagePath": "staticwebassets\\images\\email_verified.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\grocery.jpg",
+      "PackagePath": "staticwebassets\\images\\grocery.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\images.jfif",
+      "PackagePath": "staticwebassets\\images\\images.jfif"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\no_data.png",
+      "PackagePath": "staticwebassets\\images\\no_data.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\online-shop.png",
+      "PackagePath": "staticwebassets\\images\\online-shop.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\online-store.png",
+      "PackagePath": "staticwebassets\\images\\online-store.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\shopping-trolley.jpg",
+      "PackagePath": "staticwebassets\\images\\shopping-trolley.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\warning.png",
+      "PackagePath": "staticwebassets\\images\\warning.png"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

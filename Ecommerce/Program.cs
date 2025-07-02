@@ -1,6 +1,7 @@
 using BLL.Interfaces;
 using BLL.Repositories;
 using BLL.Services;
+using BLL.Utility;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -48,17 +53,17 @@ app.UseAuthorization();
 app.MapAreaControllerRoute(
     name: "Admin",
     areaName: "Admin",
-    pattern: "Admin/{controller=Account}/{action=Index}/{id?}");
+    pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
     name: "User",
     areaName: "User",
-    pattern: "User/{controller=Account}/{action=Index}/{id?}");
+    pattern: "User/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
     name: "Vendor",
     areaName: "Vendor",
-    pattern: "Vendor/{controller=Account}/{action=Index}/{id?}");
+    pattern: "Vendor/{controller=Home}/{action=Index}/{id?}");
 
 // app.MapControllerRoute(
 //     name: "Area",

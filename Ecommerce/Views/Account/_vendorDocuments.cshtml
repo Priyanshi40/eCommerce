@@ -1,0 +1,45 @@
+@using DAL.Models
+@model DAL.ViewModels.VendorViewModel
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="mb-3">
+    <div class="d-flex my-2">
+        <div class="col-md mb-2">
+            <select class="form-select fs-6" asp-for="DocumentType" id="cityLabel"
+                asp-items="@(new SelectList(Enum.GetNames(typeof(VendorDocuments))))">
+                <option value="" selected>Select Document Type</option>
+            </select>
+            <span asp-validation-for="DocumentType" class="text-danger"></span>
+        </div>
+        <div class="col-md ps-3 mb-2 d-none newCatDiv">
+            <input type="text" class="form-control fs-6" id="city" asp-for="DocumentName"
+                placeholder="Document Name">
+            <span asp-validation-for="DocumentName" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="mb-3">
+    <div class="d-flex my-2">
+        <div class="input-group">
+            <label for="file-input-thing" id="file-input-label" class="form-control" />
+            <div class="col d-flex flex-column align-items-center justify-content-center mt-3">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p class="mb-0 imgTitle">Upload Document</p>
+            </div>
+            <input type="file" id="file-input-thing" style="width: 0;" asp-for="FileUrl" accept="document/*">
+        </div>
+    </div>
+    <span asp-validation-for="FileUrl" class="text-danger"></span>
+</div>
+
+<script>
+    $(document).on("change", '#cityLabel', function () {
+        console.log($(this).val());
+        if ($(this).val() == "Other") {
+            $(this).closest('.d-flex').find('.newCatDiv').removeClass('d-none');
+        }
+        else {
+            $(this).closest('.d-flex').find('.newCatDiv').addClass('d-none');
+        }
+    });
+</script>

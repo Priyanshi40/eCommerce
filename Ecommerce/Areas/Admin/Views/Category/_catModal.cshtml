@@ -1,0 +1,58 @@
+@model DAL.ViewModels.CategoryViewModel
+<div class="p-2 align-items-center">
+    <input type="text" id="bookId" asp-for="Id" hidden>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="nameLabel" asp-for="Name">
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+        <label for="nameLabel">Name</label>
+    </div>
+    <div class="form-floating">
+        <textarea class="form-control" id="floatingTextarea" asp-for="Description"></textarea>
+        <span asp-validation-for="@Model.Description" class="text-danger"></span>
+        <label for="floatingTextarea">Description</label>
+    </div>
+    <div class="d-flex my-2">
+        <div class="input-group">
+            <label for="file-input-thing" id="file-input-label" class="form-control" />
+            <div class="col d-flex flex-column align-items-center justify-content-center mt-3">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p class="mb-0 imgTitle"> Browse Cover Image</p>
+                <img src="~/images/@Model.CoverImage" class="itemImage @(Model.Id != 0 ? "d-flex" : "d-none")" style="max-width: 100px;">
+            </div>
+            <input type="file" id="file-input-thing" style="width: 0;" asp-for="CoverImage"
+                accept="image/png, image/jpeg, image/gif">
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $("#file-input-thing").change(function (event) {
+        var fileName = this.files[0];
+        if (fileName) {
+
+            const valid = ["image/jpeg", "image/jpg", "image/png"];
+            if (!valid.includes(fileName.type)) {
+                toastr.warning("Please select valid image file");
+                $(this).val(null);
+                return;
+            }
+
+            var name = fileName.name;
+            $("#file-input-label p").text(name);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(".itemImage").attr("src", e.target.result).show();
+            };
+            reader.readAsDataURL(fileName);
+        }
+        else {
+            $("#file-input-label p").text("Browse File");
+            $(".itemImage").hide();
+        }
+    });
+</script>
