@@ -20,3 +20,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.emailInput {
+  margin: auto;
+  top: 10px;
+  transition: transformY(140%);
+  right: 15px;
+}

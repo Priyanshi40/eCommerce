@@ -1,8 +1,7 @@
+@model DAL.ViewModels.RegisterViewModel
 @{
     ViewData["Title"] = "Register";
-    var activeTab = ViewBag.ActiveTab as string ?? "customer";
 }
-
 
 <div class="container mt-5">
     <div class="card p-4 shadow rounded-4">
@@ -22,40 +21,52 @@
         </ul>
 
         <div class="tab-content border border-top-0 p-4">
-            <div class="tab-pane fade" id="customerTab">
+            <div class="tab-pane fade active" id="customerTab">
                 <form asp-action="RegisterCustomer" method="post">
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="mb-3">
-                        <label></label>
-                        <input class="form-control" />
-                        <span  class="text-danger"></span>
+                        <input id="fname" asp-for="FirstName" class="fs-6 form-control form-control-lg" type="text"
+                            placeholder="First Name">
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
-
                     <div class="mb-3">
-                        <label ></label>
-                        <input  class="form-control" />
-                        <span  class="text-danger"></span>
+                        <input id="lname" asp-for="LastName" class="fs-6 form-control form-control-lg" type="text"
+                            placeholder="Last Name">
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
-
+                    <div class="position-relative mb-3" id="emailDiv">
+                        <input id="email" asp-for="Email" class="fs-6 form-control form-control-lg" type="email"
+                            placeholder="Email" aria-label="Email">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                        <span class="position-absolute emailInput"><i class="fa-solid fa-user"></i></span>
+                    </div>
+                    <div class="position-relative mb-3" id="passwordDiv">
+                        <input asp-for="Password" class="fs-6 form-control form-control-lg" type="text" id="password"
+                            placeholder="Password">
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <span class="position-absolute emailInput"><i
+                                class="fa-regular fa-eye passwordIcon"></i></span>
+                    </div>
+                    <div class="position-relative mb-3" id="passwordDiv">
+                        <input asp-for="ConfirmPassword" class="fs-6 form-control form-control-lg" type="text"
+                            id="password" placeholder="Confirm Password">
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        <span class="position-absolute emailInput"><i
+                                class="fa-regular fa-eye passwordIcon"></i></span>
+                    </div>
                     <div class="mb-3">
-                        <label ></label>
-                        <input  class="form-control" />
-                        <span  class="text-danger"></span>
+                        <input type="text" class="fs-6 form-control form-control-lg" asp-for="Phone"
+                            placeholder="Phone Number">
+                        <span asp-validation-for="Phone" class="text-danger"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label ></label>
-                        <input  class="form-control" />
-                        <span  class="text-danger"></span>
-                    </div>
-
                     <button type="submit" class="btn btn-primary w-100">Register as Customer</button>
                 </form>
             </div>
 
-            <div class="tab-pane fade @(activeTab == "vendor" ? "show active" : "")" id="vendorTab">
+            <div class="tab-pane fade" id="vendorTab">
                 <form asp-action="VendorStep1" method="post">
                     <div class="mb-3">
-                        <label ></label>
+                        <label></label>
                         <input  name="FullName" class="form-control" />
                     </div>
 

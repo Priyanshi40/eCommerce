@@ -10,24 +10,34 @@
                 <h3 class="text-center mb-4">Login to Your Account</h3>
 
                 <form asp-action="Login" method="post">
-                    <div class="mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email" class="form-control" />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="position-relative mb-3" id="emailDiv">
+                        <input id="email" asp-for="Email" class="fs-6 form-control form-control-lg" type="text"
+                            placeholder="Email" aria-label="Email">
                         <span asp-validation-for="Email" class="text-danger"></span>
+                        <span class="position-absolute emailInput"><i class="fa-solid fa-user"></i></span>
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" />
+                    <div class="position-relative mb-3" id="passwordDiv">
+                        <input asp-for="Password" class="fs-6 form-control form-control-lg" type="text" id="password"
+                            placeholder="Passwords">
                         <span asp-validation-for="Password" class="text-danger"></span>
+                        <span class="position-absolute emailInput"><i class="fa-regular fa-eye passwordIcon"
+                                style="cursor: pointer !important;"></i></span>
                     </div>
 
-                    <div class="mb-3 form-check">
-                        <input asp-for="RememberMe" class="form-check-input" />
-                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    <div class="row m-1 d-flex align-items-center justify-content-center ">
+                        <div class="col form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault" asp-for="RememberMe">
+                                Remember Me
+                            </label>
+                        </div>
+                        <div class="col text-end pe-0 forgotBtn txtCustom"><a
+                                style="text-decoration: none; cursor: pointer">Forgot
+                                Password?</a></div>
                     </div>
-
-                    <div class="d-grid">
+                    <div class="d-grid mt-3">
                         <button type="submit" class="btn btn-primary">Login</button>
                     </div>
 

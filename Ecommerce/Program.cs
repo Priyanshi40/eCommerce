@@ -1,3 +1,6 @@
+using BLL.Interfaces;
+using BLL.Repositories;
+using BLL.Services;
 using DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +23,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     // options.SlidingExpiration = true; 
 });
 
+builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -40,19 +46,23 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapAreaControllerRoute(
-    name: "AdminArea",
+    name: "Admin",
     areaName: "Admin",
-    pattern: "Products/{controller=Home}/{action=Index}/{id?}");
+    pattern: "Admin/{controller=Account}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "UserArea",
+    name: "User",
     areaName: "User",
-    pattern: "Services/{controller=Home}/{action=Index}/{id?}");
+    pattern: "User/{controller=Account}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
-    name: "VendorArea",
+    name: "Vendor",
     areaName: "Vendor",
-    pattern: "Services/{controller=Home}/{action=Index}/{id?}");
+    pattern: "Vendor/{controller=Account}/{action=Index}/{id?}");
+
+// app.MapControllerRoute(
+//     name: "Area",
+//     pattern: "{area:exists}/{controller=Account}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
