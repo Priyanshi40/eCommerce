@@ -5,5 +5,6 @@ namespace BLL.Interfaces;
 public interface IUserRepo
 {
     UserDetails GetUserByIdentityId(string id);
-    void AddUser(UserDetails user);
+    int AddUser(UserDetails user);
+    void AddVendor(VendorDetails vendor);
 }

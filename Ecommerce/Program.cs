@@ -20,7 +20,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/Login";
 
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    // options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     // options.SlidingExpiration = true; 
 });
 
@@ -32,6 +32,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ImageService>();
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -45,6 +46,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseRouting();
 
@@ -56,14 +58,16 @@ app.MapAreaControllerRoute(
     pattern: "Admin/{controller=Home}/{action=Index}/{id?}");
 
 app.MapAreaControllerRoute(
+    name: "Vendor",
+    areaName: "Vendor",
+    pattern: "Vendor/{controller=Home}/{action=Index}/{id?}");
+    
+app.MapAreaControllerRoute(
     name: "User",
     areaName: "User",
     pattern: "User/{controller=Home}/{action=Index}/{id?}");
 
-app.MapAreaControllerRoute(
-    name: "Vendor",
-    areaName: "Vendor",
-    pattern: "Vendor/{controller=Home}/{action=Index}/{id?}");
+
 
 // app.MapControllerRoute(
 //     name: "Area",

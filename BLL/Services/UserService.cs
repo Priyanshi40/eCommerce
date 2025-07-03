@@ -24,7 +24,7 @@ public class UserService : IUserService
         };
         return userDetail;
     }
-    public void AddUser(RegisterViewModel user)
+    public int AddUser(RegisterViewModel user)
     {
         if (user != null)
         {
@@ -39,7 +39,34 @@ public class UserService : IUserService
                 oldUser.Id = user.UserId;
                 oldUser.IdentityUserId = user.IdentityUserId;
             }
-            _userRepo.AddUser(oldUser);
+            return _userRepo.AddUser(oldUser);
+        }
+        return -1;
+    }
+
+    public void AddVendor(VendorViewModel vendor)
+    {
+        if (vendor != null)
+        {
+            VendorDetails newVendor = new()
+            {
+                BusinessName = vendor.BusinessName,
+                BusinessAddress = vendor.BusinessAddress,
+                // DocumentType = vendor.DocumentType,
+                DocumentType = (int)Enum.Parse(typeof(VendorDocuments), vendor.DocumentType.ToString()),
+                // DocumentName = vendor.DocumentName??vendor.DocumentType.ToString(),
+                GSTNumber = vendor.GSTNumber,
+                FileUrl = vendor.FileUrl,
+                VendorId = vendor.VendorId
+            };
+
+            if (vendor.Id != 0)
+            {
+                newVendor.Id = vendor.Id;
+            }
+
+            _userRepo.AddVendor(newVendor); 
         }
     }
+
 }

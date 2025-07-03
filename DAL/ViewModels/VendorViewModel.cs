@@ -1,51 +1,35 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using DAL.Models;
+using Newtonsoft.Json.Converters;
 
 namespace DAL.ViewModels;
 
 public class VendorViewModel
 {
-    [Required]
-    [EmailAddress]
-    public string Email { get; set; }
-
-    [Required]
-    [DataType(DataType.Password)]
-    public string Password { get; set; }
-
-    [DataType(DataType.Password)]
-    [Display(Name = "Confirm password")]
-    [Compare("Password", ErrorMessage = "Password and confirm password do not match.")]
-    public string ConfirmPassword { get; set; }
-
-    [Required(ErrorMessage = "First Name is Required")]
-    [Display(Name = "First Name")]
-    public string FirstName { get; set; }
-
-    [Display(Name = "Last Name")]
-    public string? LastName { get; set; }
-
-    [Required(AllowEmptyStrings = false, ErrorMessage = "Phone Number is required")]
-    [RegularExpression(@"^\d{10}$", ErrorMessage = "Enter a valid 10-digit phone number")]
-    public string Phone { get; set; } = null!;
     public int UserId { get; set; }
     public string? IdentityUserId { get; set; }
 
     [Required]
     [MaxLength(100, ErrorMessage = "Business Name can't be longer than 100 characters")]
     public string BusinessName { get; set; }
+
+    [Required (ErrorMessage = "GST Number is required")]
+    [RegularExpression
+        (@"([0][1-9]|[1-2][0-9]|[3][0-7])([a-zA-Z]{5}[0-9]{4}[a-zA-Z]{1}[1-9a-zA-Z]{1}[zZ]{1}[0-9a-zA-Z]{1})+$", ErrorMessage = "Invalid GST Number format")]
+    [MaxLength(15, ErrorMessage = "GST Number can't be longer than 15 characters")]
     public string? GSTNumber { get; set; }
 
     [MaxLength(200, ErrorMessage = "Business Address can't be longer than 200 characters")]
     public string? BusinessAddress { get; set; }
 
-    [Required (ErrorMessage = "Document Type is required")]
+    [Required(ErrorMessage = "Document Type is required")]
+
+    [JsonConverter(typeof(StringEnumConverter))]
     public VendorDocuments DocumentType { get; set; }
 
-    [Required (ErrorMessage = "Document Name is required")]
-    [MaxLength(50, ErrorMessage = "Document Name can't be longer than 50 characters")]
-    public string DocumentName { get; set; }
-
-    [Required (ErrorMessage = "Document is required")]
+    [Required(ErrorMessage = "Document is required")]
     public string FileUrl { get; set; }
+    public int Id { get; set; }
+    public int VendorId { get; set; }
 }

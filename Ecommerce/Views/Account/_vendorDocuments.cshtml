@@ -1,6 +1,6 @@
 @using DAL.Models
 @model DAL.ViewModels.VendorViewModel
-<div asp-validation-summary="All" class="text-danger"></div>
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="mb-3">
     <div class="d-flex my-2">
         <div class="col-md mb-2">
@@ -10,11 +10,11 @@
             </select>
             <span asp-validation-for="DocumentType" class="text-danger"></span>
         </div>
-        <div class="col-md ps-3 mb-2 d-none newCatDiv">
+        @* <div class="col-md ps-3 mb-2 d-none newCatDiv">
             <input type="text" class="form-control fs-6" id="city" asp-for="DocumentName"
                 placeholder="Document Name">
             <span asp-validation-for="DocumentName" class="text-danger"></span>
-        </div>
+        </div> *@
     </div>
 </div>
 
@@ -33,7 +33,7 @@
 </div>
 
 <script>
-    $(document).on("change", '#cityLabel', function () {
+    @* $(document).on("change", '#cityLabel', function () {
         console.log($(this).val());
         if ($(this).val() == "Other") {
             $(this).closest('.d-flex').find('.newCatDiv').removeClass('d-none');
@@ -41,5 +41,13 @@
         else {
             $(this).closest('.d-flex').find('.newCatDiv').addClass('d-none');
         }
-    });
+    }); *@
 </script>
+
+
+
+
+
+
+
+

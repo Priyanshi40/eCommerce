@@ -17,11 +17,17 @@
         background-color: #f8f9fa;
         color: #0066A7 !important;
     }
+
+    .nav-link.disabled {
+        pointer-events: none;
+        opacity: 0.6;
+    }
 </style>
 
 <div class="container mt-5">
     <div class="card p-4 shadow rounded-4">
         <h2 class="text-center mb-4">Create Your Account</h2>
+
         <ul class="nav nav-tabs" id="registerTabs">
             <li class="nav-item">
                 <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#customerTab">Customer</button>
@@ -30,6 +36,7 @@
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#vendorTab">Vendor</button>
             </li>
         </ul>
+
         <div class="tab-content border border-top-0 p-4">
             <div class="tab-pane fade show active" id="customerTab">
                 <form asp-action="RegisterCustomer" method="post">
@@ -39,50 +46,66 @@
             </div>
 
             <div class="tab-pane fade" id="vendorTab">
-                <div class="m-3 ">
+                <div class="m-3">
                     <div class="bg-white p-3 shadow pb-1">
-                        <ul class="nav ">
-                            <li class="nav-item"><a data-bs-toggle="tab" href="#home"
-                                    class="text-black p-2 nav-link fw-semibold active"
-                                    style="text-decoration: none;"></i>Personal Details</a></li>
-                            <li id="vendorDiv2" class="nav-item"><a data-bs-toggle="tab" href="#vendor2"
-                                    class="nav-link text-black p-2 fw-semibold" style="text-decoration: none;">Business
-                                    Details</a></li>
-                            <li id="vendorDiv3" class="nav-item"><a data-bs-toggle="tab" href="#vendor3"
-                                    class="nav-link text-black p-2 fw-semibold"
-                                    style="text-decoration: none;">Document</a></li>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link vendor fw-semibold active" data-step="1" href="#vendor1">Personal
+                                    Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link vendor fw-semibold disabled" data-step="2" href="#vendor2">Business
+                                    Details</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link vendor fw-semibold disabled" data-step="3"
+                                    href="#vendor3">Document</a>
+                            </li>
                         </ul>
                     </div>
-                    <div class="tab-content ">
-                        <div id="home" class="tab-pane fade show active">
-                            <form class="VendorPersonalDetails" method="post">
-                                <div id="vendoRegistration1"></div>
-                                <button type="submit" class="btn btn-warning w-100">Continue to Business Info</button>
-                            </form>
-                        </div>
-                        <div id="vendor2" class="tab-pane fade">
-                            <form class="VendorBusinessDetails" method="post">
-                                <div id="vendoRegistration2">Business Details</div>
-                                <button type="submit" class="btn btn-warning w-100">Proceed to Documents</button>
-                            </form>
 
+                    <div class="tab-content">
+                        <div id="vendor1" class="tab-pane vendorPane fade show active">
+                            <form id="VendorPersonalForm" method="post">
+                                <div id="vendoRegistration1"></div>
+                                <button type="submit" class="btn btn-primary w-100">Next</button>
+                            </form>
                         </div>
-                        <div id="vendor3" class="tab-pane fade">
-                            <form class="VendorDocuments" asp-action="VendorStep3" method="post">
-                                <div id="vendoRegistration3">Document</div>
+
+                        <div id="vendor2" class="tab-pane vendorPane fade">
+                            <form id="VendorBusinessForm" method="post">
+                                <div id="vendoRegistration2"></div>
+                                <button type="submit" class="btn btn-primary w-100">Next</button>
+                            </form>
+                        </div>
+
+                        <div id="vendor3" class="tab-pane vendorPane fade">
+                            <form class="VendorDocuments" asp-action="RegisterVendor" method="post">
+                                <div id="vendoRegistration3"></div>
                                 <button type="submit" class="btn btn-primary w-100">Submit</button>
                             </form>
-
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    let currentVendorStep = 1;
+
+    function goToStep(stepNumber) {
+        if (stepNumber > currentVendorStep) return;
+
+        $('.vendor').removeClass('active');
+        $('.vendorPane').removeClass('show active');
+
+        $(`.vendor[data-step="${stepNumber}"]`).removeClass('disabled');
+        $(`.vendor[data-step="${stepNumber}"]`).addClass('active');
+        $(`#vendor${stepNumber}`).addClass('show active');
+    }
+
     $(document).ready(function () {
         $.ajax({
             url: '@Url.Action("CommonRegistration", "Account")',
@@ -93,20 +116,20 @@
             },
         });
     });
+
     $('.vendorDiv').click(function () {
-        $.ajax({
-            url: '@Url.Action("CommonRegistration", "Account")',
-            type: 'GET',
-            success: function (data) {
-                console.log("AJAX request successful.");
-                $("#vendoRegistration1").html(data);
-                $.validator.unobtrusive.parse("#vendoRegistration1");
-            },
+        $.get('@Url.Action("CommonRegistration", "Account")', function (data) {
+            $("#vendoRegistration1").html(data);
+            $.validator.unobtrusive.parse("#vendoRegistration1");
         });
     });
-    
-    function loadBusinessDetails(formData) {
-        console.error("Inside loadBusinessDetails handler.");
+
+    $(document).on('submit', '#VendorPersonalForm', function (e) {
+        e.preventDefault();
+
+        if (!$(this).valid()) return;
+
+        const formData = new FormData(this);
         $.ajax({
             url: '@Url.Action("VendorBusinessDetails", "Account")',
             type: 'POST',
@@ -114,67 +137,43 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                console.log("AJAX request successful.");
+
+                console.log(data);
+                currentVendorStep = 2;
+                goToStep(2);
+
                 $("#vendoRegistration2").html(data);
                 $.validator.unobtrusive.parse("#vendoRegistration2");
-            },
+            }
         });
-    }
+    });
 
-    @* $('#vendorDiv2').click(function () {
-        console.error("Inside vendorDiv2 click handler.");
-        loadBusinessDetails(formData);
-    }); *@
+    $(document).on('submit', '#VendorBusinessForm', function (e) {
+        e.preventDefault();
 
-    $('#vendorDiv3').click(function () {
+        if (!$(this).valid()) return;
+
+        const formData = new FormData(this);
         $.ajax({
             url: '@Url.Action("VendorDocuments", "Account")',
-            type: 'GET',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function (data) {
-                console.log("AJAX request successful.");
+                currentVendorStep = 3;
+                goToStep(3);
+
                 $("#vendoRegistration3").html(data);
                 $.validator.unobtrusive.parse("#vendoRegistration3");
-            },
+
+            }
         });
     });
 
-    $('.VendorPersonalDetails').submit(function (e) {
+    $(document).on('click', '.nav-link[data-step]', function (e) {
         e.preventDefault();
-        let formData = new FormData($(this)[0]);
-        var result = $(this).valid();
-        if (result) {
-            $('#vendorDiv2').click(function () {
-                console.error("Inside vendorDiv2 click handler after form submission.");
-                loadBusinessDetails(formData);
-            });
-            @* loadBusinessDetails(formData); *@
-        }
-        else{
-            console.error("Form validation failed.");
-        }
-    });
-
-    $('.VendorBusinessDetails').submit(function (e) {
-        e.preventDefault();
-
-        let formData = new FormData($(this)[0]);
-        var result = $(this).valid();
-        if (result) {
-            $.ajax({
-                url: '@Url.Action("VendorDocuments", "Account")',
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (data) {
-                    console.log("AJAX request successful.");
-                    $("#vendoRegistration3").html(data);
-                    $.validator.unobtrusive.parse("#vendoRegistration3");
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX request failed:", status, error);
-                }
-            });
-        }
+        const step = parseInt($(this).data('step'));
+        goToStep(step);
     });
 </script>

@@ -1,8 +1,10 @@
 using BLL.Interfaces;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 namespace Ecommerce.Controllers;
 
 public class AccountController : Controller
@@ -58,14 +60,6 @@ public class AccountController : Controller
     {
         return PartialView("_commonRegistration");
     }
-    public IActionResult VendorBusinessDetails(VendorViewModel model)
-    {
-        return PartialView("_vendorBusiness",model);
-    }
-    public IActionResult VendorDocuments(VendorViewModel model)
-    {
-        return PartialView("_vendorDocuments",model);
-    }
 
     [HttpPost]
     public async Task<IActionResult> RegisterCustomer(RegisterViewModel model)
@@ -91,39 +85,99 @@ public class AccountController : Controller
                 return RedirectToAction("Login", "Account");
             }
             foreach (var error in result.Errors)
-            {
                 ModelState.AddModelError(string.Empty, error.Description);
-            }
         }
         return View("Register", model);
     }
+    public IActionResult VendorBusinessDetails(RegisterViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return PartialView("_vendorBusiness", model);
+
+        HttpContext.Session.SetString("VendorStep1", JsonConvert.SerializeObject(model));
+        // TempData["VendorStep1"] = JsonConvert.SerializeObject(model);
+
+        return PartialView("_vendorBusiness", new VendorViewModel());
+    }
+    public IActionResult VendorDocuments(VendorViewModel model)
+    {
+        foreach (var key in new[] { "FileUrl", "DocumentType" })
+        {
+            ModelState.Remove(key);
+        }
+
+        if (!ModelState.IsValid)
+            return PartialView("_vendorDocuments", model);
+
+        HttpContext.Session.SetString("VendorStep2", JsonConvert.SerializeObject(model));
+        // TempData["VendorStep2"] = JsonConvert.SerializeObject(model);
+        return PartialView("_vendorDocuments", model);
+    }
     public async Task<IActionResult> RegisterVendor(VendorViewModel model)
     {
-        if (ModelState.IsValid)
+        ModelState.Remove("BusinessName");
+
+        if (!ModelState.IsValid)
+            return PartialView("_vendorDocuments", model);
+
+        var step1Json = HttpContext.Session.GetString("VendorStep1");
+        var step2Json = HttpContext.Session.GetString("VendorStep2");
+
+        // var step1Json = TempData["VendorStep1"]?.ToString();
+        // var step2Json = TempData["VendorStep2"]?.ToString();
+
+        if (string.IsNullOrWhiteSpace(step1Json) || string.IsNullOrWhiteSpace(step2Json))
         {
-            IdentityUser user = new()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.Phone,
-            };
-            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                model.IdentityUserId = user.Id;
-                // _userService.AddUser(model);
-
-                await _userManager.AddToRoleAsync(user, "User");
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                TempData["Message"] = "User Registered Successfully";
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
+            ModelState.AddModelError("", "Session expired. Please complete steps again.");
+            return RedirectToAction("Register");
         }
+
+        var step1 = JsonConvert.DeserializeObject<RegisterViewModel>(step1Json);
+        var step2 = JsonConvert.DeserializeObject<VendorViewModel>(step2Json);
+
+        IdentityUser user = new()
+        {
+            UserName = step1.Email,
+            Email = step1.Email,
+            PhoneNumber = step1.Phone,
+        };
+        IdentityResult result = await _userManager.CreateAsync(user, step1.Password);
+        if (result.Succeeded)
+        {
+            var user1 = new RegisterViewModel
+            {
+                FirstName = step1.FirstName,
+                LastName = step1.LastName,
+                IdentityUserId = user.Id,
+            };
+            var newUserId = _userService.AddUser(user1);
+
+            var fullVendor = new VendorViewModel
+            {
+                VendorId = newUserId,
+                BusinessName = step2.BusinessName,
+                BusinessAddress = step2.BusinessAddress,
+                GSTNumber = step2.GSTNumber,
+                DocumentType = step2.DocumentType,
+                // DocumentName = step2.DocumentName,
+                FileUrl = model.FileUrl
+            };
+
+            _userService.AddVendor(fullVendor);
+
+            await _userManager.AddToRoleAsync(user, "Vendor");
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            TempData["Message"] = "Vendor Registered Successfully";
+
+            HttpContext.Session.Remove("VendorStep1");
+            HttpContext.Session.Remove("VendorStep2");
+
+            return RedirectToAction("Login", "Account");
+        }
+        foreach (var error in result.Errors)
+            ModelState.AddModelError(string.Empty, error.Description);
+
         return View("Register", model);
     }
 }

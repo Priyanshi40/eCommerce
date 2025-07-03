@@ -1,15 +1,18 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace DAL.Models;
 
+[JsonConverter(typeof(StringEnumConverter))]
 public enum VendorDocuments
 {
-    PAN = 1,
-    Aadhar = 2,
-    GST = 3,
-    BusinessLicense = 4,
-    Other = 5
+    PAN,
+    Aadhar,
+    GST,
+    BusinessLicense,
+    Other
 }
 public class VendorDetails
 {
@@ -19,12 +22,11 @@ public class VendorDetails
 
     [MaxLength(100)]
     public string BusinessName { get; set; }
-    public string? GSTNumber { get; set; }
-    public string? BusinessAddress { get; set; }
-    public VendorDocuments DocumentType { get; set; }
 
-    [MaxLength(50)]
-    public string DocumentName { get; set; }
+    [MaxLength(15)]
+    public string GSTNumber { get; set; }
+    public string? BusinessAddress { get; set; }
+    public int DocumentType { get; set; }
     public string FileUrl { get; set; }
 
     [ForeignKey(nameof(VendorId))]
