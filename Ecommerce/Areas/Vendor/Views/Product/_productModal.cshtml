@@ -1,0 +1,132 @@
+@model DAL.ViewModels.ProductViewModel
+<div class="p-2 align-items-center">
+    <input type="text" id="bookId" asp-for="Id" hidden>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="nameLabel" asp-for="Name">
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+        <label for="nameLabel">Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <textarea class="form-control" id="floatingTextarea" asp-for="Description"></textarea>
+        <span asp-validation-for="@Model.Description" class="text-danger"></span>
+        <label for="floatingTextarea">Description</label>
+    </div>
+    <div class="form-floating mb-2">
+        <select class="form-select fs-6" asp-for="CategoryId" id="cityLabel" asp-items="ViewBag.Category">
+            <option value="">Select Category</option>
+        </select>
+        <label for="cityLabel">Category</label>
+        <span asp-validation-for="CategoryId" class="text-danger"></span>
+    </div>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="PriceLabel" asp-for="Price">
+        <label for="PriceLabel">Price</label>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex my-2">
+        <div class="input-group">
+            <label for="file-input-thing" id="file-input-label" class="form-control" />
+            <div class="col d-flex flex-column align-items-center justify-content-center mt-3">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p class="mb-0 imgTitle"> Browse Cover Image</p>
+                <img src="~/images/@Model.CoverImage" class="itemImage" style="max-width: 100px;">
+            </div>
+            <input type="file" id="file-input-thing" style="width: 0;" asp-for="Cover"
+                accept="image/png, image/jpeg, image/gif">
+        </div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Product Images</label>
+        <input type="file" multiple id="galleryInput" name="ProductGallery" class="form-control" accept="image/*">
+        <div id="galleryPreview" class="d-flex flex-wrap gap-2 mt-2">
+            @if (Model.ProductImages != null)
+            {
+                foreach (var img in Model.ProductImages)
+                {
+                    <div class="position-relative">
+                        <img src="~/images/@img" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 remove-gallery"
+                            data-img="@img"></button>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<partial name="_Toastr" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        galleryFiles = @Html.Raw(Json.Serialize(Model.ProductImages));
+        console.log("Initial gallery files:", galleryFiles);
+    });
+
+    $("#file-input-thing").change(function (event) {
+        var fileName = this.files[0];
+        if (fileName) {
+
+            const valid = ["image/jpeg", "image/jpg", "image/png"];
+            if (!valid.includes(fileName.type)) {
+                toastr.warning("Please select valid image file");
+                $(this).val(null);
+                return;
+            }
+            var name = fileName.name;
+            $("#file-input-label p").text(name);
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $(".itemImage").attr("src", e.target.result).show();
+            };
+            reader.readAsDataURL(fileName);
+        }
+        else {
+            $("#file-input-label p").text("Browse File");
+            $(".itemImage").hide();
+        }
+    });
+
+    $("#galleryInput").on("change", function () {
+        const files = Array.from(this.files);
+        const container = $("#galleryPreview");
+        @* container.html(""); *@
+
+            files.forEach((file, index) => {
+                if(galleryFiles.includes(file)) {
+                    toastr.warning("File already exists in gallery");
+                    return;
+                }
+                var index = galleryFiles.length;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    galleryFiles.push(file);
+                    const wrapper = $(
+                        `<div class="position-relative imgWrapper">
+                                <img src="${e.target.result}" class="img-thumbnail" style="width:100px; height:100px; object-fit:cover;">
+                                <button type="button" class="btn-close position-absolute top-0 end-0 removeNew" data-index="${index}"></button>
+                            </div>`);
+                    container.append(wrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+
+        console.log("Updated gallery files:");
+        console.log(galleryFiles);
+    });
+
+    $(document).on("click", ".removeNew", function () {
+        $(this).closest(".imgWrapper").remove();
+        const index = $(this).attr('data-index');
+        galleryFiles.splice(index, 1);
+    });
+
+    $(document).on("click", ".remove-gallery", function () {
+        const img = $(this).data("img");
+        galleryFiles = galleryFiles.filter(file => file != img);
+        $(this).parent().remove();
+    });
+</script>

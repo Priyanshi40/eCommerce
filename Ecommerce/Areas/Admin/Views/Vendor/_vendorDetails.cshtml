@@ -1,0 +1,42 @@
+@model DAL.ViewModels.VendorDetailsViewModel
+
+
+<div class="p-3">
+    <div class="form-floating mb-2">
+        <input id="fname" asp-for="Firstname" class="form-control" type="text">
+        <label for="nameLabel">First Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input id="lname" asp-for="Lastname" class="form-control" type="text">
+        <label for="nameLabel">Last Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input id="email" asp-for="Email" class="form-control" type="email">
+        <label for="nameLabel">Email</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input type="text" class="fs-6 form-control form-control-lg" asp-for="Phone" placeholder="Phone Number">
+        <label for="nameLabel">Email</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input id="bname" asp-for="BusinessName" class="form-control" type="text">
+        <label for="nameLabel">Business Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input id="lname" asp-for="GSTNumber" class="fs-6 form-control form-control-lg" type="text"
+            placeholder="GST Number">
+    </div>
+    <div class="form-floating mb-2">
+        <textarea id="" class="fs-6 form-control form-control-lg" placeholder="Business Address"
+            asp-for="BusinessAddress"></textarea>
+    </div>
+    <div class="form-floating mb-2">
+        <div class="d-flex my-2">
+            <div class="col-md mb-2">
+                <select class="form-select fs-6" asp-for="DocumentType" id="cityLabel">
+                    <option value="" selected>Select Document Type</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>

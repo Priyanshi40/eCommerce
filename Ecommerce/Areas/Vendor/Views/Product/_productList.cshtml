@@ -1,0 +1,56 @@
+@using DAL.Models
+@model DAL.ViewModels.ProductViewModel
+<style>
+    .card-title {
+        font-size: 1.1rem;
+    }
+
+    .card-footer button {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="row" id="productGrid">
+    @if (Model != null && Model.Products.Count > 0)
+    {
+        foreach (var item in Model.Products)
+        {
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="~/images/@item.CoverImage" class="card-img-top" alt="Product Image"
+                        style="height: 300px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">@item.Name</h5>
+                        <p class="card-text small text-muted">@item.Category.Name</p>
+                        <p class="card-text fw-semibold">₹ @item.Price</p>
+                        <span class="badge @(item.Status == ProductStatus.Approved ? "bg-success" : "bg-secondary")">
+                            @item.Status
+                        </span>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                        <button class="btn btn-sm btn-outline-primary editProduct" data-id="@item.Id">
+                            <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger deleteProduct" data-id="@item.Id">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary viewProduct" data-id="@item.Id">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center">
+            <p>No products found.</p>
+        </div>
+    }
+</div>

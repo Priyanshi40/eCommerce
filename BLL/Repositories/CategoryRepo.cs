@@ -17,15 +17,13 @@ public class CategoryRepo : ICategoryRepo
     }
     public IQueryable<Category> GetCategoryQueryable(string? searchString)
     {
+        var category = _context.Category.Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+
         if (!string.IsNullOrEmpty(searchString))
         {
-            return _context.Category
-                .Where(u => u.Name.ToLower().Contains(searchString.ToLower().Trim()))
-                .Where(u => !u.IsDeleted)
-                .OrderBy(u => u.Name)
-                .AsQueryable();
+            category = category.Where(u => u.Name.ToLower().Contains(searchString.ToLower().Trim()));
         }
-        return _context.Category.Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+        return category;
     }
     public Category GetCategoryDetails(int catId)
     {

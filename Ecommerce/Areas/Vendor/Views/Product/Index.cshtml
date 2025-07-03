@@ -1,0 +1,179 @@
+@using DAL.ViewModels
+@model DAL.ViewModels.CategoryViewModel
+@{
+    ViewData["Title"] = "Categories";
+    ViewData["showLayout"] = true;
+}
+
+<div class="content dash p-4 m-4" id="content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center ">
+        <h2 class="col-lg-6 txtCustom">My Products</h2>
+
+        <div class="d-flex justify-content-end align-items-center flex-wrap">
+            <div class="col-lg my-1 position-relative me-2 searchItem">
+                <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
+                    name="searchString" id="searchCInput">
+                <button type="button" class="position-absolute searchInput btn btn-link"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+            <div><a class="col-lg my-1 pe-0">
+                    <button class="btn btn-primary btn-bg bgCustom px-2 fw-bold addProduct" type="button">+ Add
+                        Product</button>
+                </a></div>
+        </div>
+    </div>
+    <div>
+        <div id="PartialProductDiv" class="mt-2"></div>
+    </div>
+</div>
+
+<div class="modal fade" id="addProductsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form class="addCatForm" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="catModal"></div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary savebtn" onclick="AddProductFunction()">Add</button>
+                    <button type="button" class="btn btn-outline-primary resetBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex flex-row">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    Delete Category
+                </h5>
+                <button type="button" class="close btn text-end" data-bs-dismiss="modal" aria-label="Close">&times;
+                </button>
+            </div>
+            <div class=" d-flex flex-column modal-body align-items-center justify-content-center">
+                <img src="~/images/warning.png" alt="" class="img-fluid" style="width: 50px;">
+                <div class="deleteContent">Are you sure you want to delete this
+                    category?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a type="submit" class="btn btn-primary" id="finaldelete">Yes</a>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        loadProducts();
+
+        $("#searchCInput").on("keyup", function () {
+            loadProducts(searchString);
+        });
+    });
+
+    function loadProducts(){
+        let searchString = $("#searchCInput").val();
+        $.ajax({
+            url: '/Vendor/Product/ProductList',
+            type: 'GET',
+            data: { searchString: searchString },
+            success: function (response) {
+                $('#PartialProductDiv').html(response);
+            },
+            error: function () {
+                toastr.error("Failed to load products");
+            }
+        });
+    }
+
+    let galleryFiles = [];
+    $(".addProduct").click(function () {
+        let productId = 0;
+        $.ajax({
+            url: "/Vendor/Product/ProductModal",
+            type: "GET",
+            data: { productId: productId },
+            success: function (data) {
+                $('#addProductsModal').modal('show');
+                $('.catModal').html(data);
+                $('.modal-title').text('Add New Product');
+                $('.savebtn').text('Add');
+            },
+            error: function () {
+                alert("Failed to Add Product");
+            }
+        });
+    });
+
+    $(document).on("click",".editProduct",function () {
+        let productId = $(this).data("id");
+        $.ajax({
+            url: "/Vendor/Product/ProductModal",
+            type: "GET",
+            data: { productId: productId },
+            success: function (data) {
+                $('#addProductsModal').modal('show');
+                $('.catModal').html(data);
+                $('.modal-title').text('Edit Product');
+                $('.savebtn').text('Update');
+            },
+            error: function () {
+                alert("Failed to Edit Product");
+            }
+        });
+    });
+
+    function AddProductFunction() {
+        event.preventDefault();
+        event.stopPropagation();
+
+        let formData = new FormData($(".addCatForm")[0]);
+
+        let imageFile = $("#file-input-thing")[0].files[0];
+        if (imageFile) {
+            formData.append("ProductImage", imageFile);
+        }
+        console.log(imageFile);
+
+        for(let i = 0; i < galleryFiles.length; i++) {
+            formData.append("GalleryImages", galleryFiles[i]);
+        }
+        console.log(galleryFiles);
+
+        var result = $('.addCatForm').valid();
+
+        console.log(result);
+        if (result) {
+            $.ajax({
+                url: '/Vendor/Product/AddProduct',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status == "ValidationError") {
+                        toastr.error("Enter valid data");
+                        return;
+                    }
+                    else {
+                        toastr.success("Product Added/Updated Successfully!!");
+                        $('#PartialProductDiv').html(response);
+                        $('#addProductsModal').modal('hide');
+                    }
+                }
+            });
+        }
+    }
+</script>

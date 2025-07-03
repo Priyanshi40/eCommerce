@@ -11,8 +11,7 @@ public enum VendorDocuments
     PAN,
     Aadhar,
     GST,
-    BusinessLicense,
-    Other
+    BusinessLicense
 }
 public class VendorDetails
 {

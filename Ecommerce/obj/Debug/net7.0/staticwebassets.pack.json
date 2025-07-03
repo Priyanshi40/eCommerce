@@ -17,12 +17,40 @@
       "PackagePath": "staticwebassets\\images\\Default_pfp.svg.png"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\IPHONE_15.jpg",
+      "PackagePath": "staticwebassets\\images\\IPHONE_15.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\IPhone15_1.jpg",
+      "PackagePath": "staticwebassets\\images\\IPhone15_1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\IPhone15_2.jpg",
+      "PackagePath": "staticwebassets\\images\\IPhone15_2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\IPhone15_3.jpg",
+      "PackagePath": "staticwebassets\\images\\IPhone15_3.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\admin.png",
       "PackagePath": "staticwebassets\\images\\admin.png"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\cart.png",
       "PackagePath": "staticwebassets\\images\\cart.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\dell2.jpg",
+      "PackagePath": "staticwebassets\\images\\dell2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\dellCover.jpg",
+      "PackagePath": "staticwebassets\\images\\dellCover.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\dell_1.jpg",
+      "PackagePath": "staticwebassets\\images\\dell_1.jpg"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\email_verified.png",
@@ -35,6 +63,10 @@
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\images.jfif",
       "PackagePath": "staticwebassets\\images\\images.jfif"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\kitchenware.jfif",
+      "PackagePath": "staticwebassets\\images\\kitchenware.jfif"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\no_data.png",
@@ -51,6 +83,14 @@
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\shopping-trolley.jpg",
       "PackagePath": "staticwebassets\\images\\shopping-trolley.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\stanley_1.jpg",
+      "PackagePath": "staticwebassets\\images\\stanley_1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\stanley_3.jpg",
+      "PackagePath": "staticwebassets\\images\\stanley_3.jpg"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\warning.png",

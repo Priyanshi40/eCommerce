@@ -85,8 +85,8 @@
                 </a>
             </div>
             <div>
-                <a asp-controller="Show" asp-action="Index"
-                    class="p-2 fs-6 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Show" ? "active" : "")">
+                <a asp-area="Admin" asp-controller="Vendor" asp-action="Index"
+                    class="p-2 fs-6 @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Vendor" ? "active" : "")">
                     <i class="fa-solid fa-users-gear fs-6" data-placement="right" title="Vendors"></i>
                     <span>Vendors</span>
                 </a>

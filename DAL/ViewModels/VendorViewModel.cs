@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using DAL.Models;
-using Newtonsoft.Json.Converters;
 
 namespace DAL.ViewModels;
 
@@ -24,8 +22,6 @@ public class VendorViewModel
     public string? BusinessAddress { get; set; }
 
     [Required(ErrorMessage = "Document Type is required")]
-
-    [JsonConverter(typeof(StringEnumConverter))]
     public VendorDocuments DocumentType { get; set; }
 
     [Required(ErrorMessage = "Document is required")]

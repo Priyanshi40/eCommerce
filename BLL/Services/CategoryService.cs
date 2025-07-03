@@ -43,7 +43,6 @@ public class CategoryService : ICategoryService
             catDetails.Name = cat.Name;
             catDetails.Description = cat.Description;
             catDetails.CoverImage = cat.CoverImage;
-            // catDetails.Status = Enum.Parse<CategoryStatus>(cat.Status);
             catDetails.IsActive = cat.IsActive;
         }
         return catDetails;

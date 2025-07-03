@@ -1,0 +1,189 @@
+@using DAL.ViewModels
+@model DAL.ViewModels.CategoryViewModel
+@{
+    ViewData["Title"] = "Categories";
+    ViewData["showLayout"] = true;
+}
+
+<div class="content dash p-4 m-4" id="content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center ">
+        <h2 class="col-lg-6 txtCustom">Vendors</h2>
+
+        <div class="d-flex justify-content-end align-items-center flex-wrap">
+            <div class="col-lg my-1 position-relative me-2 searchItem">
+                <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
+                    name="searchString" id="searchCInput">
+                <button type="button" class="position-absolute searchInput btn btn-link"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+            <div class="col-lg my-1 me-2">
+                <select class="form-select fs-6" aria-label="Default select example" id="StatusLabel"
+                    asp-items="@(new SelectList(Enum.GetNames(typeof(CategoryStatus))))">
+                    <option value="All" selected>All Status</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div id="PartialVendorDiv" class="mt-2"></div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="vendorDetailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="exampleModalLabel">Vendor Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form class="addCatForm" method="post" enctype="multipart/form-data">
+                <div class="catModal"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex flex-row">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    Delete Category
+                </h5>
+                <button type="button" class="close btn text-end" data-bs-dismiss="modal" aria-label="Close">&times;
+                </button>
+            </div>
+            <div class=" d-flex flex-column modal-body align-items-center justify-content-center">
+                <img src="~/images/warning.png" alt="" class="img-fluid" style="width: 50px;">
+                <div class="deleteContent">Are you sure you want to delete this
+                    category?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a type="submit" class="btn btn-primary" id="finaldelete">Yes</a>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    let catAction = {
+        categoryId: null,
+        isActive: null,
+        isDelete: false,
+        checkbox: null
+    };
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("VendorList", "Vendor")',
+            type: 'GET',
+            success: function (data) {
+                $("#PartialVendorDiv").html(data);
+            },
+        });
+    });
+
+    $('#searchCInput').keyup(function () {
+        var searchValue = $(this).val();
+        $('#searchCInput').data('search', searchValue);
+        loadVendors();
+    });
+
+    $('#StatusLabel').change(function () {
+        let status = $(this).val();
+        $('#StatusLabel').data('search', status);
+        loadVendors();
+    });
+
+    $(document).on("click", '.viewDetailsbtn', function () {
+        let vendorId = $(this).data('id');
+        $.ajax({
+            url: "/Admin/Vendor/VendorDetails",
+            type: "GET",
+            data: { vendorId: vendorId },
+            success: function (data) {
+                $('#vendorDetailModal').modal('show');
+                $('.catModal').html(data);
+            },
+            error: function () {
+                alert("Failed to load Vendor Details");
+            }
+        });
+    });
+
+    $(document).on("change", '.isActive', function () {
+        event.preventDefault();
+        event.stopPropagation();
+
+        catAction.categoryId = $(this).closest('tr').data('id');
+        catAction.isActive = $(this).prop('checked');
+        catAction.isDelete = false;
+
+        if (!catAction.isActive) {
+            $(this).prop('checked', true);
+            $('.modal-title').text('Update Category');
+            $('.deleteContent').text('Are you sure you want to deactivate this category?');
+            $('#deleteModal').modal('show');
+            catAction.checkbox = $(this);
+
+        } else {
+            $('#finaldelete').click();
+        }
+    });
+
+
+    $('#finaldelete').click(function () {
+
+        $.ajax({
+            url: '/Admin/Category/DeleteCategory',
+            type: 'POST',
+            data: { catId: catAction.categoryId, isActive: catAction.isActive, isDelete: catAction.isDelete },
+            success: function (response) {
+                console.log(catAction);
+                if (response.status == "ValidationError") {
+                    toastr.error("Category not found or already deleted !!");
+                    return;
+                }
+                if (response.status == "UnAuthorized") {
+                    toastr.error("You are not authorized to delete this category !!");
+                    return;
+                } else {
+                    if (catAction.isActive != null) {
+                        toastr.success("Category updated successfully!!");
+                    }
+                    else if (catAction.isDelete)
+                        toastr.success("Category deleted successfully!!");
+
+                    $('#PartialCatDiv').html(response);
+                    $('#deleteModal').modal('hide');
+
+                    if (catAction.checkbox) {
+                        $(catAction.checkbox).prop('checked', false);
+                        catAction = {
+                            categoryId: null,
+                            isActive: null,
+                            isDelete: false,
+                            checkboxRef: null
+                        };
+                    }
+                }
+            },
+            error: function () {
+                toastr.error("Failed to update category");
+            }
+        });
+    });
+
+    $(document).on("click", '.resetBtn', function () {
+        $(".addCatForm")[0].reset();
+    });
+
+
+</script>

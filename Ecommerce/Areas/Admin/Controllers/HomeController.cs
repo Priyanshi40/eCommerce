@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,6 +6,7 @@ namespace Ecommerce.Areas.Admin.Controllers;
 
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class HomeController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;

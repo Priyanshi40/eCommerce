@@ -2,12 +2,14 @@ using BLL.Interfaces;
 using BLL.Utility;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class CategoryController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
@@ -52,7 +54,7 @@ public class CategoryController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return Ok(new { status = AjaxError.Error.ToString()});
+            return Ok(new { status = AjaxError.Error.ToString() });
         }
         else
         {
@@ -60,7 +62,7 @@ public class CategoryController : Controller
             {
                 catToAdd.CoverImage = _imgService.SaveImageService(categoryImage);
             }
-            
+
             var user = _userService.GetUserById(_userManager.GetUserId(User));
             if (catToAdd.Id == 0)
             {

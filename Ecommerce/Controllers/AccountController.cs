@@ -115,7 +115,10 @@ public class AccountController : Controller
     }
     public async Task<IActionResult> RegisterVendor(VendorViewModel model)
     {
-        ModelState.Remove("BusinessName");
+        foreach (var key in new[] { "BusinessName", "GSTNumber" })
+        {
+            ModelState.Remove(key);
+        }
 
         if (!ModelState.IsValid)
             return PartialView("_vendorDocuments", model);
@@ -159,15 +162,14 @@ public class AccountController : Controller
                 BusinessAddress = step2.BusinessAddress,
                 GSTNumber = step2.GSTNumber,
                 DocumentType = step2.DocumentType,
-                // DocumentName = step2.DocumentName,
                 FileUrl = model.FileUrl
             };
 
             _userService.AddVendor(fullVendor);
 
             await _userManager.AddToRoleAsync(user, "Vendor");
-
             await _signInManager.SignInAsync(user, isPersistent: false);
+
             TempData["Message"] = "Vendor Registered Successfully";
 
             HttpContext.Session.Remove("VendorStep1");
