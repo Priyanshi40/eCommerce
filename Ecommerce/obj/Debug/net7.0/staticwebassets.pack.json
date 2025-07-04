@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Amazon_Appliances.jpg",
+      "PackagePath": "staticwebassets\\images\\Amazon_Appliances.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Default_pfp.svg.png",
       "PackagePath": "staticwebassets\\images\\Default_pfp.svg.png"
     },
@@ -39,6 +43,26 @@
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\cart.png",
       "PackagePath": "staticwebassets\\images\\cart.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\coffee.jpg",
+      "PackagePath": "staticwebassets\\images\\coffee.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\coffeeCover.jpg",
+      "PackagePath": "staticwebassets\\images\\coffeeCover.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\coffee_1.jpg",
+      "PackagePath": "staticwebassets\\images\\coffee_1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\coffee_2.jpg",
+      "PackagePath": "staticwebassets\\images\\coffee_2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\coffee_3.jpg",
+      "PackagePath": "staticwebassets\\images\\coffee_3.jpg"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\dell2.jpg",
@@ -81,12 +105,48 @@
       "PackagePath": "staticwebassets\\images\\online-store.png"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\pixel1.jpg",
+      "PackagePath": "staticwebassets\\images\\pixel1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\pixel2.jpg",
+      "PackagePath": "staticwebassets\\images\\pixel2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\pixel3.jpg",
+      "PackagePath": "staticwebassets\\images\\pixel3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\pixelCover.jpg",
+      "PackagePath": "staticwebassets\\images\\pixelCover.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\shopping-trolley.jpg",
       "PackagePath": "staticwebassets\\images\\shopping-trolley.jpg"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\sony1.jpg",
+      "PackagePath": "staticwebassets\\images\\sony1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\sony2.jpg",
+      "PackagePath": "staticwebassets\\images\\sony2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\sony3.jpg",
+      "PackagePath": "staticwebassets\\images\\sony3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\sonyCover.jpg",
+      "PackagePath": "staticwebassets\\images\\sonyCover.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\stanley_1.jpg",
       "PackagePath": "staticwebassets\\images\\stanley_1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\stanley_2.jpg",
+      "PackagePath": "staticwebassets\\images\\stanley_2.jpg"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\stanley_3.jpg",

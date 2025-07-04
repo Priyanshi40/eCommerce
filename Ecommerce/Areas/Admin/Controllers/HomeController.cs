@@ -9,11 +9,9 @@ namespace Ecommerce.Areas.Admin.Controllers;
 [Authorize(Roles = "Admin")]
 public class HomeController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public HomeController(SignInManager<IdentityUser> signInManager)
     {
-        _userManager = userManager;
         _signInManager = signInManager;
     }
     public IActionResult Index()

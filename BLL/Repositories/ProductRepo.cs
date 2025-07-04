@@ -37,9 +37,15 @@ public class ProductRepo : IProductRepo
                 oldProduct.CoverImage = product.CoverImage ?? oldProduct.CoverImage;
                 oldProduct.Price = product.Price > 0 ? product.Price : oldProduct.Price;
                 oldProduct.CategoryId = product.CategoryId > 0 ? product.CategoryId : oldProduct.CategoryId;
-                oldProduct.Images = product.Images ?? oldProduct.Images;
                 oldProduct.ModifiedBy = product.ModifiedBy;
                 oldProduct.ModifiedAt = DateTime.Now;
+
+                if (product.Images != null)
+                {
+                    _context.ProductImage.RemoveRange(oldProduct.Images);
+                    oldProduct.Images = product.Images;
+                }
+
                 _context.Product.Update(oldProduct);
                 _context.SaveChanges();
                 return oldProduct;
@@ -54,6 +60,58 @@ public class ProductRepo : IProductRepo
         catch (Exception ex)
         {
             Console.WriteLine($"Error adding Product: {ex.Message}");
+            throw;
+        }
+    }
+    public bool DeleteProduct(Product product)
+    {
+        try
+        {
+            Product oldProduct = _context.Product.FirstOrDefault(b => b.Id == product.Id);
+            if (oldProduct != null)
+            {
+                oldProduct.ModifiedBy = product.ModifiedBy;
+                oldProduct.ModifiedAt = DateTime.Now;
+                oldProduct.IsDeleted = true;
+
+                _context.Product.Update(oldProduct);
+                _context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error While Deleting Product: {ex.Message}");
+            throw;
+        }
+    }
+    public bool ApproveProduct(Product product)
+    {
+        try
+        {
+            Product oldProduct = _context.Product.FirstOrDefault(b => b.Id == product.Id);
+            if (oldProduct != null)
+            {
+                oldProduct.ModifiedBy = product.ModifiedBy;
+                oldProduct.ModifiedAt = DateTime.Now;
+                oldProduct.Status = ProductStatus.Approved;
+
+                _context.Product.Update(oldProduct);
+                _context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error While Approving Product: {ex.Message}");
             throw;
         }
     }

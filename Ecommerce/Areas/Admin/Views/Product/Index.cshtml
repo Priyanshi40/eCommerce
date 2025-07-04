@@ -1,0 +1,109 @@
+@using DAL.Models
+@using DAL.ViewModels
+@{
+    ViewData["Title"] = "Product";
+    ViewData["showLayout"] = true;
+}
+
+<div class="content dash p-4 m-4" id="content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center ">
+        <h2 class="col-lg-4 txtCustom">Products</h2>
+
+        <div class="d-flex justify-content-end align-items-center flex-wrap">
+            <div class="col-lg m-2 position-relative searchItem">
+                <input class="form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
+                    name="searchString" id="searchCInput">
+                <button type="button" class="position-absolute searchInput btn btn-link"><i
+                        class="fa-solid fa-search"></i></button>
+            </div>
+
+            <div class="col-lg m-2 ">
+                <select class="form-select fs-6" aria-label="Default select example" id="statusLabel"
+                    asp-items="@(new SelectList(Enum.GetNames(typeof(ProductStatus))))">
+                    <option value="" selected>All Status</option>
+                </select>
+            </div>
+            <div class="col-lg m-2">
+                <select class="form-select fs-6" id="categoryLabel" asp-items="ViewBag.Category">
+                    <option value="-1">All Category</option>
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <div id="PartialProductDiv" class="mt-4"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Admin/Product/ProductList',
+            type: 'GET',
+            success: function (response) {
+                $('#PartialProductDiv').html(response);
+            },
+            error: function () {
+                toastr.error("Failed to load products");
+            }
+        });
+    });
+
+    $("#searchCInput").on("keyup", function () {
+        loadProducts();
+    });
+    $("#categoryLabel").on("change", function () {
+        loadProducts();
+    });
+    $("#statusLabel").on("change", function () {
+        loadProducts();
+    });
+
+    $(document).on("click", ".viewProduct", function () {
+        let productId = $(this).data("id");
+        window.location.href = `/Admin/Product/ProductDetails?productId=${productId}`;
+    });
+
+    $(document).on("click", ".deleteProduct", function () {
+        let productId = $(this).data("id");
+        $('#deleteModal').modal('show');
+
+        $("#finaldelete").click(function () {
+            $.ajax({
+                url: "/Admin/Product/DeleteProduct",
+                type: "GET",
+                data: { productId: productId },
+                success: function (data) {
+                    if (data.status === "ValidationError") {
+                        toastr.error("Product not found or already deleted");
+                    } else {
+                        $('#PartialProductDiv').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Failed to Delete Product");
+                }
+            });
+        });
+    });
+
+    $(document).on("click", ".approveProduct", function () {
+        let productId = $(this).data("id");
+        $.ajax({
+            url: "/Admin/Product/ApproveProduct",
+            type: "GET",
+            data: { productId: productId },
+            success: function (data) {
+                if (data.status === "NotFound") {
+                    toastr.error("Product not found or already approved");
+                } else {
+                    $('#PartialProductDiv').html(data);
+                }
+            },
+            error: function () {
+                alert("Failed to Approve Product");
+            }
+        });
+    });
+</script>

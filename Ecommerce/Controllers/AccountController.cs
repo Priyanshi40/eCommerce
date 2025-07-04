@@ -95,7 +95,6 @@ public class AccountController : Controller
             return PartialView("_vendorBusiness", model);
 
         HttpContext.Session.SetString("VendorStep1", JsonConvert.SerializeObject(model));
-        // TempData["VendorStep1"] = JsonConvert.SerializeObject(model);
 
         return PartialView("_vendorBusiness", new VendorViewModel());
     }
@@ -110,7 +109,6 @@ public class AccountController : Controller
             return PartialView("_vendorDocuments", model);
 
         HttpContext.Session.SetString("VendorStep2", JsonConvert.SerializeObject(model));
-        // TempData["VendorStep2"] = JsonConvert.SerializeObject(model);
         return PartialView("_vendorDocuments", model);
     }
     public async Task<IActionResult> RegisterVendor(VendorViewModel model)
@@ -125,9 +123,6 @@ public class AccountController : Controller
 
         var step1Json = HttpContext.Session.GetString("VendorStep1");
         var step2Json = HttpContext.Session.GetString("VendorStep2");
-
-        // var step1Json = TempData["VendorStep1"]?.ToString();
-        // var step2Json = TempData["VendorStep2"]?.ToString();
 
         if (string.IsNullOrWhiteSpace(step1Json) || string.IsNullOrWhiteSpace(step2Json))
         {

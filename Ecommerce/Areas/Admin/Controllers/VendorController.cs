@@ -11,14 +11,9 @@ namespace Ecommerce.Areas.Admin.Controllers;
 [Authorize(Roles = "Admin")]
 public class VendorController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
-
     private readonly IVendorService _vendorService;
-    public VendorController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IVendorService vendorService)
+    public VendorController(IVendorService vendorService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
         _vendorService = vendorService;
     }
     public IActionResult Index()

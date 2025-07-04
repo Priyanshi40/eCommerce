@@ -27,11 +27,12 @@ public class ProductViewModel
 
     [Required(ErrorMessage = "Category is required")]
     public int CategoryId { get; set; }
-    public int CategoryName { get; set; }
+    public string? CategoryName { get; set; }
     public int PageSize { get; set; }
     public int PageNumber { get; set; }
     public int TotalRecords { get; set; }
     public int TotalPages { get; set; }
     public List<IFormFile>? GalleryImages { get; set; }
     public List<string> ProductImages { get; set; } = new List<string>();
+    public List<string> RemovedImages { get; set; } = new List<string>();
 }

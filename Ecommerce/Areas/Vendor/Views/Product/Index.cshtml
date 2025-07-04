@@ -1,7 +1,7 @@
+@using DAL.Models
 @using DAL.ViewModels
-@model DAL.ViewModels.CategoryViewModel
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Product";
     ViewData["showLayout"] = true;
 }
 
@@ -16,6 +16,17 @@
                 <button type="button" class="position-absolute searchInput btn btn-link"><i
                         class="fa-solid fa-search"></i></button>
             </div>
+            <div class="col-lg my-1 me-2">
+                <select class="form-select fs-6" aria-label="Default select example" id="statusLabel"
+                    asp-items="@(new SelectList(Enum.GetNames(typeof(ProductStatus))))">
+                    <option value="" selected>All Status</option>
+                </select>
+            </div>
+            <div class="me-2">
+                <select class="form-select fs-6" id="categoryLabel" asp-items="ViewBag.Category">
+                    <option value="-1">All Category</option>
+                </select>
+            </div>
             <div><a class="col-lg my-1 pe-0">
                     <button class="btn btn-primary btn-bg bgCustom px-2 fw-bold addProduct" type="button">+ Add
                         Product</button>
@@ -23,7 +34,7 @@
         </div>
     </div>
     <div>
-        <div id="PartialProductDiv" class="mt-2"></div>
+        <div id="PartialProductDiv" class="mt-4"></div>
     </div>
 </div>
 
@@ -39,7 +50,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="catModal"></div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary savebtn" onclick="AddProductFunction()">Add</button>
+                    <button type="submit" class="btn btn-primary savebtn" onclick="AddProductFunction()">Save</button>
                     <button type="button" class="btn btn-outline-primary resetBtn">Cancel</button>
                 </div>
             </form>
@@ -51,17 +62,14 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header d-flex flex-row">
-                <h5 class="modal-title" id="deleteModalLabel">
-                    Delete Category
-                </h5>
-                <button type="button" class="close btn text-end" data-bs-dismiss="modal" aria-label="Close">&times;
-                </button>
+            <div class="modal-header d-flex">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Product</h5>
+                <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
             </div>
             <div class=" d-flex flex-column modal-body align-items-center justify-content-center">
                 <img src="~/images/warning.png" alt="" class="img-fluid" style="width: 50px;">
                 <div class="deleteContent">Are you sure you want to delete this
-                    category?
+                    Product?
                 </div>
             </div>
             <div class="modal-footer">
@@ -79,16 +87,33 @@
         loadProducts();
 
         $("#searchCInput").on("keyup", function () {
-            loadProducts(searchString);
+            loadProducts();
+        });
+
+        $("#categoryLabel").on("change", function () {
+            loadProducts();
+        });
+        $("#statusLabel").on("change", function () {
+            loadProducts();
         });
     });
 
-    function loadProducts(){
+    function loadProducts() {
+        let pageSize = $('#pageSize').val();
+        let pageNumber = $('#pageNumber').val();
         let searchString = $("#searchCInput").val();
+        let category = $("#categoryLabel").val();
+        let status = $("#statusLabel").val();
         $.ajax({
             url: '/Vendor/Product/ProductList',
             type: 'GET',
-            data: { searchString: searchString },
+            data: {
+                statusFilter: status,
+                searchString: searchString,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                category: category
+            },
             success: function (response) {
                 $('#PartialProductDiv').html(response);
             },
@@ -99,6 +124,7 @@
     }
 
     let galleryFiles = [];
+    let removedGalleryImages = [];
     $(".addProduct").click(function () {
         let productId = 0;
         $.ajax({
@@ -109,7 +135,6 @@
                 $('#addProductsModal').modal('show');
                 $('.catModal').html(data);
                 $('.modal-title').text('Add New Product');
-                $('.savebtn').text('Add');
             },
             error: function () {
                 alert("Failed to Add Product");
@@ -117,7 +142,7 @@
         });
     });
 
-    $(document).on("click",".editProduct",function () {
+    $(document).on("click", ".editProduct", function () {
         let productId = $(this).data("id");
         $.ajax({
             url: "/Vendor/Product/ProductModal",
@@ -127,7 +152,6 @@
                 $('#addProductsModal').modal('show');
                 $('.catModal').html(data);
                 $('.modal-title').text('Edit Product');
-                $('.savebtn').text('Update');
             },
             error: function () {
                 alert("Failed to Edit Product");
@@ -147,10 +171,17 @@
         }
         console.log(imageFile);
 
-        for(let i = 0; i < galleryFiles.length; i++) {
+        for (let i = 0; i < galleryFiles.length; i++) {
             formData.append("GalleryImages", galleryFiles[i]);
         }
-        console.log(galleryFiles);
+
+        @* galleryFiles.forEach(file => {
+            if (typeof file === 'object') {
+                formData.append("GalleryImages", file);
+            }
+        }); *@
+
+            console.log(galleryFiles);
 
         var result = $('.addCatForm').valid();
 
@@ -176,4 +207,33 @@
             });
         }
     }
+
+    $(document).on("click", ".viewProduct", function () {
+        let productId = $(this).data("id");
+        window.location.href = `/Vendor/Product/ProductDetails?productId=${productId}`;
+    });
+
+    $(document).on("click", ".deleteProduct", function () {
+        let productId = $(this).data("id");
+        $('#deleteModal').modal('show');
+
+        $("#finaldelete").click(function () {
+            $.ajax({
+                url: "/Vendor/Product/DeleteProduct",
+                type: "GET",
+                data: { productId: productId },
+                success: function (data) {
+                    if (data.status === "NotFound") {
+                        toastr.error("Product does not found or already been deleted");
+                    }
+                    else {
+                        $('#PartialProductDiv').html(response);
+                    }
+                },
+                error: function () {
+                    alert("Failed to Delete Product");
+                }
+            });
+        });
+    });
 </script>

@@ -1,6 +1,8 @@
 @model DAL.ViewModels.ProductViewModel
 <div class="p-2 align-items-center">
     <input type="text" id="bookId" asp-for="Id" hidden>
+    <input type="hidden" name="RemovedImages" id="removedGalleryImages" />
+
     <div class="form-floating mb-2">
         <input type="text" class="form-control" id="nameLabel" asp-for="Name">
         <span asp-validation-for="@Model.Name" class="text-danger"></span>
@@ -62,6 +64,7 @@
 <script>
     $(document).ready(function () {
         galleryFiles = @Html.Raw(Json.Serialize(Model.ProductImages));
+        $("#removedGalleryImages").val("");
         console.log("Initial gallery files:", galleryFiles);
     });
 
@@ -126,6 +129,8 @@
 
     $(document).on("click", ".remove-gallery", function () {
         const img = $(this).data("img");
+        removedGalleryImages.push(img);
+        $("#removedGalleryImages").val(removedGalleryImages.join(','));
         galleryFiles = galleryFiles.filter(file => file != img);
         $(this).parent().remove();
     });

@@ -1,56 +1,146 @@
 @using DAL.Models
 @model DAL.ViewModels.ProductViewModel
-<style>
-    .card-title {
-        font-size: 1.1rem;
-    }
 
-    .card-footer button {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+<style>
+    .shortText {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 300px;
+        display: inline-block;
     }
 </style>
+<div class="orderList">
+    <input type="hidden" id="pageSize" asp-for="PageSize">
+    <input type="hidden" id="pageNumber" asp-for="PageNumber">
 
-<div class="row" id="productGrid">
-    @if (Model != null && Model.Products.Count > 0)
-    {
-        foreach (var item in Model.Products)
-        {
-            <div class="col-md-3 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <img src="~/images/@item.CoverImage" class="card-img-top" alt="Product Image"
-                        style="height: 300px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title text-truncate">@item.Name</h5>
-                        <p class="card-text small text-muted">@item.Category.Name</p>
-                        <p class="card-text fw-semibold">₹ @item.Price</p>
-                        <span class="badge @(item.Status == ProductStatus.Approved ? "bg-success" : "bg-secondary")">
-                            @item.Status
-                        </span>
-                    </div>
-                    <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-                        <button class="btn btn-sm btn-outline-primary editProduct" data-id="@item.Id">
-                            <i class="fa fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger deleteProduct" data-id="@item.Id">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-secondary viewProduct" data-id="@item.Id">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="col-12 text-center">
-            <p>No products found.</p>
+    <div class="p-3 shadow bg-white">
+        <div class="table-responsive">
+            <table class="table align-middle justify-content-center p-3" id="tablemod">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="modif">
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr asp-for="@item.Id" data-id="@item.Id">
+                            <td class="text-secondary d-felx">
+                                @if (@item.CoverImage != null)
+                                {
+                                    <img src="~/images/@item.CoverImage" class="img-fluid me-1 rounded-circle"
+                                        style="height: 50px; width: 50px;">
+                                }
+                                else
+                                {
+                                    <img src="~/images/shopping-trolley.jpg" class="img-fluid me-1 rounded-circle"
+                                        style="height: 50px; width: 50px;">
+                                }
+                                <span class="shortText">
+                                    @item.Name
+                                </span>
+                            </td>
+                            <td class="text-secondary">@item.Category.Name</td>
+                            <td class="text-secondary">@item.Price.ToString("C")</td>
+                            <td class="text-secondary">
+                                <span
+                                    class="badge @(item.Status == ProductStatus.Approved ? "bg-success" : "bg-secondary")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>
+                                <i data-id="@item.Id" class="fa fa-edit m-2 txtCustom editProduct"
+                                    title="Edit Product" style="cursor: pointer;"></i>
+                                <i data-id="@item.Id" class="fa fa-trash txtCustom m-2 deleteProduct"
+                                    title="Delete Product" style="cursor: pointer;"></i>
+                                <i data-id="@item.Id" class="fa fa-eye txtCustom m-2 viewProduct" title="View Product"
+                                    style="cursor: pointer;"></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-    }
+
+        <div class="d-flex flex-row justify-content-end align-items-center">
+            <div class="me-2">Items per page</div>
+            <div class="me-2">
+                <select class="form-select pageSizeSelect" onchange="changePageSize()">
+                    <option value="2" selected="@(Model.PageSize == 2 ? "selected" : null)">2</option>
+                    <option value="5" selected="@(Model.PageSize == 5 ? "selected" : null)">5</option>
+                    <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+                    <option value="15" selected="@(Model.PageSize == 15 ? "selected" : null)">15</option>
+                </select>
+            </div>
+            <div class="me-2">Showing @((Model.PageNumber - 1) * Model.PageSize + 1) -
+                @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalRecords)) of
+                @Model.TotalRecords</div>
+            <div class="me-2"><a class="btn btn-default prevBtn @(Model.PageNumber <= 1 ? "disabled" : "")">
+                    <i class="fa-solid fa-angle-left "></i>
+                </a>
+                <a class="btn btn-default nextBtn @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
+                    <i class="fa-solid fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<script>
+
+    function changePageSize() {
+        let pageSizeNew = $('.pageSizeSelect').val();
+        $('#pageSize').val(pageSizeNew);
+        $('#pageNumber').val(1);
+        loadProducts();
+    }
+    $('.prevBtn').click(function () {
+        let currentPage = parseInt($('#pageNumber').val());
+        if (currentPage > 1) {
+            $('#pageNumber').val(currentPage - 1);
+            loadProducts();
+        }
+    });
+
+    $('.nextBtn').click(function () {
+        let currentPage = parseInt($('#pageNumber').val());
+        let totalPages = @(Model.TotalPages);
+
+        if (currentPage < totalPages) {
+            $('#pageNumber').val(currentPage + 1);
+            loadProducts();
+        }
+    });
+
+    function loadProducts() {
+        let pageSize = $('#pageSize').val();
+        let pageNumber = $('#pageNumber').val();
+        let searchString = $("#searchCInput").val();
+        let category = $("#categoryLabel").val();
+        let status = $("#statusLabel").val();
+
+        $.ajax({
+            url: '/Vendor/Product/ProductList',
+            type: "GET",
+            data: {
+                statusFilter: status,
+                searchString: searchString,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                category: category
+            },
+            success: function (data) {
+                $('#PartialProductDiv').html(data);
+            },
+            error: function () {
+                toastr.error("Failed to load products");
+            }
+        });
+    }
+</script>
