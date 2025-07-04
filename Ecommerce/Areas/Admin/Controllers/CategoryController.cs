@@ -59,9 +59,7 @@ public class CategoryController : Controller
         else
         {
             if (categoryImage != null)
-            {
                 catToAdd.CoverImage = _imgService.SaveImageService(categoryImage);
-            }
 
             var user = _userService.GetUserById(_userManager.GetUserId(User));
             if (catToAdd.Id == 0)
@@ -70,9 +68,8 @@ public class CategoryController : Controller
                 catToAdd.UpdatedBy = user.UserId;
             }
             else
-            {
                 catToAdd.UpdatedBy = user.UserId;
-            }
+
             _catService.UpSertCategory(catToAdd);
             return RedirectToAction("CatList", "Category", new { area = "Admin" });
         }
@@ -83,9 +80,7 @@ public class CategoryController : Controller
         {
             var user = _userService.GetUserById(_userManager.GetUserId(User));
             if (user == null)
-            {
                 return Ok(new { status = AjaxError.UnAuthorized.ToString() });
-            }
             else
             {
                 Category category = new()
@@ -95,17 +90,14 @@ public class CategoryController : Controller
                     ModifiedBy = user.UserId,
                 };
                 if (isActive != null)
-                {
                     category.IsActive = isActive.Value;
-                }
+
                 _catService.DeleteCategoryService(category);
                 return RedirectToAction("CatList", "Category");
             }
         }
         else
-        {
             return Ok(new { status = AjaxError.ValidationError.ToString() });
-        }
     }
     public JsonResult CheckDuplicateName(string name, int Id)
     {

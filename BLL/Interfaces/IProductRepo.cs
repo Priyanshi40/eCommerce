@@ -9,4 +9,5 @@ public interface IProductRepo
     Product UpSertProduct(Product product);
     bool DeleteProduct(Product product);
     bool ApproveProduct(Product product);
+    int AddProductToWishlist(int productId, int userId);
 }

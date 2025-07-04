@@ -14,9 +14,16 @@ public class VendorService : IVendorService
         _vendorRepo = vendorRepo;
         _imgService = imgService;
     }
-    public VendorDetailsViewModel GetVendorsService(string searchString, int pageNumber, int pageSize)
+    public VendorDetailsViewModel GetVendorsService(string searchString,string statusFilter, int pageNumber, int pageSize)
     {
         IQueryable<VendorDetails> queyableVendors = _vendorRepo.GetQueryableVendors(searchString);
+        if(!string.IsNullOrEmpty(statusFilter))
+        {
+            if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
+            {
+                queyableVendors = queyableVendors.Where(p => p.UserNavigation.Status == parsedStatus);
+            }
+        }
         VendorDetailsViewModel vendorsView = new();
         if (queyableVendors != null)
         {
@@ -48,5 +55,9 @@ public class VendorService : IVendorService
             vendorDetails.DocumentType = (VendorDocuments)vendorData.DocumentType;
         }
         return vendorDetails;
+    }
+    public bool ApproveVendor(UserDetails vendor)
+    {
+        return _vendorRepo.ApproveVendor(vendor);
     }
 }

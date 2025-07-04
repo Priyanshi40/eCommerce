@@ -19,6 +19,7 @@ public class Product
     public string? Description { get; set; }
     public decimal Price { get; set; }
     public ProductStatus Status { get; set; }
+    public string? AdminComment { get; set; }
     public string? CoverImage { get; set; }
     public bool IsDeleted { get; set; }
     public int CreatedBy { get; set; }

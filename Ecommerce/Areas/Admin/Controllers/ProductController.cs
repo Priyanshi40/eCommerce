@@ -17,7 +17,7 @@ public class ProductController : Controller
     private readonly IUserService _userService;
     private readonly ICategoryService _catService;
     private readonly IProductService _proService;
-    public ProductController(UserManager<IdentityUser> userManager,IUserService userService, ICategoryService catService, IProductService proService)
+    public ProductController(UserManager<IdentityUser> userManager, IUserService userService, ICategoryService catService, IProductService proService)
     {
         _userManager = userManager;
         _userService = userService;
@@ -29,9 +29,9 @@ public class ProductController : Controller
         ViewBag.Category = new SelectList(_catService.GetCategoriesService(), "Id", "Name");
         return View();
     }
-    public IActionResult ProductList(string searchString,int category,string statusFilter, int pageNumber = 1, int pageSize = 5)
+    public IActionResult ProductList(string searchString, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
-        ProductViewModel productsView = _proService.GetProductsService(searchString,category,statusFilter, pageNumber, pageSize);
+        ProductViewModel productsView = _proService.GetProductsService(searchString, category, statusFilter, pageNumber, pageSize);
         return PartialView("_productList", productsView);
     }
     public IActionResult ProductDetails(int productId)
@@ -39,22 +39,18 @@ public class ProductController : Controller
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View("ProductDetails", productDetails);
     }
-    public IActionResult ApproveProduct(int productId)
+    public IActionResult ProductAction([FromBody] Product productToModify)
     {
-        if (productId <= 0)
-        {
+        if (productToModify.Id <= 0)
             return Ok(new { status = AjaxError.NotFound.ToString() });
-        }
-        Product product = new()
-        {
-            Id = productId,
-            ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId
-        };
-        var result = _proService.ApproveProduct(product);
+
+        productToModify.ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+
+        var result = _proService.ApproveProduct(productToModify);
+
         if (!result)
-        {
             return Ok(new { status = AjaxError.NotFound.ToString() });
-        }
+
         return RedirectToAction("ProductList");
     }
 }

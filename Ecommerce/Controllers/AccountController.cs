@@ -24,10 +24,14 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        if (User.Identity != null && User.Identity.IsAuthenticated)
+        if (User.Identity != null && User.Identity.IsAuthenticated && _signInManager.IsSignedIn(User))
         {
-            var userRole = _userManager.GetRolesAsync(_userManager.GetUserAsync(User).Result).Result;
-            return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user != null)
+            {
+                var userRole = _userManager.GetRolesAsync(user).Result;
+                return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
+            }
         }
         return View();
     }
@@ -41,10 +45,10 @@ public class AccountController : Controller
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded && User.Identity.IsAuthenticated)
+                if (result.Succeeded)
                 {
                     TempData["Message"] = "Welcome" + model.Email;
-                    var userRole = _userManager.GetRolesAsync(_userManager.GetUserAsync(User).Result).Result;
+                    var userRole = _userManager.GetRolesAsync(user).Result;
                     return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
                 }
             }

@@ -53,18 +53,6 @@ html {
   right: 15px;
 }
 
-.myContainer {
-  width: 600px;
-  margin: 200px auto;
-  overflow: hidden;
-  backdrop-filter: blur(12px);
-  padding: 30px;
-}
-
-.myBody {
-  padding: 10px 20px;
-}
-
 .sidebar {
   background-color: #ffffff;
   top: 56px;
@@ -160,4 +148,18 @@ html {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+}
+
+.container{
+  max-width: 1900px !important;
+  padding : 40px 0 0 0;
+}
+
+.content{
+  margin: 40px;
+  min-height: calc(100vh - 120px);
+}
+.dash{
+  padding: 40px;
+  min-height: calc(100vh - 120px);
 }

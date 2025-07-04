@@ -52,15 +52,12 @@ public class ProductController : Controller
     public IActionResult AddProduct(ProductViewModel productToAdd, IFormFile? ProductImage, string? RemovedImages)
     {
         if (!ModelState.IsValid)
-        {
             return Ok(new { status = AjaxError.ValidationError.ToString() });
-        }
+
         else
         {
             if (ProductImage != null)
-            {
                 productToAdd.CoverImage = _imgService.SaveImageService(ProductImage);
-            }
 
             productToAdd.RemovedImages = RemovedImages?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -71,9 +68,8 @@ public class ProductController : Controller
                 productToAdd.ModifiedBy = user.UserId;
             }
             else
-            {
                 productToAdd.ModifiedBy = user.UserId;
-            }
+
             _proService.UpSertProduct(productToAdd);
             return RedirectToAction("ProductList", "Product");
         }
@@ -81,20 +77,19 @@ public class ProductController : Controller
     public IActionResult DeleteProduct(int productId)
     {
         if (productId <= 0)
-        {
             return Ok(new { status = AjaxError.NotFound.ToString() });
-        }
 
         Product product = new()
         {
             Id = productId,
             ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId
         };
+
         var isDeleted = _proService.DeleteProduct(product);
+
         if (!isDeleted)
-        {
             return Ok(new { status = AjaxError.NotFound.ToString() });
-        }
+
         return RedirectToAction("ProductList", "Product");
     }
 }

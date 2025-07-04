@@ -71,14 +71,12 @@ app.MapAreaControllerRoute(
     areaName: "User",
     pattern: "User/{controller=Home}/{action=Index}/{id?}");
 
-
-
 // app.MapControllerRoute(
 //     name: "Area",
 //     pattern: "{area:exists}/{controller=Account}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

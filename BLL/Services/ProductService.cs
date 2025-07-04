@@ -16,10 +16,10 @@ public class ProductService : IProductService
         _productRepo = productRepo;
         _imgService = imgService;
     }
-    public ProductViewModel GetProductsService(string searchString,int category,string statusFilter,int pageNumber, int pageSize,int userId = 0)
+    public ProductViewModel GetProductsService(string searchString, int category, string statusFilter, int pageNumber, int pageSize, int userId = 0)
     {
         IQueryable<Product> queyableProducts = _productRepo.GetQueryableProducts(searchString);
-        if(userId > 0)
+        if (userId > 0)
         {
             queyableProducts = queyableProducts.Where(p => p.CreatedBy == userId);
         }
@@ -118,17 +118,6 @@ public class ProductService : IProductService
             newProduct.Id = product.Id;
         }
         ;
-        // if (product.GalleryImages != null && product.GalleryImages.Count > 0)
-        // {
-        //     foreach (var image in product.GalleryImages)
-        //     {
-        //         var savedImage = _imgService.SaveImageService(image);
-        //         newProduct.Images.Add(new ProductImage
-        //         {
-        //             ImageUrl = savedImage,
-        //         });
-        //     }
-        // }
         return _productRepo.UpSertProduct(newProduct);
     }
     public bool DeleteProduct(Product product)
@@ -138,5 +127,14 @@ public class ProductService : IProductService
     public bool ApproveProduct(Product product)
     {
         return _productRepo.ApproveProduct(product);
+    }
+
+    public int AddProductToWishlist(int productId, int userId)
+    {
+        if (productId <= 0 || userId <= 0)
+        {
+            return -1;
+        }
+        return _productRepo.AddProductToWishlist(productId, userId);
     }
 }

@@ -1,7 +1,7 @@
+@using DAL.Models
 @using DAL.ViewModels
-@model DAL.ViewModels.CategoryViewModel
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Vendors";
     ViewData["showLayout"] = true;
 }
 
@@ -18,7 +18,7 @@
             </div>
             <div class="col-lg my-1 me-2">
                 <select class="form-select fs-6" aria-label="Default select example" id="StatusLabel"
-                    asp-items="@(new SelectList(Enum.GetNames(typeof(CategoryStatus))))">
+                    asp-items="@(new SelectList(Enum.GetNames(typeof(ProductStatus))))">
                     <option value="All" selected>All Status</option>
                 </select>
             </div>
@@ -45,26 +45,21 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header d-flex flex-row">
-                <h5 class="modal-title" id="deleteModalLabel">
-                    Delete Category
-                </h5>
-                <button type="button" class="close btn text-end" data-bs-dismiss="modal" aria-label="Close">&times;
-                </button>
+                <h5 class="modal-title text-secondary fw-semibold" id="exampleModalLabel">Reject Reason</h5>
+                <button type="button" class="btn-close text-end" data-bs-dismiss="modal"></button>
             </div>
             <div class=" d-flex flex-column modal-body align-items-center justify-content-center">
-                <img src="~/images/warning.png" alt="" class="img-fluid" style="width: 50px;">
-                <div class="deleteContent">Are you sure you want to delete this
-                    category?
-                </div>
+                <textarea class="col-md-11 ps-1 rounded-2" rows="4" cols="50" id="comments"
+                    placeholder="Leave your comment here for rejecting this vendor..."></textarea>
             </div>
             <div class="modal-footer">
-                <a type="submit" class="btn btn-primary" id="finaldelete">Yes</a>
-                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">No</button>
+                <button type="submit" class="btn btn-primary saveComment">Save</button>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
@@ -72,13 +67,7 @@
 
 
 <script>
-
-    let catAction = {
-        categoryId: null,
-        isActive: null,
-        isDelete: false,
-        checkbox: null
-    };
+    let vendor = {};
 
     $(document).ready(function () {
         $.ajax({
@@ -97,8 +86,6 @@
     });
 
     $('#StatusLabel').change(function () {
-        let status = $(this).val();
-        $('#StatusLabel').data('search', status);
         loadVendors();
     });
 
@@ -118,72 +105,74 @@
         });
     });
 
-    $(document).on("change", '.isActive', function () {
-        event.preventDefault();
-        event.stopPropagation();
-
-        catAction.categoryId = $(this).closest('tr').data('id');
-        catAction.isActive = $(this).prop('checked');
-        catAction.isDelete = false;
-
-        if (!catAction.isActive) {
-            $(this).prop('checked', true);
-            $('.modal-title').text('Update Category');
-            $('.deleteContent').text('Are you sure you want to deactivate this category?');
-            $('#deleteModal').modal('show');
-            catAction.checkbox = $(this);
-
-        } else {
-            $('#finaldelete').click();
+    $(document).on("click", '.rejectVendor', function () {
+        status = $(this).closest('td').attr('data-status');
+        if( status != "Pending") {
+            return;
         }
-    });
+        let vendorId = $(this).data("id");
+        vendor = {
+            Id: vendorId,
+            Status: 2,
+        }
+        $('#commentModal').modal('show');
 
-
-    $('#finaldelete').click(function () {
-
-        $.ajax({
-            url: '/Admin/Category/DeleteCategory',
-            type: 'POST',
-            data: { catId: catAction.categoryId, isActive: catAction.isActive, isDelete: catAction.isDelete },
-            success: function (response) {
-                console.log(catAction);
-                if (response.status == "ValidationError") {
-                    toastr.error("Category not found or already deleted !!");
-                    return;
-                }
-                if (response.status == "UnAuthorized") {
-                    toastr.error("You are not authorized to delete this category !!");
-                    return;
-                } else {
-                    if (catAction.isActive != null) {
-                        toastr.success("Category updated successfully!!");
-                    }
-                    else if (catAction.isDelete)
-                        toastr.success("Category deleted successfully!!");
-
-                    $('#PartialCatDiv').html(response);
-                    $('#deleteModal').modal('hide');
-
-                    if (catAction.checkbox) {
-                        $(catAction.checkbox).prop('checked', false);
-                        catAction = {
-                            categoryId: null,
-                            isActive: null,
-                            isDelete: false,
-                            checkboxRef: null
-                        };
-                    }
-                }
-            },
-            error: function () {
-                toastr.error("Failed to update category");
+        $('.saveComment').on("click", function () {
+            let comment = $('#comments').val();
+            if (comment.trim() == "") {
+                toastr.error("Please enter a comment for rejecting the vendor!!");
+                return;
             }
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You are rejecting this vendor!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, reject it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    vendor.AdminComment = comment;
+                    vendorAction(vendor);
+                    $('#commentModal').modal('hide');
+                }
+            });
         });
     });
 
-    $(document).on("click", '.resetBtn', function () {
-        $(".addCatForm")[0].reset();
+    $(document).on("click", '.approveVendor', function () {
+        status = $(this).closest('td').attr('data-status');
+        if( status != "Pending") {
+            return;
+        }
+        let vendorId = $(this).data("id");
+        vendor = {
+            Id: vendorId,
+            Status: 1,
+        }
+        console.log(vendor);
+        vendorAction(vendor);
     });
 
+    function vendorAction(vendor) {
+        $.ajax({
+            url: "/Admin/Vendor/VendorAction",
+            type: "POST",
+            data: JSON.stringify(vendor),
+            contentType: "application/json",
+            success: function (data) {
+                if (data.status === "NotFound") {
+                    toastr.error("Vendor not found");
+                } else {
+                    $("#PartialVendorDiv").html(data);
+                    vendor = {};
+                }
+            },
+            error: function () {
+                alert("Failed to Approve/Reject Vendor");
+            }
+        });
+    }
 
 </script>

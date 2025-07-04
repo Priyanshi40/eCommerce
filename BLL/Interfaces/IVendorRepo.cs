@@ -6,4 +6,5 @@ public interface IVendorRepo
 {
     IQueryable<VendorDetails> GetQueryableVendors(string? searchString);
     VendorDetails? GetVendorDetails(int vendorId);
+    bool ApproveVendor(UserDetails user);
 }

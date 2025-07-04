@@ -1,5 +1,7 @@
 @model DAL.ViewModels.VendorDetailsViewModel
+@using DAL.Models
 @using DAL.ViewModels;
+
 <div class="orderList">
     <input type="hidden" id="pageSize" asp-for="PageSize">
     <input type="hidden" id="pageNumber" asp-for="PageNumber">
@@ -12,27 +14,30 @@
                         <th>Business Name</th>
                         <th>Email</th>
                         <th>Full Name</th>
-                        <th>IsApproved</th>
+                        <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody class="modif">
                     @foreach (var item in Model.Vendors)
                     {
+                        var status = Enum.GetName(typeof(ProductStatus), item.UserNavigation.Status);
                         <tr asp-for="@item.Id" data-id="@item.Id">
                             <td class="text-secondary">@item.BusinessName</td>
                             <td class="text-secondary">@item.UserNavigation.IUser.Email</td>
                             <td class="text-secondary">@item.UserNavigation.Firstname @item.UserNavigation.Lastname</td>
                             <td class="text-secondary">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input fs-5 isActive" title="@(item.UserNavigation.IsApproved? "Approved" : "Pending")" data-placement="right" type="checkbox" asp-for="@item.UserNavigation.IsApproved">
-                                </div>
+                                <span
+                                    class="badge @(status == DAL.Models.ProductStatus.Approved.ToString() ? "bg-success" : status == DAL.Models.ProductStatus.Rejected.ToString() ? "bg-danger" : "bg-warning")">@item.UserNavigation.Status</span>
                             </td>
-                            <td>
-                                <i data-id="@item.Id" class="bi bi-check-circle txtCustom m-2 approveVendor"></i>
-                                <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor"></i>
-                                <i data-id="@item.Id" class="fa-regular fa-eye passIcon txtCustom m-2 viewDetailsbtn"></i>
-                                
+                            <td data-status="@status">
+                                <i data-id="@item.UserNavigation.Id" class="bi bi-check-circle txtCustom m-2 approveVendor"
+                                    style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");" title="Approve Vendor"></i>
+                                <i data-id="@item.UserNavigation.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor"
+                                    style="cursor: @(status != "Pending" ?"not-allowed" : "pointer");" title="Reject Vendor"></i>
+                                <i data-id="@item.Id" class="fa-regular fa-eye passIcon txtCustom m-2 viewDetailsbtn"
+                                    style="cursor: pointer;" title="View Vendor Details"></i>
+
                             </td>
                         </tr>
                     }
@@ -95,7 +100,7 @@
     function loadVendors() {
         let pageSize = $('#pageSize').val();
         let pageNumber = $('#pageNumber').val();
-        let status = $('#StatusLabel').data('search');
+        let status = $('#StatusLabel').val();
         let valueToSearch = $('#searchCInput').data('search');
 
         $.ajax({

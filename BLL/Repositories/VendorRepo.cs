@@ -27,4 +27,32 @@ public class VendorRepo : IVendorRepo
             .Include(p => p.UserNavigation.IUser)
             .FirstOrDefault(v => v.Id == vendorId);
     }
+    public bool ApproveVendor(UserDetails user)
+    {
+        try
+        {
+            UserDetails oldUser = _context.UserDetails.FirstOrDefault(b => b.Id == user.Id);
+            if (oldUser != null)
+            {
+                oldUser.Status = user.Status;
+                oldUser.AdminComment = user.AdminComment;
+                if (user.Status == ProductStatus.Approved)
+                {
+                    oldUser.IsApproved = true;
+                }
+                _context.UserDetails.Update(oldUser);
+                _context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error While Approving/Rejecting Vendor: {ex.Message}");
+            throw;
+        }
+    }
 }

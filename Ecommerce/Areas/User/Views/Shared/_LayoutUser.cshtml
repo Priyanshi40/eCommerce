@@ -22,11 +22,16 @@
     <nav class="navbar navbar-expand-lg bgCustom w-100 p-2 position-fixed">
         <div class="container-fluid">
             <div class="d-flex align-items-center justify-content-start">
-                @* <img src="~/images/online-shop.png" alt="" style="width: 40px;"> *@
                 <b class="text-white ps-2 fs-5">ECOMMERCE SYSTEM</b>
             </div>
             <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
-                <li class="nav-item dropdown">
+                <li class="mx-3">
+                    <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal">
+                        <i class="fa-regular fa-heart text-muted"></i> 
+                        <span class="fw-semibold text-muted">Wishlist</span>
+                    </button>
+                </li>
+                <li>
                     <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal"><i
                             class="fa-solid fa-right-from-bracket text-muted"></i> <span
                             class="fw-semibold text-muted">Logout</span></button>

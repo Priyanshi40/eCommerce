@@ -98,7 +98,7 @@ public class ProductRepo : IProductRepo
             {
                 oldProduct.ModifiedBy = product.ModifiedBy;
                 oldProduct.ModifiedAt = DateTime.Now;
-                oldProduct.Status = ProductStatus.Approved;
+                oldProduct.Status = product.Status;
 
                 _context.Product.Update(oldProduct);
                 _context.SaveChanges();
@@ -111,7 +111,34 @@ public class ProductRepo : IProductRepo
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error While Approving Product: {ex.Message}");
+            Console.WriteLine($"Error While Approving/Rejecting Product: {ex.Message}");
+            throw;
+        }
+    }
+
+    public int AddProductToWishlist(int productId, int userId)
+    {
+        try
+        {
+            var wishlistItem = _context.Wishlist.FirstOrDefault(w => w.ProductId == productId && w.UserId == userId);
+            if (wishlistItem == null)
+            {
+                wishlistItem = new Wishlist
+                {
+                    ProductId = productId,
+                    UserId = userId,
+                };
+                _context.Wishlist.Add(wishlistItem);
+            }
+            else
+                _context.Wishlist.Remove(wishlistItem);
+
+            _context.SaveChanges();
+            return wishlistItem.Product.CategoryId;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error handling product to wishlist: {ex.Message}");
             throw;
         }
     }
