@@ -31,5 +31,7 @@ public class Product
     [ForeignKey(nameof(CategoryId))]
     public virtual Category Category { get; set; }
     public ICollection<ProductImage>? Images { get; set; }
+    public ICollection<Wishlist>? WishList { get; set; }
+
 
 }

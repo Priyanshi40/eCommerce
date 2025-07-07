@@ -34,4 +34,25 @@
         <input id="lname" asp-for="DocumentType" class="form-control" type="text">
         <label for="nameLabel">Document Type</label>
     </div>
+    @if (!string.IsNullOrEmpty(Model.FileUrl))
+    {
+        var filePath = Url.Content($"~/vendor_docs/{Model.FileUrl}");
+        var ext = System.IO.Path.GetExtension(Model.FileUrl).ToLower();
+
+        <div class="view-doc text-center">
+            @if (ext == ".jpg" || ext == ".png" || ext == ".jpeg")
+            {
+                <img src="@filePath" alt="Vendor Document" class="img-fluid" style="max-height: 300px;" />
+            }
+            else if (ext == ".pdf")
+            {
+                <embed src="@filePath" width="100%" height="400px" type="application/pdf" />
+            }
+            else
+            {
+                <p class="text-muted">Unsupported file format.</p>
+            }
+            <a href="@filePath" class="btn btn-primary mt-2" download>Download</a>
+        </div>
+    }
 </div>

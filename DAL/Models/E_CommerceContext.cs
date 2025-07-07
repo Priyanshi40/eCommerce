@@ -22,6 +22,8 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<Product> Product { get; set; }
     public virtual DbSet<ProductImage> ProductImage { get; set; }
     public virtual DbSet<Wishlist> Wishlist { get; set; }
+    public virtual DbSet<Cart> Cart { get; set; }
+    public virtual DbSet<CartItem> CartItem { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Host=localhost; Database=Ecommerce; Username=postgres;password=Tatva@123");
 
@@ -88,6 +90,31 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<OrderProduct>(entity =>
         {
             entity.ToTable("OrderProduct");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("CreatedAt");
+            entity.Property(e => e.ModifiedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("ModifiedAt");
+        });
+
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.ToTable("Cart");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("CreatedAt");
+            entity.Property(e => e.ModifiedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("ModifiedAt");
+        });
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.ToTable("CartItem");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")

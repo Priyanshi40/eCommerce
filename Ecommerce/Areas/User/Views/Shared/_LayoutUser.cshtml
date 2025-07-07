@@ -25,11 +25,15 @@
                 <b class="text-white ps-2 fs-5">ECOMMERCE SYSTEM</b>
             </div>
             <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
-                <li class="mx-3">
-                    <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal">
-                        <i class="fa-regular fa-heart text-muted"></i> 
-                        <span class="fw-semibold text-muted">Wishlist</span>
-                    </button>
+                <li class="nav-item mx-4">
+                    <a class="nav-link position-relative" href="/User/Wishlist/Index">
+                        <i class="fa-solid fa-heart"></i>
+                        <span id="wishlistCount"
+                            class="position-absolute top-0 badge rounded-pill bg-danger">
+                            @* class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> *@
+                            0
+                        </span>
+                    </a>
                 </li>
                 <li>
                     <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal"><i
@@ -73,6 +77,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/User/Wishlist/GetWishlistCount',
+                type: 'GET',
+                success: function (res) {
+                    $('#wishlistCount').text(res.count);
+                    if (res.count === 0) {
+                        $('#wishlistCount').hide();
+                    }
+                }
+            });
+        });
+    </script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -53,6 +53,7 @@ public class VendorService : IVendorService
             vendorDetails.GSTNumber = vendorData.GSTNumber;
             vendorDetails.BusinessAddress = vendorData.BusinessAddress;
             vendorDetails.DocumentType = (VendorDocuments)vendorData.DocumentType;
+            vendorDetails.FileUrl = vendorData.FileUrl;
         }
         return vendorDetails;
     }

@@ -10,11 +10,6 @@
             </select>
             <span asp-validation-for="DocumentType" class="text-danger"></span>
         </div>
-        @* <div class="col-md ps-3 mb-2 d-none newCatDiv">
-            <input type="text" class="form-control fs-6" id="city" asp-for="DocumentName"
-                placeholder="Document Name">
-            <span asp-validation-for="DocumentName" class="text-danger"></span>
-        </div> *@
     </div>
 </div>
 
@@ -26,16 +21,28 @@
                 <i class="fa-solid fa-cloud-arrow-up"></i>
                 <p class="mb-0 imgTitle">Upload Document</p>
             </div>
-            <input type="file" id="file-input-thing" style="width: 0;" asp-for="FileUrl" accept="document/*">
+            <input type="file" id="file-input-thing" style="width: 0;" asp-for="File" accept=".pdf,.jpg,.jpeg,.png">
         </div>
     </div>
     <span asp-validation-for="FileUrl" class="text-danger"></span>
 </div>
 
 
+<script>
+    $(document).on('change', '#file-input-thing', function () {
+        const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+        const file = this.files[0];
 
+        if (file) {
+            const fileName = file.name.toLowerCase();
+            const extension = fileName.split('.').pop();
 
+            if (!allowedExtensions.includes(extension)) {
+                $(this).val('');
 
+                toastr.error("Only PDF and image files (JPG, JPEG, PNG) are allowed.");
+            }
+        }
+    });
 
-
-
+</script>

@@ -32,6 +32,8 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IVendorRepo, VendorRepo>();
 builder.Services.AddScoped<IVendorService, VendorService>();
+builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
 
 builder.Services.AddScoped<ImageService>();
 

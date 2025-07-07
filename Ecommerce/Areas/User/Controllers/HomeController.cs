@@ -36,6 +36,7 @@ public class HomeController : Controller
     }
     public IActionResult ProductByCategory(string searchString, int category, int pageNumber = 1, int pageSize = 5)
     {
+        ViewBag.CurrentUser = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
         ProductViewModel productsView = _proService.GetProductsService(searchString, category, ProductStatus.Approved.ToString(), pageNumber, pageSize);
         return View("ProductList", productsView);
     }
@@ -43,12 +44,6 @@ public class HomeController : Controller
     {
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View(productDetails);
-    }
-    public IActionResult AddToWishlist(int productId)
-    {
-        var userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
-        int catId = _proService.AddProductToWishlist(productId, userId);
-        return RedirectToAction("ProductByCategory", new { category = catId });
     }
     public async Task<IActionResult> Logout()
     {

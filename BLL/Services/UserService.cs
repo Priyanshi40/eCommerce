@@ -52,8 +52,8 @@ public class UserService : IUserService
             {
                 BusinessName = vendor.BusinessName,
                 BusinessAddress = vendor.BusinessAddress,
-                // DocumentType = vendor.DocumentType,
-                DocumentType = (int)Enum.Parse(typeof(VendorDocuments), vendor.DocumentType.ToString()),
+                DocumentType = (int)vendor.DocumentType,
+                // DocumentType = (int)Enum.Parse(typeof(VendorDocuments), vendor.DocumentType.ToString()),
                 // DocumentName = vendor.DocumentName??vendor.DocumentType.ToString(),
                 GSTNumber = vendor.GSTNumber,
                 FileUrl = vendor.FileUrl,

@@ -55,8 +55,8 @@
                                 </span>
                             </td>
                             <td data-status="@status">
-                                <i  class="bi bi-check-circle m-2 txtCustom approveProduct"
-                                    title="Approve Product" style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");"></i>
+                                <i data-id="@item.Id" class="bi bi-check-circle m-2 txtCustom approveProduct"
+                                    title="Approve Product" style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");" ></i>
                                 <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectProduct"
                                     title="Reject Product" style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");"></i>
                                 <i data-id="@item.Id" class="fa fa-eye txtCustom m-2 viewProduct" title="View Product"

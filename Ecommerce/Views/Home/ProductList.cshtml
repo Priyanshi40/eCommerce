@@ -50,7 +50,7 @@
                                 <p class="card-text small text-muted">@item.Category.Name</p>
                                 <p class="card-text fw-semibold">@item.Price.ToString("C")</p>
                             </div>
-                            <div class="card-footer bg-white border-top-0 d-flex justify-content-end">
+                            <div class="card-footer wishList bg-white border-top-0 d-flex justify-content-end">
                                 <div><i class="fa-regular fa-heart fs-5 txtCustom"></i></div>
                             </div>
                         </div>
@@ -71,5 +71,9 @@
     $('.card').click(function () {
         var productId = $(this).data('id');
         window.location.href = '/Home/ProductDetails/?productId=' + productId;
+    });
+    $('.wishList').click(function () {
+        event.stopPropagation();
+        window.location.href = '/Account/Login';
     });
 </script>

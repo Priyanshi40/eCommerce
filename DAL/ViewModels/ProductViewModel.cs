@@ -35,4 +35,5 @@ public class ProductViewModel
     public List<IFormFile>? GalleryImages { get; set; }
     public List<string> ProductImages { get; set; } = new List<string>();
     public List<string> RemovedImages { get; set; } = new List<string>();
+    public List<int> WishlistProductIds { get; set; } = new List<int>();
 }

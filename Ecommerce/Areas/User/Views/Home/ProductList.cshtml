@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Product";
     ViewData["showLayout"] = true;
+    int currentUser = ViewBag.CurrentUser;
 }
 
 <style>
@@ -51,7 +52,9 @@
                                 <p class="card-text fw-semibold">@item.Price.ToString("C")</p>
                             </div>
                             <div class="card-footer bg-white border-top-0 d-flex justify-content-end">
-                                <div class="wishList"><i class="fa-regular fa-heart fs-5 txtCustom"></i></div>
+                                <div class="wishList"><i
+                                        class="fa-heart fs-5 txtCustom @(item.WishList.Any(w => w.UserId == currentUser) ? "fa-solid text-danger" : "fa-regular")"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -75,16 +78,32 @@
     });
 
     $('.wishList').click(function () {
-        var productId = $(this).closest('card').data('id');
+        event.stopPropagation();
+
+        var icon = $(this).find('i');
+
+        var productId = $(this).closest('.card').attr('data-id');
+        console.log(productId);
         $.ajax({
-            url: '/User/Home/AddToWishlist',
+            url: '/User/Wishlist/ToggleWishlist',
             type: 'POST',
             data: { productId: productId },
             success: function (response) {
-                if (response.success) {
-                    alert('Product added to wishlist successfully!');
+                debugger
+                console.log(response);
+                if (response.status == "Success") {
+                    if (icon.hasClass('fa-regular')) {
+                        icon.removeClass('fa-regular').addClass('fa-solid text-danger');
+                    } else {
+                        icon.removeClass('fa-solid text-danger').addClass('fa-regular');
+                    }
+                    toastr.success("Product wishlist updated.");
+                } else if (response.status == "UnAuthorized") {
+                    toastr.error("Please log in to use wishlist.");
+                } else if (response.status == "NotFound") {
+                    toastr.error("Product not found !!");
                 } else {
-                    alert('Failed to add product to wishlist.');
+                    toastr.error("Something went wrong.");
                 }
             },
             error: function () {

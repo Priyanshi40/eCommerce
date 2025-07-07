@@ -13,7 +13,7 @@ public class ProductRepo : IProductRepo
     }
     public IQueryable<Product> GetQueryableProducts(string? searchString)
     {
-        var products = _context.Product.Include(p => p.Category).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+        var products = _context.Product.Include(p => p.Category).Include(p => p.WishList).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
         {

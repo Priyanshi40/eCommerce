@@ -146,11 +146,14 @@
     });
 
     $(document).on("click", '.approveProduct', function () {
+        debugger
+
         status = $(this).closest('td').attr('data-status');
         if( status != "Pending") {
             return;
         }
         let productId = $(this).data("id");
+        console.log(productId);
         product = {
             Id: productId,
             Status: 1,

@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using BLL.Utility;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -11,13 +12,13 @@ public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserService _userService;
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, RoleManager<IdentityRole> roleManager, IUserService userService)
+    private readonly ImageService _imgService;
+    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ImageService imgService, IUserService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _roleManager = roleManager;
+        _imgService = imgService;
         _userService = userService;
     }
 
@@ -104,7 +105,7 @@ public class AccountController : Controller
     }
     public IActionResult VendorDocuments(VendorViewModel model)
     {
-        foreach (var key in new[] { "FileUrl", "DocumentType" })
+        foreach (var key in new[] { "File", "DocumentType" })
         {
             ModelState.Remove(key);
         }
@@ -153,6 +154,7 @@ public class AccountController : Controller
                 IdentityUserId = user.Id,
             };
             var newUserId = _userService.AddUser(user1);
+            var savedFile = _imgService.SaveImageService(model.File, "vendor_docs");
 
             var fullVendor = new VendorViewModel
             {
@@ -160,8 +162,8 @@ public class AccountController : Controller
                 BusinessName = step2.BusinessName,
                 BusinessAddress = step2.BusinessAddress,
                 GSTNumber = step2.GSTNumber,
-                DocumentType = step2.DocumentType,
-                FileUrl = model.FileUrl
+                DocumentType = model.DocumentType,
+                FileUrl = savedFile
             };
 
             _userService.AddVendor(fullVendor);

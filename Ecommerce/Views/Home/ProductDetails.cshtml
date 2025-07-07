@@ -64,7 +64,7 @@
             <h4 class="text-success">₹ @Model.Price.ToString("N2")</h4>
             <p>@Model.Description</p>
             <hr />
-            <button class="btn btn-outline-secondary "><i class="fa-solid fa-cart-plus m-2"></i>Add to Cart</button>
+            <button class="btn btn-outline-secondary addCart"><i class="fa-solid fa-cart-plus m-2"></i>Add to Cart</button>
             <button class="btn btn-primary"><i class="fa-solid fa-bolt-lightning m-2"></i>Buy Now</button>
         </div>
     </div>
@@ -80,6 +80,26 @@
             document.querySelectorAll(".thumbImg").forEach(t => t.classList.remove("active"));
             img.classList.add("active");
         }
-        @* $("#mainImage").elevateZoom(); *@
+        $('.addCart').on('click', function () {
+            var cartDetails = @Html.Raw(Json.Serialize(Model));
+            console.log(cartDetails); 
+
+            const productId = '@Model.Id';
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.success) {
+                        alert('Product added to cart successfully!');
+                    } else {
+                        alert('Failed to add product to cart.');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while adding the product to the cart.');
+                }
+            });
+        });
     </script>
 }

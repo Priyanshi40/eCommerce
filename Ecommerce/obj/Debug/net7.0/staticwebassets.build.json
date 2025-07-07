@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "VgsEZ4gnrjaey8mL1BVyzZAA2N197ayDRrat2YLXC4o=",
+  "Hash": "bry3EOGyW3RleHr9RCBaZFzbbUPsxlElzl0F/oKw6p0=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -1375,6 +1375,57 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\email_verified.png"
+    },
+    {
+      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrac1.jpg",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "images/fasttrac1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\fasttrac1.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrac2.jpg",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "images/fasttrac2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\fasttrac2.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrackCover.jpg",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "images/fasttrackCover.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\fasttrackCover.jpg"
     },
     {
       "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\grocery.jpg",
@@ -2752,6 +2803,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\vendor_docs\\OrderDetails (20).pdf",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "vendor_docs/OrderDetails (20).pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\vendor_docs\\OrderDetails (20).pdf"
     }
   ]
 }

@@ -93,6 +93,18 @@
       "PackagePath": "staticwebassets\\images\\email_verified.png"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrac1.jpg",
+      "PackagePath": "staticwebassets\\images\\fasttrac1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrac2.jpg",
+      "PackagePath": "staticwebassets\\images\\fasttrac2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\fasttrackCover.jpg",
+      "PackagePath": "staticwebassets\\images\\fasttrackCover.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\grocery.jpg",
       "PackagePath": "staticwebassets\\images\\grocery.jpg"
     },
@@ -399,6 +411,10 @@
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\lib\\jquery\\dist\\jquery.min.map",
       "PackagePath": "staticwebassets\\lib\\jquery\\dist\\jquery.min.map"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\vendor_docs\\OrderDetails (20).pdf",
+      "PackagePath": "staticwebassets\\vendor_docs\\OrderDetails (20).pdf"
     },
     {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Ecommerce.Microsoft.AspNetCore.StaticWebAssets.props",
