@@ -13,13 +13,15 @@ public class AccountController : Controller
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IUserService _userService;
+    private readonly IVendorService _vendorService;
     private readonly ImageService _imgService;
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ImageService imgService, IUserService userService)
+    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ImageService imgService, IUserService userService, IVendorService vendorService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _imgService = imgService;
         _userService = userService;
+        _vendorService = vendorService;
     }
 
     [HttpGet]
@@ -166,7 +168,7 @@ public class AccountController : Controller
                 FileUrl = savedFile
             };
 
-            _userService.AddVendor(fullVendor);
+            _vendorService.AddVendor(fullVendor);
 
             await _userManager.AddToRoleAsync(user, "Vendor");
             await _signInManager.SignInAsync(user, isPersistent: false);

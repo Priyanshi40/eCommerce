@@ -1,0 +1,124 @@
+@model DAL.ViewModels.UserViewModel
+@using DAL.Models
+@using DAL.ViewModels;
+
+<style>
+    .hidden{
+        opacity: 0;
+    }
+    .visible{
+        cursor: pointer;
+    }
+</style>
+<div class="orderList">
+    <input type="hidden" id="pageSize" asp-for="PageSize">
+    <input type="hidden" id="pageNumber" asp-for="PageNumber">
+
+    <div class="p-3 shadow bg-white">
+        <div class="table-responsive">
+            <table class="table align-middle justify-content-center p-3" id="tablemod">
+                <thead>
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="modif">
+                    @foreach (var item in Model.Users)
+                    {
+                        var status = Enum.GetName(typeof(ProductStatus), item.Status);
+                        <tr asp-for="@item.Id" data-id="@item.Id">
+                            <td class="text-secondary">@item.Firstname @item.Lastname</td>
+                            <td class="text-secondary">@item.IUser.Email</td>
+                            <td class="text-secondary">
+                                <span
+                                    class="badge @(status == DAL.Models.ProductStatus.Approved.ToString() ? "bg-success" : status == DAL.Models.ProductStatus.Rejected.ToString() ? "bg-danger" : "bg-warning")">@item.Status</span>
+                            </td>
+                            <td data-status="@status">
+                                <i data-id="@item.Id" class="bi bi-check-circle txtCustom m-2 approveVendor @(status=="Approved" ? "hidden" : "visible")" title="Approve Customer"></i>
+                                <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor @(status=="Rejected" ? "hidden" : "visible")" title="Reject Customer"></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex flex-row justify-content-end align-items-center">
+            <div class="me-2">Items per page</div>
+            <div class="me-2">
+                <select class="form-select pageSizeSelect" onchange="changePageSize()">
+                    <option value="2" selected="@(Model.PageSize == 2 ? "selected" : null)">2</option>
+                    <option value="5" selected="@(Model.PageSize == 5 ? "selected" : null)">5</option>
+                    <option value="10" selected="@(Model.PageSize == 10 ? "selected" : null)">10</option>
+                    <option value="15" selected="@(Model.PageSize == 15 ? "selected" : null)">15</option>
+                </select>
+            </div>
+            <div class="me-2">Showing @((Model.PageNumber - 1) * Model.PageSize + 1) -
+                @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalRecords)) of
+                @Model.TotalRecords</div>
+            <div class="me-2"><a class="btn btn-default prevBtn @(Model.PageNumber <= 1 ? "disabled" : "")">
+                    <i class="fa-solid fa-angle-left "></i>
+                </a>
+                <a class="btn btn-default nextBtn @(Model.PageNumber >= Model.TotalPages ? "disabled" : "")">
+                    <i class="fa-solid fa-angle-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_Toastr" />
+
+<script>
+
+    function changePageSize() {
+        let pageSizeNew = $('.pageSizeSelect').val();
+        $('#pageSize').val(pageSizeNew);
+        $('#pageNumber').val(1);
+        loadUsers();
+    }
+    $('.prevBtn').click(function () {
+        let currentPage = parseInt($('#pageNumber').val());
+        if (currentPage > 1) {
+            $('#pageNumber').val(currentPage - 1);
+            loadUsers();
+        }
+    });
+
+    $('.nextBtn').click(function () {
+        let currentPage = parseInt($('#pageNumber').val());
+        let totalPages = @(Model.TotalPages);
+
+        if (currentPage < totalPages) {
+            $('#pageNumber').val(currentPage + 1);
+            loadUsers();
+        }
+    });
+
+    function loadUsers() {
+        let pageSize = $('#pageSize').val();
+        let pageNumber = $('#pageNumber').val();
+        let status = $('#StatusLabel').val();
+        let valueToSearch = $('#searchCInput').data('search');
+
+        $.ajax({
+            url: "/Admin/Customer/CustomerList",
+            type: "GET",
+            data: {
+                statusFilter: status,
+                searchString: valueToSearch,
+                pageSize: pageSize,
+                pageNumber: pageNumber
+            },
+            success: function (data) {
+                $('#PartialVendorDiv').html(data);
+            },
+            error: function () {
+                alert("Failed to load Vendors.");
+            }
+        });
+    }
+</script>

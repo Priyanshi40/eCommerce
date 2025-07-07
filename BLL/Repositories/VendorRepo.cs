@@ -51,7 +51,37 @@ public class VendorRepo : IVendorRepo
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error While Approving/Rejecting Vendor: {ex.Message}");
+            Console.WriteLine($"Error While Approving/Rejecting User: {ex.Message}");
+            throw;
+        }
+    }
+    public void AddVendor(VendorDetails vendor)
+    {
+        try
+        {
+            if (vendor != null)
+            {
+                VendorDetails oldVendor = _context.VendorDetails.FirstOrDefault(u => u.Id == vendor.Id || u.VendorId == vendor.VendorId);
+                if (oldVendor != null)
+                {
+                    oldVendor.BusinessName = vendor.BusinessName ?? oldVendor.BusinessName;
+                    oldVendor.BusinessAddress = vendor.BusinessAddress ?? oldVendor.BusinessAddress;
+                    oldVendor.GSTNumber = vendor.GSTNumber ?? oldVendor.GSTNumber;
+                    oldVendor.DocumentType = vendor.DocumentType != 0 ? vendor.DocumentType : oldVendor.DocumentType;
+                    oldVendor.FileUrl = vendor.FileUrl ?? oldVendor.FileUrl;
+                    _context.VendorDetails.Update(oldVendor);
+                }
+                else
+                {
+                    _context.VendorDetails.Add(vendor);
+                }
+                _context.SaveChanges();
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error Adding Vendor: {ex.Message}");
             throw;
         }
     }

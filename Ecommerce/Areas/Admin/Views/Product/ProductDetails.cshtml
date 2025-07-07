@@ -61,7 +61,7 @@
             <h3>@Model.Name</h3>
             <p class="text-muted">@Model.CategoryName</p>
             <h4 class="text-success">₹ @Model.Price</h4>
-            <p>@Model.Description</p>
+            <p>@Html.Raw(Model.Description)</p>
 
             <span class="badge @(Model.Status == ProductStatus.Approved ? "bg-success" : "bg-secondary")">
                 @Model.Status

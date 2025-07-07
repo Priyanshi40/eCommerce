@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using BLL.Interfaces;
 using DAL.Models;
 using DAL.ViewModels;
@@ -24,6 +25,31 @@ public class UserService : IUserService
         };
         return userDetail;
     }
+
+    public async Task<UserViewModel> GetUsersService(string searchString, string statusFilter, int pageNumber, int pageSize)
+    {
+        IQueryable<UserDetails> queyableUsers = await _userRepo.GetQueryableUsers(searchString);
+        if (!string.IsNullOrEmpty(statusFilter))
+        {
+            if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
+            {
+                queyableUsers = queyableUsers.Where(p => p.Status == parsedStatus);
+            }
+        }
+        UserViewModel vendorsView = new();
+        if (queyableUsers != null)
+        {
+            int totalRecords = queyableUsers.Count();
+            var paginatedUsers = queyableUsers.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            vendorsView.Users = paginatedUsers;
+            vendorsView.PageSize = pageSize;
+            vendorsView.PageNumber = pageNumber;
+            vendorsView.TotalRecords = totalRecords;
+            vendorsView.TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+        }
+        return vendorsView;
+    }
     public int AddUser(RegisterViewModel user)
     {
         if (user != null)
@@ -43,30 +69,4 @@ public class UserService : IUserService
         }
         return -1;
     }
-
-    public void AddVendor(VendorViewModel vendor)
-    {
-        if (vendor != null)
-        {
-            VendorDetails newVendor = new()
-            {
-                BusinessName = vendor.BusinessName,
-                BusinessAddress = vendor.BusinessAddress,
-                DocumentType = (int)vendor.DocumentType,
-                // DocumentType = (int)Enum.Parse(typeof(VendorDocuments), vendor.DocumentType.ToString()),
-                // DocumentName = vendor.DocumentName??vendor.DocumentType.ToString(),
-                GSTNumber = vendor.GSTNumber,
-                FileUrl = vendor.FileUrl,
-                VendorId = vendor.VendorId
-            };
-
-            if (vendor.Id != 0)
-            {
-                newVendor.Id = vendor.Id;
-            }
-
-            _userRepo.AddVendor(newVendor); 
-        }
-    }
-
 }

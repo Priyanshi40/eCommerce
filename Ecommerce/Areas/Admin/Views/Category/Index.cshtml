@@ -6,27 +6,25 @@
 }
 
 <div class="content dash p-4 m-4" id="content">
-    <div class="d-flex flex-wrap justify-content-between align-items-center ">
+    <div class="d-flex flex-wrap justify-content-center align-items-center ">
         <h2 class="col-lg-6 txtCustom">Categories</h2>
 
-        <div class="d-flex justify-content-end align-items-center flex-wrap">
-            <div class="col-lg my-1 position-relative me-2 searchItem">
-                <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
-                    name="searchString" id="searchCInput">
-                <button type="button" class="position-absolute searchInput btn btn-link"><i
-                        class="fa-solid fa-search"></i></button>
-            </div>
-            <div class="col-lg my-1 me-2">
-                <select class="form-select fs-6" aria-label="Default select example" id="StatusLabel"
-                    asp-items="@(new SelectList(Enum.GetNames(typeof(CategoryStatus))))">
-                    <option value="All" selected>All Status</option>
-                </select>
-            </div>
-            <div><a class="col-lg my-1 pe-0">
-                    <button class="btn btn-primary btn-bg bgCustom px-2 fw-bold addCategory" type="button">+ Add
-                        Category</button>
-                </a></div>
+        <div class="col-lg-3 my-1 position-relative me-2 searchItem">
+            <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
+                name="searchString" id="searchCInput">
+            <button type="button" class="position-absolute searchInput btn btn-link"><i
+                    class="fa-solid fa-search"></i></button>
         </div>
+        <div class="col-lg my-1 me-2">
+            <select class="form-select fs-6" aria-label="Default select example" id="StatusLabel"
+                asp-items="@(new SelectList(Enum.GetNames(typeof(CategoryStatus))))">
+                <option value="" selected>All Status</option>
+            </select>
+        </div>
+        <div><a class="col-lg my-1 pe-0">
+                <button class="btn btn-primary btn-bg bgCustom px-2 fw-bold addCategory" type="button">+ Add
+                    Category</button>
+            </a></div>
     </div>
     <div>
         <div id="PartialCatDiv" class="mt-4"></div>
@@ -158,7 +156,7 @@
                     toastr.error("You are not authorized to delete this category !!");
                     return;
                 } else {
-                    if (catAction.isActive!=null) {
+                    if (catAction.isActive != null) {
                         toastr.success("Category updated successfully!!");
                     }
                     else if (catAction.isDelete)

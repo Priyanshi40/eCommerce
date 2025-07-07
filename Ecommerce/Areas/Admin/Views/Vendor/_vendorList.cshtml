@@ -2,6 +2,14 @@
 @using DAL.Models
 @using DAL.ViewModels;
 
+<style>
+    .hidden{
+        opacity: 0;
+    }
+    .visible{
+        cursor: pointer;
+    }
+</style>
 <div class="orderList">
     <input type="hidden" id="pageSize" asp-for="PageSize">
     <input type="hidden" id="pageNumber" asp-for="PageNumber">
@@ -31,10 +39,8 @@
                                     class="badge @(status == DAL.Models.ProductStatus.Approved.ToString() ? "bg-success" : status == DAL.Models.ProductStatus.Rejected.ToString() ? "bg-danger" : "bg-warning")">@item.UserNavigation.Status</span>
                             </td>
                             <td data-status="@status">
-                                <i data-id="@item.UserNavigation.Id" class="bi bi-check-circle txtCustom m-2 approveVendor"
-                                    style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");" title="Approve Vendor"></i>
-                                <i data-id="@item.UserNavigation.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor"
-                                    style="cursor: @(status != "Pending" ?"not-allowed" : "pointer");" title="Reject Vendor"></i>
+                                <i data-id="@item.UserNavigation.Id" class="bi bi-check-circle txtCustom m-2 approveVendor @(status=="Approved" ? "hidden" : "visible")" title="Approve Vendor"></i>
+                                <i data-id="@item.UserNavigation.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor @(status=="Rejected" ? "hidden" : "visible")" title="Reject Vendor"></i>
                                 <i data-id="@item.Id" class="fa-regular fa-eye passIcon txtCustom m-2 viewDetailsbtn"
                                     style="cursor: pointer;" title="View Vendor Details"></i>
 

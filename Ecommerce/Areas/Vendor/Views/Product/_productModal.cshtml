@@ -8,11 +8,15 @@
         <span asp-validation-for="@Model.Name" class="text-danger"></span>
         <label for="nameLabel">Name</label>
     </div>
-    <div class="form-floating mb-2">
-        <textarea class="form-control" id="floatingTextarea" asp-for="Description"></textarea>
-        <span asp-validation-for="@Model.Description" class="text-danger"></span>
-        <label for="floatingTextarea">Description</label>
+    <div class="mb-2 ps-0">
+        <textarea id="productDescription" asp-for="Description">
+            @(Html.Raw(Model.Description))
+        </textarea>
     </div>
+    @* <div class="form-floating mb-2">
+        <textarea class="form-control" id="floatingTextarea" asp-for="Description"></textarea>
+        <label for="floatingTextarea">Description</label>
+    </div> *@
     <div class="form-floating mb-2">
         <select class="form-select fs-6" asp-for="CategoryId" id="cityLabel" asp-items="ViewBag.Category">
             <option value="">Select Category</option>
@@ -68,6 +72,30 @@
         console.log("Initial gallery files:", galleryFiles);
     });
 
+    function initTinyMCE() {
+        tinymce.remove();
+        tinymce.init({
+            selector: 'textarea',
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Jul 21, 2025:
+                'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown', 'importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+                { value: 'First.Name', title: 'First Name' },
+                { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+        });
+    }
+
+    initTinyMCE();
+
     $("#file-input-thing").change(function (event) {
         var fileName = this.files[0];
         if (fileName) {
@@ -99,7 +127,7 @@
         @* container.html(""); *@
 
             files.forEach((file, index) => {
-                if(galleryFiles.includes(file)) {
+                if (galleryFiles.includes(file)) {
                     toastr.warning("File already exists in gallery");
                     return;
                 }

@@ -20,13 +20,13 @@ public class CategoryService : ICategoryService
     {
 
         var catQuery = _catRepo.GetCategoryQueryable(searchString);
-        if (statusFilter != "All" && !string.IsNullOrEmpty(statusFilter))
+        if (!string.IsNullOrEmpty(statusFilter))
         {
-            if (statusFilter == "Active")
+            if (statusFilter == CategoryStatus.Active.ToString())
             {
                 catQuery = catQuery.Where(u => u.IsActive);
             }
-            else if(statusFilter == "Deactive")
+            else if(statusFilter == CategoryStatus.Deactive.ToString())
             {
                 catQuery = catQuery.Where(u => !u.IsActive);
             }

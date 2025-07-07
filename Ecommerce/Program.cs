@@ -3,6 +3,7 @@ using BLL.Repositories;
 using BLL.Services;
 using BLL.Utility;
 using DAL.Models;
+using Ecommerce.Hubs;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,11 +35,16 @@ builder.Services.AddScoped<IVendorRepo, VendorRepo>();
 builder.Services.AddScoped<IVendorService, VendorService>();
 builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
+builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddScoped<ImageService>();
 
+builder.Services.AddSingleton<NotificationHub>();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -56,7 +62,10 @@ app.UseSession();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.MapAreaControllerRoute(
     name: "Admin",
@@ -72,10 +81,6 @@ app.MapAreaControllerRoute(
     name: "User",
     areaName: "User",
     pattern: "User/{controller=Home}/{action=Index}/{id?}");
-
-// app.MapControllerRoute(
-//     name: "Area",
-//     pattern: "{area:exists}/{controller=Account}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

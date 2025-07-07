@@ -1,11 +1,14 @@
+using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Utility;
 using DAL.Models;
 using DAL.ViewModels;
+using Ecommerce.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Ecommerce.Areas.Vendor.Controllers;
 
@@ -14,28 +17,34 @@ namespace Ecommerce.Areas.Vendor.Controllers;
 public class ProductController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserService _userService;
     private readonly ICategoryService _catService;
     public readonly ImageService _imgService;
     private readonly IProductService _proService;
+    private readonly IHubContext<NotificationHub> _hubContext;
+    private readonly INotificationService _noficationService;
 
-    public ProductController(UserManager<IdentityUser> userManager, ICategoryService catService, IUserService userService, ImageService imgService, IProductService proService)
+    public ProductController(UserManager<IdentityUser> userManager, ICategoryService catService, IUserService userService, ImageService imgService, IProductService proService, RoleManager<IdentityRole> roleManager, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
     {
         _userManager = userManager;
         _catService = catService;
         _userService = userService;
         _imgService = imgService;
         _proService = proService;
+        _roleManager = roleManager;
+        _hubContext = hubContext;
+        _noficationService = noficationService;
     }
     public IActionResult Index()
     {
         ViewBag.Category = new SelectList(_catService.GetCategoriesService(), "Id", "Name");
         return View();
     }
-    public IActionResult ProductList(string searchString,int category,string statusFilter, int pageNumber = 1, int pageSize = 5)
+    public IActionResult ProductList(string searchString, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
         var user = _userService.GetUserById(_userManager.GetUserId(User));
-        ProductViewModel productsView = _proService.GetProductsService(searchString,category,statusFilter, pageNumber, pageSize,user.UserId);
+        ProductViewModel productsView = _proService.GetProductsService(searchString, category, statusFilter, pageNumber, pageSize, user.UserId);
         return PartialView("_productList", productsView);
     }
     public IActionResult ProductModal(int productId)
@@ -49,7 +58,7 @@ public class ProductController : Controller
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View("ProductDetails", productDetails);
     }
-    public IActionResult AddProduct(ProductViewModel productToAdd, IFormFile? ProductImage, string? RemovedImages)
+    public async Task<IActionResult> AddProduct(ProductViewModel productToAdd, IFormFile? ProductImage, string? RemovedImages)
     {
         if (!ModelState.IsValid)
             return Ok(new { status = AjaxError.ValidationError.ToString() });
@@ -71,6 +80,22 @@ public class ProductController : Controller
                 productToAdd.ModifiedBy = user.UserId;
 
             _proService.UpSertProduct(productToAdd);
+
+            // if (productToAdd.Id == 0)
+            // {
+                var notification = new Notification
+                {
+                    Message = "New Product has been added!!",
+                    IsRead = false,
+                    UserId = "ba76242f-8d36-4bf7-ab67-b8bdcb0552d3",
+                };
+                _noficationService.AddNotification(notification);
+                if (_hubContext?.Clients != null && !string.IsNullOrEmpty(notification.UserId))
+                {
+                    await _hubContext.Clients.User(notification.UserId).SendAsync("ReceiveNotification", notification.Message);
+                }
+            // }
+
             return RedirectToAction("ProductList", "Product");
         }
     }

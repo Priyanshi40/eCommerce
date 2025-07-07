@@ -24,6 +24,7 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<Wishlist> Wishlist { get; set; }
     public virtual DbSet<Cart> Cart { get; set; }
     public virtual DbSet<CartItem> CartItem { get; set; }
+    public virtual DbSet<Notification> Notification { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Host=localhost; Database=Ecommerce; Username=postgres;password=Tatva@123");
 
@@ -115,6 +116,19 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<CartItem>(entity =>
         {
             entity.ToTable("CartItem");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("CreatedAt");
+            entity.Property(e => e.ModifiedAt)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("ModifiedAt");
+        });
+        
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.ToTable("Notification");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")

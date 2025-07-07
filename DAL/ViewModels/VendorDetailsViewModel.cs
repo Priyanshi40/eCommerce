@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using DAL.Models;
 
 namespace DAL.ViewModels;

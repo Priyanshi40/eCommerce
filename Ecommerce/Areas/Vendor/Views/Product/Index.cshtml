@@ -6,23 +6,23 @@
 }
 
 <div class="content dash p-4 m-4" id="content">
-    <div class="d-flex flex-wrap justify-content-between align-items-center ">
-        <h2 class="col-lg-6 txtCustom">My Products</h2>
+    <div class="d-flex flex-wrap justify-content-center align-items-center ">
+        <h2 class="col-lg txtCustom">My Products</h2>
 
-        <div class="d-flex justify-content-end align-items-center flex-wrap">
-            <div class="col-lg my-1 position-relative me-2 searchItem">
+        @* <div class="d-flex  align-items-center flex-wrap"> *@
+            <div class="col-lg-3 col-md-6  my-1 position-relative me-2 searchItem">
                 <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
                     name="searchString" id="searchCInput">
                 <button type="button" class="position-absolute searchInput btn btn-link"><i
                         class="fa-solid fa-search"></i></button>
             </div>
-            <div class="col-lg my-1 me-2">
+            <div class="col-lg-2 my-1 me-2">
                 <select class="form-select fs-6" aria-label="Default select example" id="statusLabel"
                     asp-items="@(new SelectList(Enum.GetNames(typeof(ProductStatus))))">
                     <option value="" selected>All Status</option>
                 </select>
             </div>
-            <div class="me-2">
+            <div class="col-lg-2 my-1 me-2">
                 <select class="form-select fs-6" id="categoryLabel" asp-items="ViewBag.Category">
                     <option value="-1">All Category</option>
                 </select>
@@ -31,7 +31,7 @@
                     <button class="btn btn-primary btn-bg bgCustom px-2 fw-bold addProduct" type="button">+ Add
                         Product</button>
                 </a></div>
-        </div>
+        @* </div> *@
     </div>
     <div>
         <div id="PartialProductDiv" class="mt-4"></div>
@@ -162,6 +162,8 @@
     function AddProductFunction() {
         event.preventDefault();
         event.stopPropagation();
+
+        tinymce.triggerSave();
 
         let formData = new FormData($(".addCatForm")[0]);
 

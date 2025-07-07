@@ -62,7 +62,7 @@
             <h3>@Model.Name</h3>
             <p class="text-muted">@Model.CategoryName</p>
             <h4 class="text-success">₹ @Model.Price.ToString("N2")</h4>
-            <p>@Model.Description</p>
+            <p>@Html.Raw(Model.Description)</p>
             <hr />
             <button class="btn btn-outline-secondary addCart"><i class="fa-solid fa-cart-plus m-2"></i>Add to Cart</button>
             <button class="btn btn-primary"><i class="fa-solid fa-bolt-lightning m-2"></i>Buy Now</button>
@@ -82,15 +82,17 @@
         }
         $('.addCart').on('click', function () {
             var cartDetails = @Html.Raw(Json.Serialize(Model));
+            console.log("cartDetails"); 
             console.log(cartDetails); 
 
             const productId = '@Model.Id';
             $.ajax({
-                url: '/Cart/AddToCart',
+                url: '/Home/AddToCart',
                 type: 'POST',
-                data: { productId: productId },
+                data: JSON.stringify(cartDetails),
+                contentType: "application/json",
                 success: function (response) {
-                    if (response.success) {
+                    if (response.success == "Success") {
                         alert('Product added to cart successfully!');
                     } else {
                         alert('Failed to add product to cart.');

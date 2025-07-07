@@ -9,6 +9,12 @@
         max-width: 300px;
         display: inline-block;
     }
+    .hidden{
+        opacity: 0;
+    }
+    .visible{
+        cursor: pointer;
+    }
 </style>
 <div class="orderList">
     <input type="hidden" id="pageSize" asp-for="PageSize">
@@ -55,10 +61,8 @@
                                 </span>
                             </td>
                             <td data-status="@status">
-                                <i data-id="@item.Id" class="bi bi-check-circle m-2 txtCustom approveProduct"
-                                    title="Approve Product" style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");" ></i>
-                                <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectProduct"
-                                    title="Reject Product" style="cursor:@(status != "Pending" ?"not-allowed" : "pointer");"></i>
+                                <i data-id="@item.Id" class="bi bi-check-circle m-2 txtCustom approveProduct @(status=="Approved" ? "hidden" : "visible")" title="Approve Product"></i>
+                                <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectProduct @(status=="Rejected" ? "hidden" : "visible")" title="Reject Product"></i>
                                 <i data-id="@item.Id" class="fa fa-eye txtCustom m-2 viewProduct" title="View Product"
                                     style="cursor: pointer;"></i>
                             </td>

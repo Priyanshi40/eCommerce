@@ -1,7 +1,6 @@
 
 
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
 
 namespace DAL.ViewModels;
 public class RegisterViewModel
@@ -26,14 +25,10 @@ public class RegisterViewModel
     [Display(Name = "Last Name")]
     public string? LastName { get; set; }
 
-    // [MaxLength(50, ErrorMessage = "User Name can't be longer than 50 characters")]
-    // public string? UserName { get; set; }
-
     [Required(AllowEmptyStrings = false, ErrorMessage = "Phone Number is required")]
     [RegularExpression(@"^\d{10}$", ErrorMessage = "Enter a valid 10-digit phone number")]
     public string Phone { get; set; } = null!;
     public int UserId { get; set; }
     public string? IdentityUserId { get; set; }
-    // public string? ProfileImage { get; set; }
 
 }

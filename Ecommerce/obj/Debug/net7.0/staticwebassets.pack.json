@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\images\\Amazon_Appliances.jpg"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Apple16Cover.jpg",
+      "PackagePath": "staticwebassets\\images\\Apple16Cover.jpg"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Default_pfp.svg.png",
       "PackagePath": "staticwebassets\\images\\Default_pfp.svg.png"
     },
@@ -37,8 +41,84 @@
       "PackagePath": "staticwebassets\\images\\IPhone15_3.jpg"
     },
     {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Panasonic.jpg",
+      "PackagePath": "staticwebassets\\images\\Panasonic.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Panasonic1.jpg",
+      "PackagePath": "staticwebassets\\images\\Panasonic1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Panasonic2.jpg",
+      "PackagePath": "staticwebassets\\images\\Panasonic2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Panasonic3.jpg",
+      "PackagePath": "staticwebassets\\images\\Panasonic3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Samsung1.jpg",
+      "PackagePath": "staticwebassets\\images\\Samsung1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Samsung2.jpg",
+      "PackagePath": "staticwebassets\\images\\Samsung2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\Samsung3.jpg",
+      "PackagePath": "staticwebassets\\images\\Samsung3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\SamsungCover.jpg",
+      "PackagePath": "staticwebassets\\images\\SamsungCover.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\SamsungTV1.jpg",
+      "PackagePath": "staticwebassets\\images\\SamsungTV1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\SamsungTV2.jpg",
+      "PackagePath": "staticwebassets\\images\\SamsungTV2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\SamsungTV3.jpg",
+      "PackagePath": "staticwebassets\\images\\SamsungTV3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\SamsungTVCover.jfif",
+      "PackagePath": "staticwebassets\\images\\SamsungTVCover.jfif"
+    },
+    {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\admin.png",
       "PackagePath": "staticwebassets\\images\\admin.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\apple123.png",
+      "PackagePath": "staticwebassets\\images\\apple123.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\apple161.jfif",
+      "PackagePath": "staticwebassets\\images\\apple161.jfif"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\apple162.jpg",
+      "PackagePath": "staticwebassets\\images\\apple162.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\aqua1.jpg",
+      "PackagePath": "staticwebassets\\images\\aqua1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\aqua2.jpg",
+      "PackagePath": "staticwebassets\\images\\aqua2.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\aqua3.jpg",
+      "PackagePath": "staticwebassets\\images\\aqua3.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\aquaCover.jpg",
+      "PackagePath": "staticwebassets\\images\\aquaCover.jpg"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\banner1.jpg",
@@ -115,6 +195,18 @@
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\kitchenware.jfif",
       "PackagePath": "staticwebassets\\images\\kitchenware.jfif"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\lg1.jpg",
+      "PackagePath": "staticwebassets\\images\\lg1.jpg"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\lg2.png",
+      "PackagePath": "staticwebassets\\images\\lg2.png"
+    },
+    {
+      "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\lgCover.jfif",
+      "PackagePath": "staticwebassets\\images\\lgCover.jfif"
     },
     {
       "Id": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\images\\no_data.png",

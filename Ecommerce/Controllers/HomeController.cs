@@ -9,14 +9,10 @@ namespace Ecommerce.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
     private readonly ICategoryService _catService;
     private readonly IProductService _proService;
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ICategoryService catService, IProductService proService)
+    public HomeController(ICategoryService catService, IProductService proService)
     {
-        _userManager = userManager;
-        _signInManager = signInManager;
         _catService = catService;
         _proService = proService;
     }
@@ -39,13 +35,15 @@ public class HomeController : Controller
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View("ProductDetails", productDetails);
     }
+
+    [HttpPost]
     public IActionResult AddToCart([FromBody] CartViewModel addToCart)
     {
         var cart = HttpContext.Session.GetString("Cart") ?? "";
         if (!string.IsNullOrEmpty(cart))
         {
             var cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
-            if (cartItems.Any(c => c.ProductId == addToCart.ProductId))
+            if (cartItems.Any(c => c.Id == addToCart.Id))
             {
                 var existingItem = cartItems.FirstOrDefault(c => c.ProductId == addToCart.ProductId);
                 if (existingItem != null)
@@ -82,10 +80,6 @@ public class HomeController : Controller
             cart = JsonConvert.SerializeObject(cartItems);
         }
         HttpContext.Session.SetString("Cart", cart);
-        return RedirectToAction("Index", "Cart");
+        return Ok(new { status = AjaxError.Success.ToString() });
     }
-
-    
-
-
 }

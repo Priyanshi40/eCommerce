@@ -1,0 +1,49 @@
+@model List<DAL.Models.Notification>
+
+<div class="row p-2 w-100">
+    <li class="dropdown-header">Notifications</li>
+    <li>
+        <hr class="dropdown-divider">
+    </li>
+    @if (Model.Count == 0)
+    {
+        <li class="notif px-3">No new notifications</li>
+    }
+    else
+    {
+        @foreach (var notif in Model)
+        {
+            <li class="notif px-3 d-flex justify-content-between align-items-center">
+                <span>@notif.Message</span>
+                <button class="btn btn-sm btn-link text-decoration-none mark-read-btn" data-id="@notif.Id"><i
+                        class="fa-regular fa-circle"></i></button>
+            </li>
+        }
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+        <li class="text-center"><button class="btn btn-sm btn-outline-primary" id="markAllRead">Mark all as read</button>
+        </li>
+    }
+</div>
+
+<script>
+    $(document).ready(() => {
+        $("#notificationCount").text(@Model.Count);
+        @* loadNotifications(); *@
+
+            $(document).on("click", ".mark-read-btn", function () {
+                const id = $(this).data("id");
+                $.post('/Admin/Home/MarkAsRead', { id: id }, function () {
+                    @* loadNotifications(); *@
+            });
+            });
+
+        $(document).on("click", "#markAllRead", function () {
+            $.post('/Admin/Home/MarkAllAsRead', function () {
+                @* loadNotifications(); *@
+            });
+        });
+        @* setInterval(loadNotifications, 30000); *@
+    });
+</script>
