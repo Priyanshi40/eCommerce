@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using DAL.Enums;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,11 +28,11 @@ public class VendorRepo : IVendorRepo
             .Include(p => p.UserNavigation.IUser)
             .FirstOrDefault(v => v.Id == vendorId);
     }
-    public bool ApproveVendor(UserDetails user)
+    public string ApproveVendor(UserDetails user)
     {
         try
         {
-            UserDetails oldUser = _context.UserDetails.FirstOrDefault(b => b.Id == user.Id);
+            UserDetails oldUser = _context.UserDetails.Include(u => u.IUser).FirstOrDefault(b => b.Id == user.Id);
             if (oldUser != null)
             {
                 oldUser.Status = user.Status;
@@ -42,11 +43,11 @@ public class VendorRepo : IVendorRepo
                 }
                 _context.UserDetails.Update(oldUser);
                 _context.SaveChanges();
-                return true;
+                return oldUser.IUser.Id;
             }
             else
             {
-                return false;
+                return null;
             }
         }
         catch (Exception ex)

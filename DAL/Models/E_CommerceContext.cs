@@ -25,6 +25,9 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
     public virtual DbSet<Cart> Cart { get; set; }
     public virtual DbSet<CartItem> CartItem { get; set; }
     public virtual DbSet<Notification> Notification { get; set; }
+    public virtual DbSet<Country> Country { get; set; }
+    public virtual DbSet<State> State { get; set; }
+    public virtual DbSet<City> City { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("Host=localhost; Database=Ecommerce; Username=postgres;password=Tatva@123");
 
@@ -38,6 +41,10 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("createdat");
+            entity.Property(e => e.Modifiedat)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifiedat");
 
             entity.HasOne(d => d.IUser).WithMany()
                 .HasForeignKey(d => d.IdentityUserId)

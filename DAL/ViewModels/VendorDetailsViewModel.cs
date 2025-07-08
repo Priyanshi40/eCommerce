@@ -1,3 +1,4 @@
+using DAL.Enums;
 using DAL.Models;
 
 namespace DAL.ViewModels;

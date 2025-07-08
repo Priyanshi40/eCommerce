@@ -3265,7 +3265,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
-          "DAL": "1.0.0"
+          "DAL": "1.0.0",
+          "Microsoft.AspNetCore.SignalR": "1.2.0"
         },
         "compile": {
           "bin/placeholder/BLL.dll": {}

@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using BLL.Utility;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -27,9 +28,9 @@ public class CategoryController : Controller
     {
         return View();
     }
-    public IActionResult CatList(string statusFilter, string searchString, int pageNumber = 1, int pageSize = 5)
+    public IActionResult CatList(string statusFilter,SortOrder sortOrder, string searchString, int pageNumber = 1, int pageSize = 5)
     {
-        var queyableCategories = _catService.GetQueryableCategories(searchString, statusFilter);
+        var queyableCategories = _catService.GetQueryableCategories(searchString,sortOrder, statusFilter);
 
         int totalRecords = queyableCategories.Count();
         var paginatedCategories = queyableCategories.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();

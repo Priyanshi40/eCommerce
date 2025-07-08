@@ -1,0 +1,24 @@
+@model DAL.ViewModels.UserViewModel
+<div class="p-2 align-items-center">
+    <input type="hidden" id="CategoryId" name="CategoryId">
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="FName" asp-for="@Model.Firstname" required>
+        <span asp-validation-for="@Model.Firstname" class="text-danger"></span>
+        <label for="FName">First Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="LName" asp-for="@Model.Lastname" required>
+        <span asp-validation-for="@Model.Lastname" class="text-danger"></span>
+        <label for="LName">Last Name</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="Email" asp-for="@Model.Email" readonly>
+        <span asp-validation-for="@Model.Lastname" class="text-danger"></span>
+        <label for="Email">Email</label>
+    </div>
+    <div class="form-floating mb-2">
+        <input type="text" class="form-control" id="Email" asp-for="@Model.Phone" required>
+        <span asp-validation-for="@Model.Phone" class="text-danger"></span>
+        <label for="Email">Phone Number</label>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;

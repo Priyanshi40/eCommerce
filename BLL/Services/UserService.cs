@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 
@@ -25,8 +25,21 @@ public class UserService : IUserService
         };
         return userDetail;
     }
+    public UserViewModel GetUserById(int id)
+    {
+        UserDetails user = _userRepo.GetUserById(id);
+        UserViewModel userDetail = new()
+        {
+            Id = user.Id,
+            Firstname = user.Firstname,
+            Lastname = user.Lastname,
+            Email = user.IUser.Email,
+            Phone = user.IUser.PhoneNumber,
+        };
+        return userDetail;
+    }
 
-    public async Task<UserViewModel> GetUsersService(string searchString, string statusFilter, int pageNumber, int pageSize)
+    public async Task<UserViewModel> GetUsersService(string searchString,SortOrder sort, string statusFilter, int pageNumber, int pageSize)
     {
         IQueryable<UserDetails> queyableUsers = await _userRepo.GetQueryableUsers(searchString);
         if (!string.IsNullOrEmpty(statusFilter))
@@ -36,6 +49,12 @@ public class UserService : IUserService
                 queyableUsers = queyableUsers.Where(p => p.Status == parsedStatus);
             }
         }
+        queyableUsers = sort switch
+        {
+            SortOrder.Name => queyableUsers.OrderByDescending(u => u.Firstname),
+            SortOrder.Email => queyableUsers.OrderByDescending(u => u.IUser.Email),
+            _ => queyableUsers.OrderBy(u => u.Firstname),
+        };
         UserViewModel vendorsView = new();
         if (queyableUsers != null)
         {
@@ -59,6 +78,7 @@ public class UserService : IUserService
                 Firstname = user.FirstName,
                 Lastname = user.LastName,
                 IdentityUserId = user.IdentityUserId,
+                Status = ProductStatus.Approved,
             };
             if (user.UserId != 0 || user.IdentityUserId != null)
             {

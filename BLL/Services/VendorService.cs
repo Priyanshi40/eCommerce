@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using BLL.Utility;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 
@@ -14,7 +15,7 @@ public class VendorService : IVendorService
         _vendorRepo = vendorRepo;
         _imgService = imgService;
     }
-    public VendorDetailsViewModel GetVendorsService(string searchString, string statusFilter, int pageNumber, int pageSize)
+    public VendorDetailsViewModel GetVendorsService(string searchString,SortOrder sort, string statusFilter, int pageNumber, int pageSize)
     {
         IQueryable<VendorDetails> queyableVendors = _vendorRepo.GetQueryableVendors(searchString);
         if (!string.IsNullOrEmpty(statusFilter))
@@ -24,6 +25,13 @@ public class VendorService : IVendorService
                 queyableVendors = queyableVendors.Where(p => p.UserNavigation.Status == parsedStatus);
             }
         }
+        queyableVendors = sort switch
+        {
+            SortOrder.Name => queyableVendors.OrderByDescending(u => u.UserNavigation.Firstname),
+            SortOrder.BusinessName => queyableVendors.OrderByDescending(u => u.BusinessName),
+            SortOrder.Email => queyableVendors.OrderByDescending(u => u.UserNavigation.IUser.Email),
+            _ => queyableVendors.OrderBy(u => u.BusinessName),
+        };
         VendorDetailsViewModel vendorsView = new();
         if (queyableVendors != null)
         {
@@ -57,7 +65,7 @@ public class VendorService : IVendorService
         }
         return vendorDetails;
     }
-    public bool ApproveVendor(UserDetails vendor)
+    public string ApproveVendor(UserDetails vendor)
     {
         return _vendorRepo.ApproveVendor(vendor);
     }

@@ -36,6 +36,7 @@ public class ProductRepo : IProductRepo
                 oldProduct.Description = product.Description ?? oldProduct.Description;
                 oldProduct.CoverImage = product.CoverImage ?? oldProduct.CoverImage;
                 oldProduct.Price = product.Price > 0 ? product.Price : oldProduct.Price;
+                oldProduct.StockQuantity = product.StockQuantity > 0 ? product.StockQuantity : oldProduct.StockQuantity;
                 oldProduct.CategoryId = product.CategoryId > 0 ? product.CategoryId : oldProduct.CategoryId;
                 oldProduct.ModifiedBy = product.ModifiedBy;
                 oldProduct.ModifiedAt = DateTime.Now;
@@ -89,7 +90,7 @@ public class ProductRepo : IProductRepo
             throw;
         }
     }
-    public bool ApproveProduct(Product product)
+    public int ApproveProduct(Product product)
     {
         try
         {
@@ -99,14 +100,15 @@ public class ProductRepo : IProductRepo
                 oldProduct.ModifiedBy = product.ModifiedBy;
                 oldProduct.ModifiedAt = DateTime.Now;
                 oldProduct.Status = product.Status;
+                oldProduct.AdminComment = product.AdminComment;
 
                 _context.Product.Update(oldProduct);
                 _context.SaveChanges();
-                return true;
+                return oldProduct.CreatedBy;
             }
             else
             {
-                return false;
+                return -1;
             }
         }
         catch (Exception ex)

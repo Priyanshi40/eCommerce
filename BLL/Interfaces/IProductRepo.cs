@@ -8,6 +8,6 @@ public interface IProductRepo
     Product GetProductDetails(int productId);
     Product UpSertProduct(Product product);
     bool DeleteProduct(Product product);
-    bool ApproveProduct(Product product);
+    int ApproveProduct(Product product);
     int AddProductToWishlist(int productId, int userId);
 }

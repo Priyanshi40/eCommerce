@@ -1,3 +1,4 @@
+@using DAL.Enums
 @using DAL.Models
 @using DAL.ViewModels
 @{
@@ -105,7 +106,7 @@
 
     $(document).on("click", '.rejectVendor', function () {
         status = $(this).closest('td').attr('data-status');
-        if( status != "Pending") {
+        if( status == "Rejected") {
             return;
         }
         let vendorId = $(this).data("id");
@@ -141,7 +142,7 @@
 
     $(document).on("click", '.approveVendor', function () {
         status = $(this).closest('td').attr('data-status');
-        if( status != "Pending") {
+        if( status == "Approved") {
             return;
         }
         let vendorId = $(this).data("id");
@@ -149,8 +150,19 @@
             Id: vendorId,
             Status: 1,
         }
-        console.log(vendor);
-        vendorAction(vendor);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You are Approving this Vendor!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Approve it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                vendorAction(vendor);
+            }
+        });
     });
 
     function vendorAction(vendor) {

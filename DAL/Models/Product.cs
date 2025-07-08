@@ -1,14 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DAL.Enums;
 
 namespace DAL.Models;
-
-public enum ProductStatus
-{
-    Pending,
-    Approved,
-    Rejected
-}
 public class Product
 {
     [Key]
@@ -17,6 +11,7 @@ public class Product
     [MaxLength(200)]
     public string Name { get; set; }
     public string? Description { get; set; }
+    public int StockQuantity { get; set; }
     public decimal Price { get; set; }
     public ProductStatus Status { get; set; }
     public string? AdminComment { get; set; }

@@ -1,4 +1,6 @@
 using BLL.Interfaces;
+using DAL.Enums;
+using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -27,12 +29,19 @@ public class HomeController : Controller
     {
         return View();
     }
+
+    public IActionResult GetNotificationCount()
+    {
+        var userId = _userManager.GetUserId(User);
+        var count = _notify.GetNotificationCount(userId);
+        return Json(new { count });
+    }
     public IActionResult GetNotification()
     {
         var userId = _userManager.GetUserId(User);
-        var notifications = _notify.GetNotifications(userId);
-        // return PartialView("_notification", notifications);
-        return Json(notifications);
+        List<Notification> notifications = _notify.GetNotifications(userId);
+        return PartialView("_notification", notifications);
+        // return Json(notifications);
     }
     public IActionResult MarkAsRead(int notificationId)
     {

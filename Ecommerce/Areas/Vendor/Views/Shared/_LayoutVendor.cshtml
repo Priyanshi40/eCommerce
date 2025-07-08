@@ -27,6 +27,17 @@
             </div>
             <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
                 <li class="nav-item dropdown">
+                    <a class="nav-link position-relative mx-4" href="#" id="notifDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill fs-5"></i>
+                        <span class="position-absolute top-0 badge rounded-pill bg-danger" id="notifCount">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end px-2 shadow-sm" style="min-width: 300px;"
+                        aria-labelledby="notifDropdown" id="notificationListContainer">
+                        <li><span class="dropdown-item text-muted">Loading...</span></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
                     <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal"><i
                             class="fa-solid fa-right-from-bracket text-muted"></i> <span
                             class="fw-semibold text-muted">Logout</span></button>
@@ -95,6 +106,13 @@
         </div>
     </div>
 
+    <script>
+        $(document).ready(function () {
+            notificationsCount();
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -103,6 +121,7 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/vendor.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

@@ -1,12 +1,14 @@
 @model DAL.ViewModels.UserViewModel
+@using DAL.Enums
 @using DAL.Models
 @using DAL.ViewModels;
 
 <style>
-    .hidden{
+    .hidden {
         opacity: 0;
     }
-    .visible{
+
+    .visible {
         cursor: pointer;
     }
 </style>
@@ -19,9 +21,10 @@
             <table class="table align-middle justify-content-center p-3" id="tablemod">
                 <thead>
                     <tr>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Status</th>
+                        <th class="sortOrder" data-order="Name" style="cursor: pointer;">Full Name&nbsp;&uarr;&darr;
+                        </th>
+                        <th class="sortOrder" data-order="Email" style="cursor: pointer;">Email&nbsp;&uarr;&darr;</th>
+                        <th>Phone Number</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -32,13 +35,10 @@
                         <tr asp-for="@item.Id" data-id="@item.Id">
                             <td class="text-secondary">@item.Firstname @item.Lastname</td>
                             <td class="text-secondary">@item.IUser.Email</td>
-                            <td class="text-secondary">
-                                <span
-                                    class="badge @(status == DAL.Models.ProductStatus.Approved.ToString() ? "bg-success" : status == DAL.Models.ProductStatus.Rejected.ToString() ? "bg-danger" : "bg-warning")">@item.Status</span>
-                            </td>
-                            <td data-status="@status">
-                                <i data-id="@item.Id" class="bi bi-check-circle txtCustom m-2 approveVendor @(status=="Approved" ? "hidden" : "visible")" title="Approve Customer"></i>
-                                <i data-id="@item.Id" class="fa-solid fa-ban txtCustom m-2 rejectVendor @(status=="Rejected" ? "hidden" : "visible")" title="Reject Customer"></i>
+                            <td class="text-secondary">@item.IUser.PhoneNumber</td>
+                            <td><i data-id="@item.Id" class="bi bi-house-add txtCustom editAddress fw-semibold"></i>
+                                <i data-id="@item.Id" class="fa fa-edit m-2 txtCustom editDetails" title="Edit Product"
+                                    style="cursor: pointer;"></i>
                             </td>
                         </tr>
                     }
@@ -98,11 +98,18 @@
         }
     });
 
+    $('.sortOrder').click(function () {
+        let sortOrder = $(this).data('order');
+        $('.sortOrder').data('sort', sortOrder);
+        loadUsers();
+    });
+
     function loadUsers() {
         let pageSize = $('#pageSize').val();
         let pageNumber = $('#pageNumber').val();
         let status = $('#StatusLabel').val();
         let valueToSearch = $('#searchCInput').data('search');
+        let sortOrder = $('.sortOrder').data('sort');
 
         $.ajax({
             url: "/Admin/Customer/CustomerList",
@@ -111,7 +118,8 @@
                 statusFilter: status,
                 searchString: valueToSearch,
                 pageSize: pageSize,
-                pageNumber: pageNumber
+                pageNumber: pageNumber,
+                sortOrder: sortOrder
             },
             success: function (data) {
                 $('#PartialVendorDiv').html(data);

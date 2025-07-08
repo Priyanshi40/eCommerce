@@ -10,6 +10,10 @@ public class NotificationService : INotificationService
     {
         _notification = notification;
     }
+    public int GetNotificationCount(string userId)
+    {
+        return _notification.GetNotificationCount(userId);
+    }
     public List<Notification> GetNotifications(string userId)
     {
         return _notification.GetNotifications(userId);

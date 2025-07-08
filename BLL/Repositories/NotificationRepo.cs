@@ -11,7 +11,11 @@ public class NotificationRepo : INotificationRepo
     {
         _context = context;
     }
-
+    public int GetNotificationCount(string userId)
+    {
+        var count = _context.Notification.Count(w => w.UserId == userId && !w.IsRead);
+        return count;
+    }
     public List<Notification> GetNotifications(string userId)
     {
         return _context.Notification

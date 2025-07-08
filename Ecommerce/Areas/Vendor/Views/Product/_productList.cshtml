@@ -1,3 +1,4 @@
+@using DAL.Enums
 @using DAL.Models
 @model DAL.ViewModels.ProductViewModel
 
@@ -19,9 +20,10 @@
             <table class="table align-middle justify-content-center p-3" id="tablemod">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
+                        <th class="sortOrder" data-order="Name" style="cursor: pointer;">Name&nbsp;&uarr;&darr;</th>
+                        <th class="sortOrder" data-order="Quantity" style="cursor: pointer;">Quantity&nbsp;&uarr;&darr;</th>
+                        <th class="sortOrder" data-order="Category" style="cursor: pointer;">Category&nbsp;&uarr;&darr;</th>
+                        <th class="sortOrder" data-order="Price" style="cursor: pointer;">Price&nbsp;&uarr;&darr;</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -45,6 +47,7 @@
                                     @item.Name
                                 </span>
                             </td>
+                            <td class="text-secondary">@item.StockQuantity</td>
                             <td class="text-secondary">@item.Category.Name</td>
                             <td class="text-secondary">@item.Price.ToString("C")</td>
                             <td class="text-secondary">
@@ -118,12 +121,19 @@
         }
     });
 
+    $('.sortOrder').click(function () {
+        let sortOrder = $(this).data('order');
+        $('.sortOrder').data('sort',sortOrder);
+        loadProducts();
+    });
+
     function loadProducts() {
         let pageSize = $('#pageSize').val();
         let pageNumber = $('#pageNumber').val();
         let searchString = $("#searchCInput").val();
         let category = $("#categoryLabel").val();
         let status = $("#statusLabel").val();
+        let sortOrder = $('.sortOrder').data('sort');
 
         $.ajax({
             url: '/Vendor/Product/ProductList',
@@ -133,7 +143,8 @@
                 searchString: searchString,
                 pageSize: pageSize,
                 pageNumber: pageNumber,
-                category: category
+                category: category,
+                sortOrder: sortOrder
             },
             success: function (data) {
                 $('#PartialProductDiv').html(data);

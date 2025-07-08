@@ -28,9 +28,9 @@
                 </div>
                 <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
                     <li class="nav-item mx-4">
-                    <a class="nav-link position-relative" href="/User/Wishlist/Index">
+                    <a class="nav-link position-relative" href="/Home/Cart">
                         <i class="fa-solid fa-cart-plus text-white fs-5"></i>
-                        <span id="wishlistCount"
+                        <span id="cartCount"
                             class="position-absolute top-0 badge rounded-pill bg-danger">
                             0
                         </span>
@@ -60,6 +60,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/Home/GetCartCount',
+                type: 'GET',
+                success: function (res) {
+                    $('#cartCount').text(res.count);
+                    if (res.count == 0) {
+                        $('#cartCount').hide();
+                    }
+                }
+            });
+        });
+    </script>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

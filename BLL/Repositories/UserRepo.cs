@@ -19,6 +19,10 @@ public class UserRepo : IUserRepo
     {
         return _context.UserDetails.Include(u => u.IUser).FirstOrDefault(u => u.IdentityUserId == id)!;
     }
+    public UserDetails GetUserById(int id)
+    {
+        return _context.UserDetails.Include(u => u.IUser).FirstOrDefault(u => u.Id == id)!;
+    }
     public async Task<IQueryable<UserDetails>> GetQueryableUsers(string? searchString)
     {
         IList<IdentityUser> customers = await _userManager.GetUsersInRoleAsync("User");

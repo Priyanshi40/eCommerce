@@ -1,8 +1,5 @@
 using BLL.Interfaces;
-using BLL.Utility;
-using DAL.Models;
 using DAL.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services;
 

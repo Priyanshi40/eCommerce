@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Utility;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 using Ecommerce.Hubs;
@@ -41,10 +41,10 @@ public class ProductController : Controller
         ViewBag.Category = new SelectList(_catService.GetCategoriesService(), "Id", "Name");
         return View();
     }
-    public IActionResult ProductList(string searchString, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
+    public IActionResult ProductList(string searchString, SortOrder sortOrder, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
         var user = _userService.GetUserById(_userManager.GetUserId(User));
-        ProductViewModel productsView = _proService.GetProductsService(searchString, category, statusFilter, pageNumber, pageSize, user.UserId);
+        ProductViewModel productsView = _proService.GetProductsService(searchString, sortOrder, category, statusFilter, pageNumber, pageSize, user.UserId);
         return PartialView("_productList", productsView);
     }
     public IActionResult ProductModal(int productId)
@@ -81,21 +81,18 @@ public class ProductController : Controller
 
             _proService.UpSertProduct(productToAdd);
 
-            // if (productToAdd.Id == 0)
-            // {
-                var notification = new Notification
-                {
-                    Message = "New Product has been added!!",
-                    IsRead = false,
-                    UserId = "ba76242f-8d36-4bf7-ab67-b8bdcb0552d3",
-                };
-                _noficationService.AddNotification(notification);
-                if (_hubContext?.Clients != null && !string.IsNullOrEmpty(notification.UserId))
-                {
-                    await _hubContext.Clients.User(notification.UserId).SendAsync("ReceiveNotification", notification.Message);
-                }
-            // }
-
+            var notification = new Notification
+            {
+                Message = productToAdd.Id == 0 ? "New Product has been added!!" : "Product has been Updated",
+                // Message = productToAdd.Id == 0 ? "New Product has been added!!" : productToAdd.Name + "has been Updated",
+                IsRead = false,
+                UserId = "ba76242f-8d36-4bf7-ab67-b8bdcb0552d3",
+            };
+            _noficationService.AddNotification(notification);
+            if (_hubContext?.Clients != null && !string.IsNullOrEmpty(notification.UserId))
+            {
+                await _hubContext.Clients.User(notification.UserId).SendAsync("ReceiveNotification", notification.Message);
+            }
             return RedirectToAction("ProductList", "Product");
         }
     }

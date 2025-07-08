@@ -25,15 +25,26 @@
                 <b class="text-white ps-2 fs-5">ECOMMERCE SYSTEM</b>
             </div>
             <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
-                <li class="nav-item mx-4">
+                <li class="nav-item mx-2">
                     <a class="nav-link position-relative" href="/User/Wishlist/Index">
-                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart fs-5"></i>
                         <span id="wishlistCount"
                             class="position-absolute top-0 badge rounded-pill bg-danger">
                             @* class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"> *@
                             0
                         </span>
                     </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link position-relative me-4" href="#" id="notifDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill fs-5"></i>
+                        <span class="position-absolute top-0 badge rounded-pill bg-danger" id="notifCount">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end px-2 shadow-sm" style="min-width: 300px;"
+                        aria-labelledby="notifDropdown" id="notificationListContainer">
+                        <li><span class="dropdown-item text-muted">Loading...</span></li>
+                    </ul>
                 </li>
                 <li>
                     <button class="btn btn btn-light" data-bs-toggle="modal" data-bs-target="#logOutModal"><i
@@ -78,6 +89,7 @@
         </div>
     </div>
 
+
     <script>
         $(document).ready(function () {
             $.ajax({
@@ -90,9 +102,11 @@
                     }
                 }
             });
+            notificationsCount();
         });
     </script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -100,6 +114,7 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/user.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

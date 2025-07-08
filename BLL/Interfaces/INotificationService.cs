@@ -4,6 +4,7 @@ namespace BLL.Interfaces;
 
 public interface INotificationService
 {
+    int GetNotificationCount(string userId);
     List<Notification> GetNotifications(string userId);
     bool AddNotification(Notification notification);
     bool MarkAsRead(int notificationId);

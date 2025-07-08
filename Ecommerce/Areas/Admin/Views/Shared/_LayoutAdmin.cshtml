@@ -25,22 +25,15 @@
                 <b class="text-white ps-2 fs-5">ECOMMERCE SYSTEM</b>
             </div>
             <ul class="navbar-nav me-3 d-flex flex-row align-items-center justify-content-end">
-                <li class="nav-item dropdown mx-4 dropleft">
-                    <a class="nav-link position-relative" id="notificationDropdown" data-bs-toggle="dropdown">
-                        <i class="fa fa-bell text-white"></i>
-                        <span id="notificationCount"
-                            class="position-absolute top-0 badge rounded-pill bg-danger">0</span>
+                <li class="nav-item dropdown">
+                    <a class="nav-link position-relative mx-4" href="#" id="notifDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell-fill fs-5"></i>
+                        <span class="position-absolute top-0 badge rounded-pill bg-danger" id="notifCount">0</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
-                        id="notificationList" style="width: 350px !important;">
-                        <div class="d-flex justify-content-between align-items-center"><li class="dropdown-header fw-semibold fs-6">Notifications</li>
-                        <button type="button" class="fs-4 close btn text-end" data-bs-dismiss="dropdown"
-                            aria-label="Close">&times;
-                        </button></div>
-                        
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                    <ul class="dropdown-menu dropdown-menu-end px-2 shadow-sm" style="min-width: 300px;"
+                        aria-labelledby="notifDropdown" id="notificationListContainer">
+                        <li><span class="dropdown-item text-muted">Loading...</span></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -127,89 +120,56 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.11/signalr.min.js"></script>
 
     <script>
+        $(document).ready(function () {
+            notificationsCount();
+        });
+
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/notificationHub")
             .build();
 
         connection.on("ReceiveNotification", function (message) {
             loadNotifications();
-            Swal.fire({
-                title: message,
-                icon: "success",
-                draggable: true
-            });
+            toastr.info(message);
         });
 
         connection.start().catch(err => console.error(err));
 
-        @* $("#notificationDropdown").click(function () {
-            $.ajax({
-                url: '/Admin/Home/GetNotification',
-                type: 'GET',
-                success: function (data) {
-                        $("#notificationList").html(data);
+        function notificationsCount() {
+            $.get("/Admin/Home/GetNotificationCount", function (res) {
+                $('#notifCount').text(res.count);
+                if (res.count === 0) {
+                    $('#notifCount').hide();
                 }
             });
-        }); *@
+        }
+        function loadNotifications() {
+            $.get("/Admin/Home/GetNotification", function (html) {
+                $("#notificationListContainer").html(html);
+                notificationsCount();
+            });
+        }
 
-            function loadNotifications() {
-                $.get('/Admin/Home/GetNotification', function (data) {
-                    const list = $("#notificationList");
-                    const count = data.length;
-                    $("#notificationCount").text(count);
-                    list.find(".notif").remove();
+        $(document).on("click", ".markRead", function () {
+            const id = $(this).data("id");
+            $.post("/Admin/Home/MarkAsRead", { notificationId: id }, function () {
+                loadNotifications();
+            });
+        });
 
-                    if (count == 0) {
-                        list.append(`<li class="notif px-3">No new notifications</li>`);
-                    } else {
-                        data.forEach(item => {
-                            console.log(item);
-                            list.append(`<li class="notif px-3 d-flex justify-content-between align-items-center">
-                        <span>${item.message}</span>
-                        <button class="btn btn-sm btn-link text-decoration-none markRead" data-id="${item.id}" title="Mark As Read"><i
-                        class="fa-regular fa-circle"></i></button>
-                    </li>`);
-                        });
-                        list.append(`<li><hr class="dropdown-divider"></li>`);
-                        list.append(`<li class="text-center"><button class="btn btn-sm btn-outline-primary" id="markAllRead">Mark all as read</button></li>`);
-                    }
-                });
-            }
+        $(document).on("click", "#markAllRead", function () {
+            $.get("/Admin/Home/MarkAllAsRead", function (data) {
+                if (data.status == "Error") {
+                    toastr.warning("Failed to Read All Notification");
+                }
+                else {
+                    loadNotifications();
+                }
+            });
+        });
 
-        $(document).ready(() => {
+        $("#notifDropdown").on("click", function () {
             loadNotifications();
-
-            $(document).on("click", ".markRead", function () {
-                const id = $(this).data('id');
-                $.ajax({
-                    url: '/Admin/Home/MarkAsRead',
-                    data: { notificationId: id },
-                    type: 'GET',
-                    success: function (data) {
-                        if (data.status == "Error") {
-                            toastr.warning("Failed to Read Notification");
-                        }
-                        else {
-                            loadNotifications();
-                        }
-                    }
-                });
-            });
-
-            $(document).on("click", "#markAllRead", function () {
-                $.ajax({
-                    url: '/Admin/Home/MarkAllAsRead',
-                    type: 'GET',
-                    success: function (data) {
-                        if (data.status == "Error") {
-                            toastr.warning("Failed to Read All Notification");
-                        }
-                        else {
-                            loadNotifications();
-                        }
-                    }
-                });
-            });
         });
     </script>
 

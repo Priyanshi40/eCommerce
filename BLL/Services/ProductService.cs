@@ -1,5 +1,6 @@
 using BLL.Interfaces;
 using BLL.Utility;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -9,31 +10,52 @@ namespace BLL.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepo _productRepo;
+    private readonly IUserRepo _userRepo;
     private readonly ImageService _imgService;
 
-    public ProductService(IProductRepo productRepo, ImageService imgService)
+    public ProductService(IProductRepo productRepo, ImageService imgService, IUserRepo userRepo)
     {
         _productRepo = productRepo;
         _imgService = imgService;
+        _userRepo = userRepo;
     }
-    public ProductViewModel GetProductsService(string searchString, int category, string statusFilter, int pageNumber, int pageSize, int userId = 0)
+    public ProductViewModel GetProductsService(string searchString, SortOrder sort, int category, string statusFilter, int pageNumber, int pageSize, int userId = 0)
+    // public ProductViewModel GetProductsService(string searchString, SortOrder sort, bool isAscending, int category, string statusFilter, int pageNumber, int pageSize, int userId = 0)
     {
         IQueryable<Product> queyableProducts = _productRepo.GetQueryableProducts(searchString);
         if (userId > 0)
-        {
             queyableProducts = queyableProducts.Where(p => p.CreatedBy == userId);
-        }
+
         if (category > 0)
-        {
             queyableProducts = queyableProducts.Where(p => p.CategoryId == category);
-        }
+
         if (!string.IsNullOrEmpty(statusFilter))
         {
             if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
-            {
                 queyableProducts = queyableProducts.Where(p => p.Status == parsedStatus);
-            }
         }
+        // if (isAscending)
+        // {
+        //     queyableProducts = sort switch
+        //     {
+        //         SortOrder.Name => queyableProducts.OrderBy(p => p.Name),
+        //         SortOrder.Category => queyableProducts.OrderBy(p => p.Category.Name),
+        //         SortOrder.Price => queyableProducts.OrderBy(p => p.Price),
+        //         SortOrder.Quantity => queyableProducts.OrderBy(p => p.StockQuantity),
+        //         _ => queyableProducts.OrderBy(p => p.Name),
+        //     };
+        // }
+        // else
+        // {
+            queyableProducts = sort switch
+            {
+                SortOrder.Name => queyableProducts.OrderByDescending(p => p.Name),
+                SortOrder.Category => queyableProducts.OrderByDescending(p => p.Category.Name),
+                SortOrder.Price => queyableProducts.OrderByDescending(p => p.Price),
+                SortOrder.Quantity => queyableProducts.OrderByDescending(p => p.StockQuantity),
+                _ => queyableProducts.OrderByDescending(p => p.Name),
+            };
+        // }
         ProductViewModel productsView = new();
         if (queyableProducts != null)
         {
@@ -59,6 +81,7 @@ public class ProductService : IProductService
             productDetails.Name = productData.Name;
             productDetails.Description = productData.Description;
             productDetails.Price = productData.Price;
+            productDetails.StockQuantity = productData.StockQuantity;
             productDetails.CategoryId = productData.CategoryId;
             productDetails.CoverImage = productData.CoverImage;
             productDetails.ProductImages = productData.Images.Select(img => img.ImageUrl).ToList();
@@ -75,9 +98,7 @@ public class ProductService : IProductService
     {
         Product existingProduct = null;
         if (product.Id != 0)
-        {
             existingProduct = _productRepo.GetProductDetails(product.Id);
-        }
 
         List<string> existingImageUrls = existingProduct?.Images.Select(i => i.ImageUrl).ToList() ?? new List<string>();
 
@@ -103,6 +124,7 @@ public class ProductService : IProductService
             Name = product.Name,
             Description = product.Description,
             Price = product.Price,
+            StockQuantity = product.StockQuantity,
             CategoryId = product.CategoryId,
             ModifiedBy = product.ModifiedBy,
             CreatedBy = product.CreatedBy,
@@ -111,30 +133,30 @@ public class ProductService : IProductService
             {
                 ImageUrl = i
             }).ToList()
-            // Images = new List<ProductImage>()
         };
         if (product.Id != 0)
-        {
             newProduct.Id = product.Id;
-        }
-        ;
         return _productRepo.UpSertProduct(newProduct);
     }
     public bool DeleteProduct(Product product)
     {
         return _productRepo.DeleteProduct(product);
     }
-    public bool ApproveProduct(Product product)
+    public string? ApproveProduct(Product product)
     {
-        return _productRepo.ApproveProduct(product);
+        var UserId = _productRepo.ApproveProduct(product);
+        if (UserId != -1)
+        {
+            return _userRepo.GetUserById(UserId).IdentityUserId;
+        }
+        return null;
     }
 
     public int AddProductToWishlist(int productId, int userId)
     {
         if (productId <= 0 || userId <= 0)
-        {
             return -1;
-        }
+
         return _productRepo.AddProductToWishlist(productId, userId);
     }
 }

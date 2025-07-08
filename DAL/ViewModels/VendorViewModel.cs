@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using DAL.Models;
+using DAL.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace DAL.ViewModels;

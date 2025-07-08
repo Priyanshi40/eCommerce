@@ -7,6 +7,9 @@
 }
 
 <style>
+    .pe-none{
+        cursor: not-allowed !important;
+    }
     .zoom-wrapper {
         position: relative;
         overflow: hidden;
@@ -64,8 +67,11 @@
             <h4 class="text-success">₹ @Model.Price.ToString("N2")</h4>
             <p>@Html.Raw(Model.Description)</p>
             <hr />
-            <button class="btn btn-outline-secondary addCart"><i class="fa-solid fa-cart-plus m-2"></i>Add to Cart</button>
-            <button class="btn btn-primary"><i class="fa-solid fa-bolt-lightning m-2"></i>Buy Now</button>
+            <button class="btn addCart @(Model.StockQuantity > 0 ? "btn-outline-primary" : "btn-outline-secondary pe-none")"><i class="fa-solid fa-cart-plus m-2"></i>Add to Cart</button>
+            <button class="btn @(Model.StockQuantity > 0 ? "btn-primary" : "btn-secondary pe-none")"><i class="fa-solid fa-bolt-lightning m-2"></i>Buy Now</button>
+            @if(Model.StockQuantity<1){
+                <span class="text-danger">Currently out of stock.</span>
+            }
         </div>
     </div>
 </div>
@@ -92,10 +98,10 @@
                 data: JSON.stringify(cartDetails),
                 contentType: "application/json",
                 success: function (response) {
-                    if (response.success == "Success") {
-                        alert('Product added to cart successfully!');
+                    if (response.status == "Success") {
+                        toastr.success('Product added to cart successfully!');
                     } else {
-                        alert('Failed to add product to cart.');
+                        toastr.error('Failed to add product to cart.');
                     }
                 },
                 error: function () {

@@ -1,3 +1,4 @@
+@using DAL.Enums
 @using DAL.Models
 @using DAL.ViewModels
 @{
@@ -109,7 +110,7 @@
 
     $(document).on("click", '.rejectProduct', function () {
         status = $(this).closest('td').attr('data-status');
-        if (status != "Pending") {
+        if (status == "Rejected") {
             return;
         }
         let productId = $(this).data("id");
@@ -147,7 +148,7 @@
         debugger
 
         status = $(this).closest('td').attr('data-status');
-        if (status != "Pending") {
+        if (status == "Approved") {
             return;
         }
         let productId = $(this).data("id");
@@ -156,7 +157,20 @@
             Id: productId,
             Status: 1,
         }
-        productAction(product);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You are Approving this Product!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Approve it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                productAction(product);
+            }
+        });
+        
     });
 
     function productAction(product) {
@@ -177,4 +191,5 @@
             }
         });
     }
+
 </script>

@@ -4,15 +4,6 @@ using System.Text.Json.Serialization;
 using Newtonsoft.Json.Converters;
 
 namespace DAL.Models;
-
-[JsonConverter(typeof(StringEnumConverter))]
-public enum VendorDocuments
-{
-    PAN,
-    Aadhar,
-    GST,
-    BusinessLicense
-}
 public class VendorDetails
 {
     [Key]

@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
 
@@ -16,9 +17,8 @@ public class CategoryService : ICategoryService
     {
         return _catRepo.GetCategories();
     }
-    public IQueryable<Category> GetQueryableCategories(string? searchString, string statusFilter)
+    public IQueryable<Category> GetQueryableCategories(string? searchString,SortOrder sort, string statusFilter)
     {
-
         var catQuery = _catRepo.GetCategoryQueryable(searchString);
         if (!string.IsNullOrEmpty(statusFilter))
         {
@@ -31,6 +31,13 @@ public class CategoryService : ICategoryService
                 catQuery = catQuery.Where(u => !u.IsActive);
             }
         }
+        catQuery = sort switch
+        {
+            SortOrder.Name => catQuery.OrderByDescending(u => u.Name),
+            SortOrder.Description => catQuery.OrderByDescending(u => u.Description),
+            SortOrder.TotalProducts => catQuery.OrderByDescending(u => u.Products.Count),
+            _ => catQuery.OrderBy(u => u.Name),
+        };
         return catQuery;
     }
     public CategoryViewModel GetCategoryDetailsService(int catId)

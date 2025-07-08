@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DAL.Enums;
 using DAL.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -12,12 +13,14 @@ public class ProductViewModel
     [Required]
     [MaxLength(200, ErrorMessage = "Name can't be longer than 200 characters")]
     public string Name { get; set; }
-
     public string? Description { get; set; }
 
     [Required(ErrorMessage = "Price is required")]
     [Range(1, int.MaxValue, ErrorMessage = "Price must be greater than 0")]
     public decimal Price { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Stock Quantity must be greater than 0")]
+    public int StockQuantity { get; set; }
     public ProductStatus Status { get; set; }
     public string? CoverImage { get; set; }
     public IFormFile? Cover { get; set; }

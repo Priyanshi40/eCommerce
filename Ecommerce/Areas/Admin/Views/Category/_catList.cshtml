@@ -9,10 +9,12 @@
             <table class="table align-middle justify-content-center p-3" id="tablemod">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th class="sortOrder" data-order="Name" style="cursor: pointer;">Name&nbsp;&uarr;&darr;</th>
+                        <th class="sortOrder" data-order="Description" style="cursor: pointer;">
+                            Description&nbsp;&uarr;&darr;</th>
                         <th>Status</th>
-                        <th>Total Products</th>
+                        <th class="sortOrder" data-order="TotalProducts" style="cursor: pointer;">Total
+                            Products&nbsp;&uarr;&darr;</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -21,26 +23,32 @@
                     {
                         <tr asp-for="@item.Id" data-id="@item.Id">
                             <td class="text-secondary">
-                                                @if (@item.CoverImage != null)
-                                                {
-                                                    <img src="~/images/@item.CoverImage" class="img-fluid me-1 rounded-circle"
-                                                        style="height: 50px; width: 50px;">
-                                                }
-                                                else
-                                                {
-                                                    <img src="~/images/shopping-trolley.jpg" class="img-fluid me-1 rounded-circle" style="height: 50px; width: 50px;">
-                                                }@item.Name
+                                @if (@item.CoverImage != null)
+                                {
+                                    <img src="~/images/@item.CoverImage" class="img-fluid me-1 rounded-circle"
+                                        style="height: 50px; width: 50px;">
+                                }
+                                else
+                                {
+                                    <img src="~/images/shopping-trolley.jpg" class="img-fluid me-1 rounded-circle"
+                                        style="height: 50px; width: 50px;">
+                                }
+    @item.Name
                             </td>
                             <td class="text-secondary">@item.Description</td>
                             <td class="text-secondary">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input fs-5 isActive" title="@(item.IsActive ? "Active" : "In Active")" data-placement="right" type="checkbox" asp-for="@item.IsActive">
+                                    <input class="form-check-input fs-5 isActive"
+                                        title="@(item.IsActive ? "Active" : "In Active")" data-placement="right"
+                                        type="checkbox" asp-for="@item.IsActive">
                                 </div>
                             </td>
                             <td class="text-secondary ps-5">@item.Products.Count</td>
                             <td>
-                                <i data-id="@item.Id" class="bi bi-pen txtCustom m-2 editCategorybtn" style="cursor: pointer;"></i>
-                                <i class="bi bi-trash3-fill txtCustom m-2 deleteCategorybtn" data-id="@item.Id" style="cursor: pointer;"></i>
+                                <i data-id="@item.Id" class="bi bi-pen txtCustom m-2 editCategorybtn"
+                                    style="cursor: pointer;"></i>
+                                <i class="bi bi-trash3-fill txtCustom m-2 deleteCategorybtn" data-id="@item.Id"
+                                    style="cursor: pointer;"></i>
                             </td>
                         </tr>
                     }
@@ -100,11 +108,18 @@
         }
     });
 
+    $('.sortOrder').click(function () {
+        let sortOrder = $(this).data('order');
+        $('.sortOrder').data('sort',sortOrder);
+        loadCategories();
+    });
+
     function loadCategories() {
         let pageSize = $('#pageSize').val();
         let pageNumber = $('#pageNumber').val();
         let status = $('#StatusLabel').data('search');
         let valueToSearch = $('#searchCInput').data('search');
+        let sortOrder = $('.sortOrder').data('sort');
 
         $.ajax({
             url: "/Admin/Category/CatList",
@@ -113,7 +128,8 @@
                 statusFilter: status,
                 searchString: valueToSearch,
                 pageSize: pageSize,
-                pageNumber: pageNumber
+                pageNumber: pageNumber,
+                sortOrder: sortOrder
             },
             success: function (data) {
                 $('#PartialCatDiv').html(data);

@@ -11,7 +11,7 @@ public class NotificationHub : Hub
     public override Task OnConnectedAsync()
     {
         var userId = Context.UserIdentifier;
-        Console.WriteLine($"User Connected with ID: {userId}");
+        Console.WriteLine($"------> User Connected with ID: {userId}");
         return base.OnConnectedAsync();
     }
 

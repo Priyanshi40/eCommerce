@@ -3,12 +3,6 @@ using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAL.ViewModels;
-
-public enum CategoryStatus
-{
-    Active = 1,
-    Deactive = 2
-}
 public class CategoryViewModel
 {
     public IEnumerable<Category> Categories { get; set; } = new List<Category>();
