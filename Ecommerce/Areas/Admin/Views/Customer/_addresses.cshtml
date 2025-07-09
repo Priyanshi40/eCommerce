@@ -1,0 +1,62 @@
+@model DAL.ViewModels.AddressViewModel
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>City</th>
+            <th>Country</th>
+            <th>Postal Code</th>
+            <th>Default</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var address in Model.Address)
+        {
+            <tr data-id="@address.Id">
+                <td>@address.CityName</td>
+                <td>@address.CountryName</td>
+                <td>@address.PostalCode</td>
+
+                <td>
+                    @if (address.IsDefault)
+                    {
+                        <span class="badge bg-success">Yes</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">No</span>
+                    }
+                </td>
+                <td><i data-id="@address.Id" class="fa fa-eye txtCustom m-2 viewAddress" title="View Address"
+                        style="cursor: pointer;"></i></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+<script>
+    const allAddresses = @Html.Raw(Json.Serialize(Model.Address));
+
+    $(document).on("click", ".viewAddress", function () {
+        const addressId = $(this).data("id");
+        const selectedAddress = allAddresses.find(a => a.id === addressId);
+        console.log(selectedAddress);
+
+        $.ajax({
+            url: '/Admin/Customer/DetailsViaModel',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(selectedAddress),
+            success: function (html) {
+                $('body').html(html);
+            },
+            error: function () {
+                alert("Something went wrong.");
+            }
+        });
+    });
+
+</script>

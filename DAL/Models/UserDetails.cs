@@ -18,7 +18,7 @@ public class UserDetails
     public string IdentityUserId { get; set; }
     public DateTime Createdat { get; set; }
     public DateTime Modifiedat { get; set; }
-    public DateTime Modifieby { get; set; }
+    public int? ModifiedBy { get; set; }
     public bool IsApproved { get; set; } = false;
     public ProductStatus Status { get; set; }
     public string? AdminComment { get; set; }

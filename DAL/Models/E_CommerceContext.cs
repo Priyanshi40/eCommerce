@@ -51,6 +51,18 @@ public class E_CommerceContext : IdentityDbContext<IdentityUser>
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("identity_user_fkey");
         });
+        modelBuilder.Entity<Address>(entity =>
+        {
+            entity.ToTable("Addresses");
+            entity.Property(e => e.Createdat)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("createdat");
+            entity.Property(e => e.Modifiedat)
+                .HasDefaultValueSql("now()")
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("modifiedat");
+        });
 
         modelBuilder.Entity<Category>(entity =>
         {

@@ -40,10 +40,12 @@
             <table class="table align-middle justify-content-center p-3" id="tablemod">
                 <thead>
                     <tr>
-                        <th class="sortOrder" data-order="Name" style="cursor: pointer;">
+                        @* <th class="sortOrder" data-order="Name" style="cursor: pointer;">
                             Name
                             <i class="fa-solid fa-arrow-up small sortIcon isAscending"></i>
                             <i class="fa-solid fa-arrow-down small sortIcon"></i>
+                        </th> *@
+                        <th class="sortOrder" data-order="Name" style="cursor: pointer;">Name&nbsp;&uarr;&darr;
                         </th>
                         <th class="sortOrder" data-order="Category" style="cursor: pointer;">Category&nbsp;&uarr;&darr;
                         </th>
@@ -93,7 +95,7 @@
                                 @if (@item.AdminComment != null)
                                 {
                                     <i data-id="@item.Id" data-comment="@item.AdminComment"
-                                        class="fa-regular fa-comment m-2 txtCustom showComment" title="Admin Comment"></i>
+                                        class="fa-regular fa-comment m-2 txtCustom showComment" title="Admin Comment" style="cursor: pointer;"></i>
                                 }
                             </td>
                         </tr>

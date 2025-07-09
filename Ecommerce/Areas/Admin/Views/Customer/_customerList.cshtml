@@ -36,7 +36,8 @@
                             <td class="text-secondary">@item.Firstname @item.Lastname</td>
                             <td class="text-secondary">@item.IUser.Email</td>
                             <td class="text-secondary">@item.IUser.PhoneNumber</td>
-                            <td><i data-id="@item.Id" class="bi bi-house-add txtCustom editAddress fw-semibold"></i>
+                            <td><i data-id="@item.Id" class="bi bi-house-add txtCustom editAddress fw-semibold" title="Edit Address"
+                                    style="cursor: pointer;"></i>
                                 <i data-id="@item.Id" class="fa fa-edit m-2 txtCustom editDetails" title="Edit Product"
                                     style="cursor: pointer;"></i>
                             </td>
@@ -70,9 +71,41 @@
     </div>
 </div>
 
+<div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Customer Addresses</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="addressModalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <partial name="_Toastr" />
 
 <script>
+
+    $(document).on("click", ".editAddress", function () {
+        const userId = $(this).data("id");
+
+        $.ajax({
+            url: '/Admin/Customer/GetUserAddresses',
+            type: 'GET',
+            data: { userId: userId },
+            success: function (html) {
+                $('#addressModalBody').html(html);
+                $('#addressModal').modal('show');
+            },
+            error: function () {
+                alert("Unable to load addresses.");
+            }
+        });
+    });
+
 
     function changePageSize() {
         let pageSizeNew = $('.pageSizeSelect').val();

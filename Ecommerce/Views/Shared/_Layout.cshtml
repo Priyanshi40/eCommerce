@@ -25,17 +25,22 @@
             <div class="container-fluid">
                 <div class="d-flex align-items-center justify-content-start">
                     <b class="text-white ps-2 fs-5">ECOMMERCE SYSTEM</b>
+                    <div>
+                        <a asp-controller="Home" asp-action="ProductByCategory"
+                            class="ps-5 fs-6" style="text-decoration: none !important;">
+                            <span class="text-white fw-bold">Products</span>
+                        </a>
+                    </div>
                 </div>
                 <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
                     <li class="nav-item mx-4">
-                    <a class="nav-link position-relative" href="/Home/Cart">
-                        <i class="fa-solid fa-cart-plus text-white fs-5"></i>
-                        <span id="cartCount"
-                            class="position-absolute top-0 badge rounded-pill bg-danger">
-                            0
-                        </span>
-                    </a>
-                </li>
+                        <a class="nav-link position-relative" href="/Home/Cart">
+                            <i class="fa-solid fa-cart-plus text-white fs-5"></i>
+                            <span id="cartCount" class="position-absolute top-0 badge rounded-pill bg-danger">
+                                0
+                            </span>
+                        </a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="btn btn btn-light" asp-action="Login" asp-controller="Account"><i
                                 class="fa-solid fa-right-from-bracket text-muted"></i> <span

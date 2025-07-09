@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using DAL.Models;
 
 namespace DAL.ViewModels;
@@ -10,6 +11,10 @@ public class UserViewModel
     public string? IdentityUserId { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
+
+    [Required(ErrorMessage = "First Name is Required")]
+    [MaxLength(50, ErrorMessage = "First Name can't be longer than 50 characters")]
+    [RegularExpression(@"^\S.*$", ErrorMessage = "First Name can't start with a space")]
     public string Firstname { get; set; }
     public string? Lastname { get; set; }
     public bool IsApproved { get; set; }

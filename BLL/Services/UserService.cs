@@ -31,6 +31,7 @@ public class UserService : IUserService
         UserViewModel userDetail = new()
         {
             Id = user.Id,
+            IdentityUserId = user.IdentityUserId,
             Firstname = user.Firstname,
             Lastname = user.Lastname,
             Email = user.IUser.Email,
@@ -38,17 +39,48 @@ public class UserService : IUserService
         };
         return userDetail;
     }
+    public List<Country> GetCountryService()
+    {
+        return _userRepo.GetCountry();
+    }
+    public IEnumerable<State> GetStateService(int? countryId)
+    {
+        return _userRepo.GetState(countryId);
+    }
+    public IEnumerable<City> GetCityService(int? stateId)
+    {
+        return _userRepo.GetCity(stateId);
+    }
+    public AddressViewModel GetUserAddresses(int userId)
+    {
+        var addresses = _userRepo.GetUserAddresses(userId);
+        var user = _userRepo.GetUserById(userId);
+        AddressViewModel address = new()
+        {
+            Address = addresses.Select(a => new AddressViewModel
+            {
+                Id = a.Id,
+                Street = a.Street,
+                Landmark = a.Landmark,
+                CityId = a.CityId,
+                StateId = a.StateId,
+                CountryId = a.CountryId,
+                CityName = a.City?.Name,
+                StateName = a.State?.Name,
+                CountryName = a.Country?.Name,
+                PostalCode = a.PostalCode,
+                IsDefault = a.IsDefault,
+                HouseName = a.HouseName,
+                FirstName = user.Firstname,
+                LastName = user.Lastname,
+            }).ToList(),
+        };
+        return address;
+    }
 
-    public async Task<UserViewModel> GetUsersService(string searchString,SortOrder sort, string statusFilter, int pageNumber, int pageSize)
+    public async Task<UserViewModel> GetUsersService(string searchString, SortOrder sort, int pageNumber, int pageSize)
     {
         IQueryable<UserDetails> queyableUsers = await _userRepo.GetQueryableUsers(searchString);
-        if (!string.IsNullOrEmpty(statusFilter))
-        {
-            if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
-            {
-                queyableUsers = queyableUsers.Where(p => p.Status == parsedStatus);
-            }
-        }
         queyableUsers = sort switch
         {
             SortOrder.Name => queyableUsers.OrderByDescending(u => u.Firstname),
@@ -79,6 +111,7 @@ public class UserService : IUserService
                 Lastname = user.LastName,
                 IdentityUserId = user.IdentityUserId,
                 Status = ProductStatus.Approved,
+                ModifiedBy = user.ModifiedBy
             };
             if (user.UserId != 0 || user.IdentityUserId != null)
             {
@@ -86,6 +119,30 @@ public class UserService : IUserService
                 oldUser.IdentityUserId = user.IdentityUserId;
             }
             return _userRepo.AddUser(oldUser);
+        }
+        return -1;
+    }
+    public int AddUserAddress(AddressViewModel address)
+    {
+        if (address != null)
+        {
+            Address oldAdd = new()
+            {
+                Street = address.Street,
+                Landmark = address.Landmark,
+                PostalCode = address.PostalCode,
+                HouseName = address.HouseName,
+                CityId = address.CityId,
+                StateId = address.StateId,
+                CountryId = address.CountryId,
+                ModifiedBy = address.ModifiedBy,
+                IsDefault = address.IsDefault,
+            };
+            if (address.Id != 0)
+            {
+                oldAdd.Id = address.Id;
+            }
+            return _userRepo.AddUserAddress(oldAdd);
         }
         return -1;
     }

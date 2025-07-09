@@ -5,7 +5,7 @@
 }
 
 <div class="content dash p-4 m-4">
-    <h2 class="mb-4">My Cart</h2>
+    <h2 class="mb-4 txtCustom">My Cart</h2>
 
     <div class="row">
         @if (Model.CartItems.Count > 0)
@@ -20,12 +20,15 @@
                             <p class="card-text small text-muted">@item.Name</p>
                             <p class="card-text fw-semibold">₹ @item.Price</p>
                         </div>
-                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-                            <a href="/User/Home/ProductDetails?productId=@item.Id"
-                                class="btn btn-outline-primary btn-sm">View</a>
-                            <button class="btn btn-outline-danger btn-sm removeFromWishlist" data-id="@item.Id">
-                                <i class="fa fa-heart"></i>
-                            </button>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="d-flex flex-row" style="border: 2px solid #0c5ba3; border-radius: 5px;">
+                                    <div class="btn dec" data-quantity="@item.Quantity">-</div>
+                                    <div class="d-flex align-items-center justify-content-center px-2 input">@item.Quantity</div>
+                                    <div class="btn inc" data-quantity="@item.Quantity">+</div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary">Remove</button>
                         </div>
                     </div>
                 </div>
@@ -74,5 +77,32 @@
                 }
             });
         });
+
+        $('.dec').click(function (e) {
+        e.preventDefault();
+        var input = $(this).closest('.d-flex').find('.input')[0];
+        var value = parseInt(input.innerHTML);
+        if (!isNaN(value)) {
+            if (value < 1) {
+                input.innerHTML = 0;
+            }
+            else {
+                input.innerHTML = value - 1;
+            }
+        }
+    });
+    $('.inc').click(function (e) {
+        e.preventDefault();
+        var input = $(this).closest('.d-flex').find('.input')[0];
+        var value = parseInt(input.innerHTML);
+        var maxVal = $(this).data('quantity');
+        console.log(maxVal);
+        if (value >= maxVal) {
+            input.innerHTML = maxVal;
+        }
+        else if (!isNaN(value)) {
+            input.innerHTML = value + 1;
+        }
+    });
     </script>
 }

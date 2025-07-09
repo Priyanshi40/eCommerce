@@ -1,0 +1,186 @@
+@model DAL.ViewModels.AddressViewModel
+
+@{
+    ViewData["Title"] = "Edit Address";
+    ViewData["showLayout"] = true;
+}
+
+<div class="content dash p-4 m-4" id="content">
+    <div class="d-flex flex-col justify-content-between align-items-center">
+        <h2 class="txtCustom">Edit Address</h2>
+        <div class="flex-end pe-0">
+            <a href="@Url.Action("Index", "Customer")" class="btn btn-outline-primary mx-2"><i
+                    class="fa-solid fa-angle-left pe-2"></i>Back</a>
+        </div>
+    </div>
+    <div class="card p-4 shadow mt-3">
+        <form class="UpdateAddress" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="d-flex row m-1">
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="name" asp-for="FirstName" readonly>
+                    <label for="name">First Name</label>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="lname" asp-for="LastName" readonly>
+                    <label for="lname">Last Name</label>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex row m-1">
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="street" asp-for="Street">
+                    <label for="street">Street</label>
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="house" asp-for="HouseName">
+                    <label for="house">House No./Building Name</label>
+                    <span asp-validation-for="HouseName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex row m-1">
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="code" asp-for="PostalCode">
+                    <label for="code">Postal Code</label>
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+                <div class="col-md ps-1 form-floating mb-2">
+                    <input type="text" class="form-control" id="landmark" asp-for="Landmark">
+                    <label for="landmark">Landmark</label>
+                    <span asp-validation-for="Landmark" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex row m-1">
+                <div class="col-md ps-1 form-floating mb-2">
+                    <select class="form-select" asp-for="CountryId" id="countryLabel" asp-items="ViewBag.Countries">
+                        <option selected>Select Country</option>
+                    </select>
+                    <label for="countryLabel">Country</label>
+                </div>
+                <div class="col-md ps-1 form-floating mb-2">
+                    <select class="form-select" asp-for="StateId" id="stateLabel">
+                        <option value="@Model.StateId" selected>@(Model.StateName)</option>
+                    </select>
+                    <label for="stateLabel">State</label>
+                </div>
+                <div class="col-md ps-1 form-floating mb-2">
+                    <select class="form-select" asp-for="CityId" id="cityLabel">
+                        <option value="@Model.CityId" selected>@(Model.CityName)</option>
+                    </select>
+                    <label for="cityLabel">City</label>
+                </div>
+            </div>
+            <div class="d-flex row m-1">
+                <div class="form-check mb-3 ps-4">
+                    <input asp-for="IsDefault" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsDefault" class="form-check-label">Default</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end me-2">
+                <button type="submit" class="btn btn-primary mx-2" onclick="UpdateAddressFunction()">Save</button>
+                <button type="button" class="btn btn-outline-primary mx-2 reset">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('#countryLabel').change(function () {
+            let countryId = $(this).val();
+            $('#stateLabel').empty().append(new Option("Select State", null));
+            $('#cityLabel').empty().append(new Option("Select City", null));
+            if (countryId) {
+                $.ajax({
+                    url: "@Url.Action("GetStateByCountry", "Customer")",
+                    type: "GET",
+                    data: { countryId: countryId },
+                    success: function (data) {
+                        console.log(data);
+                        $.each(data, function (index, state) {
+                            $('#stateLabel').append(new Option(state.name, state.id));
+                        })
+                    }
+                })
+            }
+        });
+
+        $('#stateLabel').change(function () {
+            let stateId = $(this).val();
+            $('#cityLabel').empty().append(new Option("Select City", null));
+            if (stateId) {
+                $.ajax({
+                    url: "@Url.Action("GetCityByState", "Customer")",
+                    type: "GET",
+                    data: { stateId: stateId },
+                    success: function (data) {
+                        console.log(data);
+                        $.each(data, function (index, city) {
+                            $('#cityLabel').append(new Option(city.name, city.id));
+                        })
+                    }
+                })
+            }
+        });
+
+        $('#stateLabel').click(function () {
+            let stateId = $(this).val();
+            let countryId = $('#countryLabel').val();
+            if (countryId == "Select Country") {
+                toastr.warning("Please select Country first");
+            }
+            else {
+                @* $('#countryLabel').change(); *@
+            }
+        });
+        $('#cityLabel').click(function () {
+            let cityId = $(this).val();
+            let stateId = $('#stateLabel').val();
+            if (stateId == "Select State" || stateId == 0) {
+                toastr.warning("Please select state first");
+            }
+        });
+    });
+
+    $(document).on("click", '.reset', function () {
+        $(".UpdateAddress")[0].reset();
+    });
+
+    function UpdateAddressFunction() {
+        event.preventDefault();
+        event.stopPropagation();
+
+        let formData = new FormData($(".UpdateAddress")[0]);
+
+        var result = $('.UpdateAddress').valid();
+
+        console.log(result);
+        if (result) {
+            $.ajax({
+                url: '/Admin/Customer/EditAddress',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status == "ValidationError") {
+                        toastr.error("Enter valid data");
+                        return;
+                    }
+                    else if (response.status == "Success") {
+                        toastr.success("Address Edited Successfully");
+                        return;
+                    }
+                }
+            });
+        }
+    }
+</script>

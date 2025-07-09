@@ -8,19 +8,13 @@
 
 <div class="content dash p-4 m-4" id="content">
     <div class="d-flex flex-wrap justify-content-center align-items-center ">
-        <h2 class="col-lg-7 txtCustom">Customers</h2>
+        <h2 class="col-lg txtCustom">Customers</h2>
 
         <div class="col-lg-3 my-1 position-relative me-2 searchItem">
             <input class="row-md form-control fs-6 " type="text" aria-label="Search" placeholder="Search"
                 name="searchString" id="searchCInput">
             <button type="button" class="position-absolute searchInput btn btn-link"><i
                     class="fa-solid fa-search"></i></button>
-        </div>
-        <div class="col-lg my-1 me-2">
-            <select class="form-select fs-6" aria-label="Default select example" id="StatusLabel"
-                asp-items="@(new SelectList(Enum.GetNames(typeof(ProductStatus))))">
-                <option value="All" selected>All Status</option>
-            </select>
         </div>
     </div>
     <div>
@@ -64,10 +58,6 @@
     $('#searchCInput').keyup(function () {
         var searchValue = $(this).val();
         $('#searchCInput').data('search', searchValue);
-        loadUsers();
-    });
-
-    $('#StatusLabel').change(function () {
         loadUsers();
     });
 

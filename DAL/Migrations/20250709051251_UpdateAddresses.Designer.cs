@@ -3,6 +3,7 @@ using System;
 using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DAL.Migrations
 {
     [DbContext(typeof(E_CommerceContext))]
-    partial class E_CommerceContextModelSnapshot : ModelSnapshot
+    [Migration("20250709051251_UpdateAddresses")]
+    partial class UpdateAddresses
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,16 +48,11 @@ namespace DAL.Migrations
                         .HasColumnName("createdat")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<string>("HouseName")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
                     b.Property<bool>("IsDefault")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Landmark")
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                        .HasColumnType("text");
 
                     b.Property<int>("ModifiedBy")
                         .HasColumnType("integer");
@@ -75,8 +73,7 @@ namespace DAL.Migrations
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer");

@@ -3,6 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace DAL.ViewModels;
+
 public class RegisterViewModel
 {
     [Required]
@@ -30,5 +31,7 @@ public class RegisterViewModel
     public string Phone { get; set; } = null!;
     public int UserId { get; set; }
     public string? IdentityUserId { get; set; }
+    
+    public int? ModifiedBy { get; set; }
 
 }
