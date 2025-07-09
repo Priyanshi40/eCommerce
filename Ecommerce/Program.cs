@@ -1,4 +1,5 @@
 using BLL.Interfaces;
+using BLL.Middleware;
 using BLL.Repositories;
 using BLL.Services;
 using BLL.Utility;
@@ -60,6 +61,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseRouting();
 
 app.UseAuthentication();

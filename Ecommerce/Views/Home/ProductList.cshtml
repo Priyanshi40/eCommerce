@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Products";
     ViewData["showLayout"] = true;
+    int currentUser = ViewBag.CurrentUser != null ? ViewBag.CurrentUser : 0;
 }
 
 <style>
@@ -51,7 +52,9 @@
                                 <p class="card-text fw-semibold">@item.Price.ToString("C")</p>
                             </div>
                             <div class="card-footer wishList bg-white border-top-0 d-flex justify-content-end">
-                                <div><i class="fa-regular fa-heart fs-5 txtCustom"></i></div>
+                                <div class="wishList"><i
+                                        class="fa-heart fs-5 txtCustom @(item.WishList.Any(w => w.UserId == currentUser) ? "fa-solid text-danger" : "fa-regular")"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,12 +71,49 @@
 </div>
 
 <script>
-    $('.card').click(function () {
-        var productId = $(this).data('id');
+    $('.card-img-top').click(function (e) {
+        e.stopPropagation();
+        e.stopPropagation();
+        var productId = $(this).closest('.card').attr('data-id');
         window.location.href = '/Home/ProductDetails/?productId=' + productId;
     });
-    $('.wishList').click(function () {
-        event.stopPropagation();
-        window.location.href = '/Account/Login';
+    $('.wishList').click(function (e) {
+        e.stopPropagation();
+        e.stopPropagation();
+        @* if (@currentUser == 0) {
+            console.log(@currentUser);
+            window.location.href = '/Account/Login';
+        }
+        else { *@
+            var icon = $(this).find('i');
+        var productId = $(this).closest('.card').attr('data-id');
+        $.ajax({
+            url: '/User/Wishlist/ToggleWishlist',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                console.log(response);
+                if (response.status == "Success") {
+                    if (icon.hasClass('fa-regular')) {
+                        icon.removeClass('fa-regular').addClass('fa-solid text-danger');
+                    } else {
+                        icon.removeClass('fa-solid text-danger').addClass('fa-regular');
+                    }
+                    toastr.success("Product wishlist updated.");
+                }
+                else if (response.status == "UnAuthorized") {
+                    toastr.error("Please log in to use wishlist.");
+                } else if (response.status == "NotFound") {
+                    toastr.error("Product not found !!");
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+                if (xhr.status == 401) {
+                    window.location.href = '/User/Wishlist/ToggleWishlist/?productId=' + productId;
+                }
+            }
+        });
+        @* } *@
     });
 </script>

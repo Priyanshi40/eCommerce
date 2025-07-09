@@ -10,29 +10,41 @@ namespace Ecommerce.Controllers;
 
 public class HomeController : Controller
 {
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly IUserService _userService;
     private readonly ICategoryService _catService;
     private readonly IProductService _proService;
-    public HomeController(ICategoryService catService, IProductService proService)
+    public HomeController(UserManager<IdentityUser> userManager,IUserService userService,ICategoryService catService, IProductService proService)
     {
+        _userManager = userManager;
+        _userService = userService;
         _catService = catService;
         _proService = proService;
     }
     public IActionResult Index(string statusFilter, string searchString)
     {
-        List<Category> Categories = _catService.GetQueryableCategories(searchString,SortOrder.Name, statusFilter).ToList();
+        List<Category> Categories = _catService.GetQueryableCategories(searchString, SortOrder.Name, statusFilter).ToList();
         var CategoryView = new CategoryViewModel
         {
             Categories = Categories,
         };
         return View(CategoryView);
     }
-    public IActionResult ProductByCategory(string searchString, int category, int pageNumber = 1, int pageSize = 5)
+    public IActionResult ProductByCategory(string searchString, int category, int pageNumber = 1, int pageSize = 15)
     {
-        ProductViewModel productsView = _proService.GetProductsService(searchString,SortOrder.Name, category, ProductStatus.Approved.ToString(), pageNumber, pageSize);
+        var userIdentityId = _userManager.GetUserId(User);
+        if(userIdentityId != null)
+            ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;
+
+        ProductViewModel productsView = _proService.GetProductsService(searchString, SortOrder.Name, category, ProductStatus.Approved.ToString(), pageNumber, pageSize);
         return View("ProductList", productsView);
     }
     public IActionResult ProductDetails(int productId)
     {
+        var userIdentityId = _userManager.GetUserId(User);
+        if(userIdentityId != null)
+            ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;  
+
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View("ProductDetails", productDetails);
     }
@@ -70,7 +82,8 @@ public class HomeController : Controller
                     Name = addToCart.Name,
                     Price = addToCart.Price,
                     CoverImage = addToCart.CoverImage,
-                    Quantity = 1
+                    Quantity = 1,
+                    StockQuantity = addToCart.StockQuantity,
                 });
             }
             cart = JsonConvert.SerializeObject(cartItems);
@@ -85,7 +98,8 @@ public class HomeController : Controller
                     Name = addToCart.Name,
                     Price = addToCart.Price,
                     CoverImage = addToCart.CoverImage,
-                    Quantity = 1
+                    Quantity = 1,
+                    StockQuantity = addToCart.StockQuantity,
                 }
             };
             cart = JsonConvert.SerializeObject(newCart);
@@ -93,13 +107,61 @@ public class HomeController : Controller
         HttpContext.Session.SetString("Cart", cart);
         return Ok(new { status = AjaxError.Success.ToString() });
     }
+    public IActionResult UpdateCart(int productId,int quantity)
+    {
+        var cart = HttpContext.Session.GetString("Cart") ?? "";
+        if (!string.IsNullOrEmpty(cart))
+        {
+            var cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
+            if (cartItems.Any(c => c.ProductId == productId))
+            {
+                var existingItem = cartItems.FirstOrDefault(c => c.ProductId == productId);
+                if (existingItem != null)
+                {
+                    existingItem.Quantity = quantity;
+                    cart = JsonConvert.SerializeObject(cartItems);
+                    HttpContext.Session.SetString("Cart", cart);
+                    return RedirectToAction("Cart", "Home");
+                }
+            }
+        }
+        return Ok(new { status = AjaxError.NotFound.ToString() });
+    }
+    public IActionResult RemoveFromCart(int productId)
+    {
+        var cart = HttpContext.Session.GetString("Cart") ?? "";
+        if (!string.IsNullOrEmpty(cart))
+        {
+            var cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
+            if (cartItems.Any(c => c.ProductId == productId))
+            {
+                var existingItem = cartItems.FirstOrDefault(c => c.ProductId == productId);
+                if (existingItem != null)
+                {
+                    cartItems.Remove(existingItem);
+                    cart = JsonConvert.SerializeObject(cartItems);
+                    HttpContext.Session.SetString("Cart", cart);
+                    return RedirectToAction("Cart", "Home");
+                }
+            }
+        }
+        return Ok(new { status = AjaxError.NotFound.ToString() });
+    }
 
     public IActionResult Cart(int pageNumber = 1, int pageSize = 8)
     {
+        var userIdentityId = _userManager.GetUserId(User);
+        if(userIdentityId != null)
+            ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;
+
+            
         var cart = HttpContext.Session.GetString("Cart") ?? "";
-        var cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
-        int totalRecords = cartItems != null ? cartItems.Count : 0;
-        CartViewModel cartView = new ()
+        List<CartViewModel> cartItems = new();
+        if (!string.IsNullOrEmpty(cart))
+            cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
+
+        int totalRecords = cartItems.Count;
+        CartViewModel cartView = new()
         {
             CartItems = cartItems,
             PageNumber = pageNumber,

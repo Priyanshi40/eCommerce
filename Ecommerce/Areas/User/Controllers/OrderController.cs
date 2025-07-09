@@ -1,7 +1,4 @@
 using BLL.Interfaces;
-using DAL.Enums;
-using DAL.Models;
-using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,14 +7,14 @@ namespace Ecommerce.Areas.User.Controllers;
 
 [Area("User")]
 [Authorize(Roles = "User")]
-public class HomeController : Controller
+public class OrderController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IUserService _userService;
     private readonly ICategoryService _catService;
     private readonly IProductService _proService;
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ICategoryService catService, IProductService proService, IUserService userService)
+    public OrderController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ICategoryService catService, IProductService proService, IUserService userService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
@@ -25,9 +22,13 @@ public class HomeController : Controller
         _proService = proService;
         _userService = userService;
     }
-    public async Task<IActionResult> Logout()
+    public IActionResult Index()
     {
-        await _signInManager.SignOutAsync();
-        return RedirectToAction("Login", "Account", new { area = "" });
+        return View();
     }
+    public IActionResult PlaceOrder()
+    {
+        return View("OrderCard");
+    }
+
 }

@@ -29,7 +29,7 @@
                     <a class="nav-link position-relative mx-4" href="#" id="notifDropdown" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi bi-bell-fill fs-5"></i>
-                        <span class="position-absolute top-0 badge rounded-pill bg-danger" id="notifCount">0</span>
+                        <span class="position-absolute top-0 badge rounded-pill bg-danger" id="notifCount"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end px-2 shadow-sm" style="min-width: 300px;"
                         aria-labelledby="notifDropdown" id="notificationListContainer">
@@ -122,54 +122,6 @@
     <script>
         $(document).ready(function () {
             notificationsCount();
-        });
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub")
-            .build();
-
-        connection.on("ReceiveNotification", function (message) {
-            loadNotifications();
-            toastr.info(message);
-        });
-
-        connection.start().catch(err => console.error(err));
-
-        function notificationsCount() {
-            $.get("/Admin/Home/GetNotificationCount", function (res) {
-                $('#notifCount').text(res.count);
-                if (res.count === 0) {
-                    $('#notifCount').hide();
-                }
-            });
-        }
-        function loadNotifications() {
-            $.get("/Admin/Home/GetNotification", function (html) {
-                $("#notificationListContainer").html(html);
-                notificationsCount();
-            });
-        }
-
-        $(document).on("click", ".markRead", function () {
-            const id = $(this).data("id");
-            $.post("/Admin/Home/MarkAsRead", { notificationId: id }, function () {
-                loadNotifications();
-            });
-        });
-
-        $(document).on("click", "#markAllRead", function () {
-            $.get("/Admin/Home/MarkAllAsRead", function (data) {
-                if (data.status == "Error") {
-                    toastr.warning("Failed to Read All Notification");
-                }
-                else {
-                    loadNotifications();
-                }
-            });
-        });
-
-        $("#notifDropdown").on("click", function () {
-            loadNotifications();
         });
     </script>
 

@@ -11,6 +11,7 @@
                 <h3 class="text-center mb-4">Login to Your Account</h3>
 
                 <form asp-action="Login" method="post">
+                    <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <div class="position-relative mb-3" id="emailDiv">
                         <input id="email" asp-for="Email" class="fs-6 form-control form-control-lg" type="text"

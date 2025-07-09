@@ -5,7 +5,7 @@
 }
 
 <div class="content dash p-4 m-4">
-    <h2 class="mb-4">My Wishlist</h2>
+    <h2 class="mb-4 txtCustom">My Wishlist</h2>
 
     <div class="row">
         @if (Model.Products.Count > 0)
@@ -21,7 +21,7 @@
                             <p class="card-text fw-semibold">₹ @item.Price</p>
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-between">
-                            <a href="/User/Home/ProductDetails?productId=@item.Id" class="btn btn-outline-primary btn-sm">View</a>
+                            <a href="/Home/ProductDetails?productId=@item.Id" class="btn btn-outline-primary btn-sm">View</a>
                             <button class="btn btn-outline-danger btn-sm removeFromWishlist" data-id="@item.Id">
                                 <i class="fa fa-heart"></i>
                             </button>

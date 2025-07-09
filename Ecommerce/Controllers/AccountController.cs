@@ -25,14 +25,19 @@ public class AccountController : Controller
     }
 
     [HttpGet]
-    public IActionResult Login()
+    public IActionResult Login(string? ReturnUrl = null)
     {
+        ViewData["ReturnUrl"] = ReturnUrl;
         if (User.Identity != null && User.Identity.IsAuthenticated && _signInManager.IsSignedIn(User))
         {
             var user = _userManager.GetUserAsync(User).Result;
             if (user != null)
             {
                 var userRole = _userManager.GetRolesAsync(user).Result;
+                
+                if (userRole[0].ToString() == "User")
+                    return RedirectToAction("Index", "Home");
+
                 return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
             }
         }
@@ -40,7 +45,7 @@ public class AccountController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Login(LoginViewModel model)
+    public async Task<IActionResult> Login(LoginViewModel model, string? ReturnUrl)
     {
         if (ModelState.IsValid)
         {
@@ -52,6 +57,13 @@ public class AccountController : Controller
                 {
                     TempData["Message"] = "Welcome" + model.Email;
                     var userRole = _userManager.GetRolesAsync(user).Result;
+
+                    if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                        return Redirect(ReturnUrl);
+                        
+                    if (userRole[0].ToString() == "User")
+                        return RedirectToAction("Index", "Home");
+
                     return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
                 }
             }

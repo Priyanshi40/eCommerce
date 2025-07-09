@@ -45,8 +45,6 @@ public class NotificationController : Controller
         var userId = _userManager.GetUserId(User);
         bool notifications = _notify.MarkAllAsRead(userId);
         if (notifications) return Ok(new { status = AjaxError.Success.ToString() });
-
-        return Ok(new { status = AjaxError.NotFound.ToString() });
-            
+        return Ok(new { status = AjaxError.NotFound.ToString() });   
     }
 }

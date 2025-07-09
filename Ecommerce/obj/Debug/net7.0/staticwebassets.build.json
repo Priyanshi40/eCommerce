@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FjpK3lRmlU6v8Ioic9lZY1g863+JybgfHdxBIp9zMdA=",
+  "Hash": "0uGgEZOVhJv82dzPi1xwGennL4ISAUSkXlLwOJlSSeI=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -2225,40 +2225,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
-    },
-    {
-      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\js\\user.js",
-      "SourceId": "Ecommerce",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
-      "BasePath": "_content/Ecommerce",
-      "RelativePath": "js/user.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\user.js"
-    },
-    {
-      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\js\\vendor.js",
-      "SourceId": "Ecommerce",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
-      "BasePath": "_content/Ecommerce",
-      "RelativePath": "js/vendor.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\vendor.js"
     },
     {
       "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",

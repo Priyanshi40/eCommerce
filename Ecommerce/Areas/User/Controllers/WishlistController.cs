@@ -34,6 +34,8 @@ public class WishListController : Controller
         var viewModel = _wishService.GetWishlistItems(userId, pageNumber, pageSize);
         return View(viewModel);
     }
+
+    [AllowAnonymous]
     public IActionResult ToggleWishlist(int productId)
     {
         var userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
@@ -44,7 +46,9 @@ public class WishListController : Controller
         if (result)
             return Ok(new { status = AjaxError.Success.ToString() });
         else
+            // TempData["Error"] = "Not Found!!";
             return Ok(new { status = AjaxError.NotFound.ToString() });
+        // return RedirectToAction("Index");
     }
 
 }
