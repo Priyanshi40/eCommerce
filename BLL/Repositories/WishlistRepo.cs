@@ -14,19 +14,19 @@ public class WishlistRepo : IWishlistRepo
     }
     public int GetWishlistCount(int userId)
     {
-        var count = _context.Wishlist.Count(w => w.UserId == userId);
+        int count = _context.Wishlist.Count(w => w.UserId == userId);
         return count;
     }
-
-    public IQueryable<Product> GetWishlistItems(int userId)
+    public List<Product> GetWishlistItems(int userId)
     {
-        var wishlistedProducts = _context.Wishlist
+        List<Product> wishlistedProducts = _context.Wishlist
             .Include(w => w.Product)
                 .ThenInclude(p => p.Category)
             .Include(w => w.Product.Images)
             .Where(w => w.UserId == userId && !w.Product.IsDeleted && w.Product.Status == ProductStatus.Approved)
             .Select(w => w.Product)
-            .Distinct();
+            .Distinct()
+            .ToList();
 
         return wishlistedProducts;
 
@@ -35,7 +35,7 @@ public class WishlistRepo : IWishlistRepo
     {
         try
         {
-            var wishlistItem = _context.Wishlist.FirstOrDefault(w => w.ProductId == productId && w.UserId == userId);
+            Wishlist? wishlistItem = _context.Wishlist.FirstOrDefault(w => w.ProductId == productId && w.UserId == userId);
             if (wishlistItem == null)
             {
                 wishlistItem = new Wishlist

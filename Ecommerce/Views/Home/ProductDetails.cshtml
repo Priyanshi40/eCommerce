@@ -121,16 +121,19 @@
 
             const productId = '@Model.Id';
             $.ajax({
-                url: '/Home/AddToCart',
+                url: '/Cart/AddToCart',
                 type: 'POST',
                 data: JSON.stringify(cartDetails),
                 contentType: "application/json",
                 success: function (response) {
-                    if (response.status == "Success") {
+                    if (response.success) {
                         toastr.success('Product added to cart successfully!');
-                    } else {
-                        toastr.error('Failed to add product to cart.');
+                    } else if(response.status == 401){
+                        toastr.error('Please Log In Perform this Action');
+                    } else if(response.status == 400){
+                        toastr.error('Unable to add to cart.');
                     }
+
                 },
                 error: function () {
                     alert('An error occurred while adding the product to the cart.');

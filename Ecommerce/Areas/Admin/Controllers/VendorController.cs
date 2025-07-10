@@ -44,10 +44,10 @@ public class VendorController : Controller
         if (vendor.Id <= 0)
             return Ok(new { status = AjaxError.NotFound.ToString() });
 
-        var userId = _vendorService.ApproveVendor(vendor);
+        string userId = _vendorService.ApproveVendor(vendor);
         if (!string.IsNullOrEmpty(userId))
         {
-             var notification = new Notification
+            Notification notification = new()
             {
                 Message = "Your Profile has been " + vendor.Status + " By Admin !!",
                 IsRead = false,

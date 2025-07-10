@@ -20,7 +20,7 @@ public class VendorService : IVendorService
         IQueryable<VendorDetails> queyableVendors = _vendorRepo.GetQueryableVendors(searchString);
         if (!string.IsNullOrEmpty(statusFilter))
         {
-            if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
+            if (Enum.TryParse(statusFilter, out ProductStatus parsedStatus))
             {
                 queyableVendors = queyableVendors.Where(p => p.UserNavigation.Status == parsedStatus);
             }
@@ -36,7 +36,7 @@ public class VendorService : IVendorService
         if (queyableVendors != null)
         {
             int totalRecords = queyableVendors.Count();
-            var paginatedVendors = queyableVendors.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            List<VendorDetails> paginatedVendors = queyableVendors.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             vendorsView.Vendors = paginatedVendors;
             vendorsView.PageSize = pageSize;

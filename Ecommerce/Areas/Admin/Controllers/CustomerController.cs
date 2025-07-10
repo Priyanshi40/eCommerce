@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using BLL.Interfaces;
 using BLL.Services;
 using DAL.Enums;
@@ -20,13 +19,15 @@ public class CustomerController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IUserService _userService;
+    private readonly IAddressService _addService;
     private readonly IVendorService _vendorService;
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly INotificationService _noficationService;
-    public CustomerController(UserManager<IdentityUser> userManager, IUserService userService, IVendorService vendorService, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
+    public CustomerController(UserManager<IdentityUser> userManager, IUserService userService,IAddressService addService, IVendorService vendorService, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
     {
         _userManager = userManager;
         _userService = userService;
+        _addService = addService;
         _vendorService = vendorService;
         _hubContext = hubContext;
         _noficationService = noficationService;
@@ -47,29 +48,29 @@ public class CustomerController : Controller
     }
     public IActionResult GetUserAddresses(int userId)
     {
-        var addresses = _userService.GetUserAddresses(userId);
+        AddressViewModel addresses = _addService.GetUserAddresses(userId);
         return PartialView("_addresses", addresses);
     }
     public IActionResult GetStateByCountry(int countryId)
     {
-        IEnumerable<State> stateList = _userService.GetStateService(countryId);
+        IEnumerable<State> stateList = _addService.GetStateService(countryId);
         return Json(stateList);
     }
     public IActionResult GetCityByState(int stateId)
     {
-        IEnumerable<City> cityList = _userService.GetCityService(stateId);
+        IEnumerable<City> cityList = _addService.GetCityService(stateId);
         return Json(cityList);
     }
 
     [HttpPost]
     public IActionResult DetailsViaModel([FromBody] AddressViewModel model)
     {
-        ViewBag.Countries = new SelectList(_userService.GetCountryService(), "Id", "Name");
+        ViewBag.Countries = new SelectList(_addService.GetCountryService(), "Id", "Name");
         return View("AddressDetail", model);
     }
     public IActionResult EditDetails(RegisterViewModel userDetails)
     {
-        var user = _userService.GetUserById(_userManager.GetUserId(User));
+        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
         userDetails.ModifiedBy = user.UserId;
         _userService.AddUser(userDetails);
         return RedirectToAction("CustomerList", "Customer");
@@ -78,10 +79,10 @@ public class CustomerController : Controller
     {
         if (!ModelState.IsValid)
             return Ok(new { status = AjaxError.ValidationError.ToString() });
-        
-        var user = _userService.GetUserById(_userManager.GetUserId(User));
+
+        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
         address.ModifiedBy = user.UserId;
-        _userService.AddUserAddress(address);
+        _addService.AddUserAddress(address);
         return Ok(new { status = AjaxError.Success.ToString() });
     }
 

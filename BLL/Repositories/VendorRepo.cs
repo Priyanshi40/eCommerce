@@ -14,7 +14,7 @@ public class VendorRepo : IVendorRepo
     }
     public IQueryable<VendorDetails> GetQueryableVendors(string? searchString)
     {
-        var vendors = _context.VendorDetails.Include(p => p.UserNavigation.IUser).AsQueryable();
+        IQueryable<VendorDetails> vendors = _context.VendorDetails.Include(p => p.UserNavigation.IUser).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
         {

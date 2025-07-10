@@ -1,6 +1,4 @@
 using BLL.Interfaces;
-using DAL.Enums;
-using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -24,31 +22,41 @@ public class WishListController : Controller
     }
     public IActionResult GetWishlistCount()
     {
-        var userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
-        var count = _wishService.GetWishlistCount(userId);
+        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        int count = _wishService.GetWishlistCount(userId);
         return Json(new { count });
     }
     public IActionResult Index(int pageNumber = 1, int pageSize = 8)
     {
-        var userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
-        var viewModel = _wishService.GetWishlistItems(userId, pageNumber, pageSize);
+        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        ProductViewModel viewModel = _wishService.GetWishlistItems(userId, pageNumber, pageSize);
         return View(viewModel);
     }
-
-    [AllowAnonymous]
-    public IActionResult ToggleWishlist(int productId)
+    public IActionResult RemoveFromWishlist(int productId)
     {
-        var userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
         if (userId < 0)
-            return Ok(new { status = AjaxError.UnAuthorized.ToString() });
+            return Unauthorized();
 
         bool result = _wishService.AddProductToWishlist(productId, userId);
         if (result)
-            return Ok(new { status = AjaxError.Success.ToString() });
+            return Ok(new { success = true });
         else
-            // TempData["Error"] = "Not Found!!";
-            return Ok(new { status = AjaxError.NotFound.ToString() });
-        // return RedirectToAction("Index");
+            return BadRequest();
+        
+    }
+    public IActionResult ToggleWishlist(int productId,int categoryId)
+    {
+        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        if (userId < 0)
+            TempData["Error"] = "Please log in to use wishlist.";
+
+        bool result = _wishService.AddProductToWishlist(productId, userId);
+        if (result)
+            TempData["Message"] = "Wishlist updated !!";
+        else
+            TempData["Error"] = "Product not found !!";
+        return RedirectToAction("ProductByCategory","Home",new{area = "" , category = categoryId});
     }
 
 }

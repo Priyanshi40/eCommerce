@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var conn = builder.Configuration.GetConnectionString("EcommerceDBConnection");
+string? conn = builder.Configuration.GetConnectionString("EcommerceDBConnection");
 builder.Services.AddDbContext<E_CommerceContext>(q => q.UseNpgsql(conn));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -28,6 +28,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAddressRepo, AddressRepo>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductRepo, ProductRepo>();
@@ -38,14 +40,18 @@ builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
 builder.Services.AddScoped<IWishlistService, WishlistService>();
 builder.Services.AddScoped<INotificationRepo, NotificationRepo>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<ICartRepo, CartRepo>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 builder.Services.AddScoped<ImageService>();
+
 
 builder.Services.AddSingleton<NotificationHub>();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 

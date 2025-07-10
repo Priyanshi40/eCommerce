@@ -7,6 +7,7 @@ namespace DAL.ViewModels;
 
 public class ProductViewModel
 {
+    public ICollection<ProductViewModel> ProductDetails { get; set; } = new List<ProductViewModel>();
     public ICollection<Product> Products { get; set; } = new List<Product>();
     public int Id { get; set; }
 
@@ -31,6 +32,7 @@ public class ProductViewModel
     [Required(ErrorMessage = "Category is required")]
     public int CategoryId { get; set; }
     public string? CategoryName { get; set; }
+    public bool IsInCart { get; set; }
     public int PageSize { get; set; }
     public int PageNumber { get; set; }
     public int TotalRecords { get; set; }

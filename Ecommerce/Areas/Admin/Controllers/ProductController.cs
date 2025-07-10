@@ -53,11 +53,11 @@ public class ProductController : Controller
 
         productToModify.ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
 
-        var userId = _proService.ApproveProduct(productToModify);
+        string? userId = _proService.ApproveProduct(productToModify);
 
         if (!string.IsNullOrEmpty(userId))
         {
-             var notification = new Notification
+            Notification notification = new Notification
             {
                 Message = "Your Product has been " + productToModify.Status + " By Admin !!",
                 IsRead = false,

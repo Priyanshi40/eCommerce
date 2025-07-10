@@ -4,6 +4,157 @@
     ViewData["showLayout"] = true;
 }
 
+<style>
+    .checkout {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+    }
+</style>
+
 <div class="content dash p-4 m-4">
-    <h2 class="mb-4">Order Card</h2>
+    <h2 class="mb-4">Checkout</h2>
+
+    <div class="steps mb-4 d-flex justify-content-between">
+        <div class="stepItem text-center">
+            <div id="checkout1" class="circle text-white rounded-circle mb-2 checkout fw-semibold">1</div>
+            <span>Login</span>
+        </div>
+        <div class="stepItem text-center">
+            <div id="checkout2" class="circle bg-secondary text-white rounded-circle mb-2 checkout fw-semibold">2</div>
+            <span>Delivery Address</span>
+        </div>
+        <div class="stepItem text-center">
+            <div id="checkout3" class="circle bg-light border rounded-circle mb-2 checkout fw-semibold">3</div>
+            <span>Confirm Order</span>
+        </div>
+        <div class="stepItem text-center">
+            <div id="checkout4" class="circle bg-light border rounded-circle mb-2 checkout fw-semibold">4</div>
+            <span>Place Order</span>
+        </div>
+    </div>
+
+    <div class="orderStepContent">
+        <div class="checkOutDetails"></div>
+    </div>
 </div>
+
+<div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="exampleModalLabel">Add Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form class="AddressForm" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="addModal"></div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary savebtn"
+                        onclick="UpsertAddressFunction()">Save</button>
+                    <button type="button" class="btn btn-outline-primary resetBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $.get("/User/Order/Address", function (res) {
+            $('.checkOutDetails').html(res);
+            $('#checkout1').addClass('bgCustom');
+        });
+    });
+
+    $(document).on("click", '.deliverBtn', function () {
+        let Id = $(this).data('id');
+        $.ajax({
+            url: "/User/Order/ConfirmOrder",
+            type: "GET",
+            data: { AddressId: Id },
+            success: function (data) {
+                $('.checkOutDetails').html(data);
+                $('#checkout2').removeClass('bg-secondary');
+                $('#checkout2').addClass('bgCustom');
+                $('#checkout3').removeClass('bg-light');
+                $('#checkout3').addClass('bg-secondary text-white');
+            },
+            error: function () {
+                alert("Failed to Add Address");
+            }
+        });
+    });
+
+    $(document).on("click", '.addAddress', function () {
+        let Id = 0;
+        $.ajax({
+            url: "/User/Order/AddressModal",
+            type: "GET",
+            data: { AddressId: Id },
+            success: function (data) {
+                $('#addressModal').modal('show');
+                $('.addModal').html(data);
+                $('.modal-title').text('Add New Address');
+                @* $.validator.unobtrusive.parse(".addModal"); *@
+            },
+            error: function () {
+                alert("Failed to Add Address");
+            }
+        });
+    });
+
+    $(document).on("click", '.editAddress', function () {
+        let Id = $(this).closest('.card').data('id');
+        $.ajax({
+            url: "/User/Order/AddressModal",
+            type: "GET",
+            data: { AddressId: Id },
+            success: function (data) {
+                $('#addressModal').modal('show');
+                $('.addModal').html(data);
+                $('.modal-title').text('Edit Address');
+                @* $.validator.unobtrusive.parse(".addModal"); *@
+            },
+            error: function () {
+                alert("Failed to load Edit Address.");
+            }
+        });
+    });
+
+    $(document).on("click", '.resetBtn', function () {
+        $(".AddressForm")[0].reset();
+    });
+
+    function UpsertAddressFunction() {
+        event.preventDefault();
+        event.stopPropagation();
+
+        let formData = new FormData($(".AddressForm")[0]);
+        var result = $('.AddressForm').valid();
+
+        console.log(result);
+        if (result) {
+            $.ajax({
+                url: '/Admin/Category/AddCategory',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.status == "Invalid") {
+                        toastr.error("Enter valid data");
+                        return;
+                    }
+                    else {
+                        toastr.success("Category Added/Updated Successfully!!");
+                        $('#PartialCatDiv').html(response);
+                        $('#addressModal').modal('hide');
+                    }
+                }
+            });
+        }
+    }
+</script>

@@ -17,7 +17,7 @@ public class CategoryRepo : ICategoryRepo
     }
     public IQueryable<Category> GetCategoryQueryable(string? searchString)
     {
-        var category = _context.Category.Include(u => u.Products).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+        IQueryable<Category> category = _context.Category.Include(u => u.Products).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
         {

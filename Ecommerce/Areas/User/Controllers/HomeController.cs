@@ -1,7 +1,4 @@
 using BLL.Interfaces;
-using DAL.Enums;
-using DAL.Models;
-using DAL.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +12,13 @@ public class HomeController : Controller
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IUserService _userService;
-    private readonly ICategoryService _catService;
-    private readonly IProductService _proService;
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ICategoryService catService, IProductService proService, IUserService userService)
+    private readonly ICartService _cartService;
+    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserService userService, ICartService cartService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _catService = catService;
-        _proService = proService;
         _userService = userService;
+        _cartService = cartService;
     }
     public async Task<IActionResult> Logout()
     {

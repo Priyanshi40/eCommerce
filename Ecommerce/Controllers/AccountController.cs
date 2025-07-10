@@ -30,10 +30,10 @@ public class AccountController : Controller
         ViewData["ReturnUrl"] = ReturnUrl;
         if (User.Identity != null && User.Identity.IsAuthenticated && _signInManager.IsSignedIn(User))
         {
-            var user = _userManager.GetUserAsync(User).Result;
+            IdentityUser? user = _userManager.GetUserAsync(User).Result;
             if (user != null)
             {
-                var userRole = _userManager.GetRolesAsync(user).Result;
+                IList<string> userRole = _userManager.GetRolesAsync(user).Result;
                 
                 if (userRole[0].ToString() == "User")
                     return RedirectToAction("Index", "Home");
@@ -49,14 +49,14 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            IdentityUser? user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     TempData["Message"] = "Welcome" + model.Email;
-                    var userRole = _userManager.GetRolesAsync(user).Result;
+                    IList<string> userRole = _userManager.GetRolesAsync(user).Result;
 
                     if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                         return Redirect(ReturnUrl);
@@ -103,7 +103,7 @@ public class AccountController : Controller
                 TempData["Message"] = "User Registered Successfully";
                 return RedirectToAction("Login", "Account");
             }
-            foreach (var error in result.Errors)
+            foreach (IdentityError error in result.Errors)
                 ModelState.AddModelError(string.Empty, error.Description);
         }
         return View("Register", model);
@@ -119,7 +119,7 @@ public class AccountController : Controller
     }
     public IActionResult VendorDocuments(VendorViewModel model)
     {
-        foreach (var key in new[] { "File", "DocumentType" })
+        foreach (string? key in new[] { "File", "DocumentType" })
         {
             ModelState.Remove(key);
         }
@@ -132,7 +132,7 @@ public class AccountController : Controller
     }
     public async Task<IActionResult> RegisterVendor(VendorViewModel model)
     {
-        foreach (var key in new[] { "BusinessName", "GSTNumber" })
+        foreach (string? key in new[] { "BusinessName", "GSTNumber" })
         {
             ModelState.Remove(key);
         }
@@ -140,8 +140,8 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return PartialView("_vendorDocuments", model);
 
-        var step1Json = HttpContext.Session.GetString("VendorStep1");
-        var step2Json = HttpContext.Session.GetString("VendorStep2");
+        string? step1Json = HttpContext.Session.GetString("VendorStep1");
+        string? step2Json = HttpContext.Session.GetString("VendorStep2");
 
         if (string.IsNullOrWhiteSpace(step1Json) || string.IsNullOrWhiteSpace(step2Json))
         {
@@ -149,8 +149,8 @@ public class AccountController : Controller
             return RedirectToAction("Register");
         }
 
-        var step1 = JsonConvert.DeserializeObject<RegisterViewModel>(step1Json);
-        var step2 = JsonConvert.DeserializeObject<VendorViewModel>(step2Json);
+        RegisterViewModel? step1 = JsonConvert.DeserializeObject<RegisterViewModel>(step1Json);
+        VendorViewModel? step2 = JsonConvert.DeserializeObject<VendorViewModel>(step2Json);
 
         IdentityUser user = new()
         {
@@ -161,16 +161,16 @@ public class AccountController : Controller
         IdentityResult result = await _userManager.CreateAsync(user, step1.Password);
         if (result.Succeeded)
         {
-            var user1 = new RegisterViewModel
+            RegisterViewModel user1 = new RegisterViewModel
             {
                 FirstName = step1.FirstName,
                 LastName = step1.LastName,
                 IdentityUserId = user.Id,
             };
-            var newUserId = _userService.AddUser(user1);
-            var savedFile = _imgService.SaveImageService(model.File, "vendor_docs");
+            int newUserId = _userService.AddUser(user1);
+            string savedFile = _imgService.SaveImageService(model.File, "vendor_docs");
 
-            var fullVendor = new VendorViewModel
+            VendorViewModel fullVendor = new VendorViewModel
             {
                 VendorId = newUserId,
                 BusinessName = step2.BusinessName,
@@ -192,7 +192,7 @@ public class AccountController : Controller
 
             return RedirectToAction("Login", "Account");
         }
-        foreach (var error in result.Errors)
+        foreach (IdentityError error in result.Errors)
             ModelState.AddModelError(string.Empty, error.Description);
 
         return View("Register", model);

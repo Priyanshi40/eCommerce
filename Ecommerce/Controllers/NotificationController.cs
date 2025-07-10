@@ -24,13 +24,13 @@ public class NotificationController : Controller
     }
     public IActionResult GetNotificationCount()
     {
-        var userId = _userManager.GetUserId(User);
-        var count = _notify.GetNotificationCount(userId);
+        string? userId = _userManager.GetUserId(User);
+        int count = _notify.GetNotificationCount(userId);
         return Json(new { count });
     }
     public IActionResult GetNotification()
     {
-        var userId = _userManager.GetUserId(User);
+        string? userId = _userManager.GetUserId(User);
         List<Notification> notifications = _notify.GetNotifications(userId);
         return PartialView("_notification", notifications);
     }
@@ -42,7 +42,7 @@ public class NotificationController : Controller
     }
     public IActionResult MarkAllAsRead()
     {
-        var userId = _userManager.GetUserId(User);
+        string? userId = _userManager.GetUserId(User);
         bool notifications = _notify.MarkAllAsRead(userId);
         if (notifications) return Ok(new { status = AjaxError.Success.ToString() });
         return Ok(new { status = AjaxError.NotFound.ToString() });   

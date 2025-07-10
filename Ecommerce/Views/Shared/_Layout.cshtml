@@ -38,7 +38,7 @@
                 </div>
                 <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="/Home/Cart">
+                        <a class="nav-link position-relative" href="/Cart/Cart">
                             <i class="fa-solid fa-cart-plus text-white fs-5"></i>
                             <span id="cartCount" class="position-absolute top-0 badge rounded-pill bg-danger">
                                 0
@@ -76,7 +76,7 @@
                     }
                     else
                     {
-                        <li class="nav-item dropdown">
+                        <li class="nav-item dropdown ms-4">
                             <a class="btn btn btn-light" asp-action="Login" asp-controller="Account"><i
                                     class="fa-solid fa-right-from-bracket text-muted"></i> <span
                                     class="fw-semibold text-muted">Login</span></a>
@@ -125,7 +125,7 @@
     <script>
         $(document).ready(function () {
             $.ajax({
-                url: '/Home/GetCartCount',
+                url: '/Cart/GetCartCount',
                 type: 'GET',
                 success: function (res) {
                     $('#cartCount').text(res.count);

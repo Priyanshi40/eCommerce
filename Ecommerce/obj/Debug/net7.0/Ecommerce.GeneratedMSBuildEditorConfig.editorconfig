@@ -96,6 +96,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcVXNlclxWaWV3c1xPcmRlclxPcmRlckNhcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Areas/User/Views/Order/_confirmOrder.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcVXNlclxWaWV3c1xPcmRlclxfY29uZmlybU9yZGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Areas/User/Views/Order/_selectAddress.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcVXNlclxWaWV3c1xPcmRlclxfc2VsZWN0QWRkcmVzcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Areas/User/Views/Shared/_addressModal.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcVXNlclxWaWV3c1xTaGFyZWRcX2FkZHJlc3NNb2RhbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Areas/User/Views/Shared/_LayoutUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcVXNlclxWaWV3c1xTaGFyZWRcX0xheW91dFVzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -164,8 +176,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxfdmVuZG9yRG9jdW1lbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Home/Cart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDYXJ0LmNzaHRtbA==
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Cart/Cart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDYXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Home/Index.cshtml]

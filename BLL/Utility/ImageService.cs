@@ -8,9 +8,9 @@ public class ImageService
     {
         if (profileImage != null && profileImage.Length > 0)
         {
-            var fileName = Path.GetFileName(profileImage.FileName);
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",subFolder, fileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            string fileName = Path.GetFileName(profileImage.FileName);
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",subFolder, fileName);
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
             {
                 profileImage.CopyTo(fileStream);
             }

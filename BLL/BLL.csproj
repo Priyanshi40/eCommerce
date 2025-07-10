@@ -3,6 +3,7 @@
     <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
   </ItemGroup>
   <PropertyGroup>

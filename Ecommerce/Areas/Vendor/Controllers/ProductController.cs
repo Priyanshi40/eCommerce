@@ -43,7 +43,7 @@ public class ProductController : Controller
     }
     public IActionResult ProductList(string searchString, SortOrder sortOrder, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
-        var user = _userService.GetUserById(_userManager.GetUserId(User));
+        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
         ProductViewModel productsView = _proService.GetProductsService(searchString, sortOrder, category, statusFilter, pageNumber, pageSize, user.UserId);
         return PartialView("_productList", productsView);
     }
@@ -70,7 +70,7 @@ public class ProductController : Controller
 
             productToAdd.RemovedImages = RemovedImages?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            var user = _userService.GetUserById(_userManager.GetUserId(User));
+            RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
             if (productToAdd.Id == 0)
             {
                 productToAdd.CreatedBy = user.UserId;
@@ -81,7 +81,7 @@ public class ProductController : Controller
 
             _proService.UpSertProduct(productToAdd);
 
-            var notification = new Notification
+            Notification notification = new Notification
             {
                 Message = productToAdd.Id == 0 ? "New Product has been added!!" : "Product has been Updated",
                 // Message = productToAdd.Id == 0 ? "New Product has been added!!" : productToAdd.Name + "has been Updated",
@@ -107,7 +107,7 @@ public class ProductController : Controller
             ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId
         };
 
-        var isDeleted = _proService.DeleteProduct(product);
+        bool isDeleted = _proService.DeleteProduct(product);
 
         if (!isDeleted)
             return Ok(new { status = AjaxError.NotFound.ToString() });

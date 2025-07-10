@@ -1,0 +1,36 @@
+@model DAL.ViewModels.AddressViewModel
+
+<h4 class="mb-4">Select Delivery Address</h4>
+
+<div class="address-list">
+    @foreach (var address in Model.Address)
+    {
+        <div class="card mb-3 address-card" data-id="@address.Id">
+            <div class="card-body d-flex align-items-start">
+                <div class="form-check me-3">
+                    <input class="form-check-input address-radio" type="radio" name="selectedAddress" value="@address.Id" id="addressRadio_@address.Id">
+                </div>
+                <div class="flex-grow-1">
+                    <p class="fw-bold mb-1">@address.FirstName @address.LastName</p>
+                    <p class="mb-1">@address.HouseName, @address.Street, @address.Landmark, @address.CityName</p>
+                    <p class="mb-1">@address.CityName, @address.StateName, @address.CountryName - @address.PostalCode</p>
+                    <a href="#" class="btn btn-success mt-2 d-none deliverBtn" data-id="@address.Id" id="deliverBtn_@address.Id">Deliver Here</a>
+                </div>
+                <div class="text-end">
+                    <a href="#" class="text-decoration-none fw-bold editAddress">EDIT</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="#" class="btn btn-primary mt-3 addAddress">+ Add New Address</a>
+
+
+<script>
+    $(document).on('change', '.address-radio', function () {
+        $('.deliverBtn').addClass('d-none');
+        let selectedId = $(this).val();
+        $('#deliverBtn_' + selectedId).removeClass('d-none');
+    });
+</script>

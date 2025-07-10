@@ -3,6 +3,7 @@ using BLL.Utility;
 using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Services;
@@ -31,7 +32,7 @@ public class ProductService : IProductService
 
         if (!string.IsNullOrEmpty(statusFilter))
         {
-            if (Enum.TryParse<ProductStatus>(statusFilter, out var parsedStatus))
+            if (Enum.TryParse(statusFilter, out ProductStatus parsedStatus))
                 queyableProducts = queyableProducts.Where(p => p.Status == parsedStatus);
         }
         // if (isAscending)
@@ -60,7 +61,7 @@ public class ProductService : IProductService
         if (queyableProducts != null)
         {
             int totalRecords = queyableProducts.Count();
-            var paginatedProducts = queyableProducts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            List<Product> paginatedProducts = queyableProducts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
             productsView.Products = paginatedProducts;
             productsView.PageSize = pageSize;
@@ -83,6 +84,7 @@ public class ProductService : IProductService
             productDetails.Price = productData.Price;
             productDetails.StockQuantity = productData.StockQuantity;
             productDetails.CategoryId = productData.CategoryId;
+            productDetails.CategoryName = productData.Category.Name;
             productDetails.CoverImage = productData.CoverImage;
             productDetails.ProductImages = productData.Images.Select(img => img.ImageUrl).ToList();
         }
@@ -104,7 +106,7 @@ public class ProductService : IProductService
 
         if (product.RemovedImages != null)
         {
-            foreach (var img in product.RemovedImages)
+            foreach (string img in product.RemovedImages)
             {
                 existingImageUrls.Remove(img);
             }
@@ -112,9 +114,9 @@ public class ProductService : IProductService
 
         if (product.GalleryImages != null && product.GalleryImages.Any())
         {
-            foreach (var file in product.GalleryImages)
+            foreach (IFormFile file in product.GalleryImages)
             {
-                var saved = _imgService.SaveImageService(file);
+                string saved = _imgService.SaveImageService(file);
                 existingImageUrls.Add(saved);
             }
         }
@@ -144,7 +146,7 @@ public class ProductService : IProductService
     }
     public string? ApproveProduct(Product product)
     {
-        var UserId = _productRepo.ApproveProduct(product);
+        int UserId = _productRepo.ApproveProduct(product);
         if (UserId != -1)
         {
             return _userRepo.GetUserById(UserId).IdentityUserId;

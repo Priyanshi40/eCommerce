@@ -30,12 +30,12 @@ public class CategoryController : Controller
     }
     public IActionResult CatList(string statusFilter,SortOrder sortOrder, string searchString, int pageNumber = 1, int pageSize = 5)
     {
-        var queyableCategories = _catService.GetQueryableCategories(searchString,sortOrder, statusFilter);
+        IQueryable<Category> queyableCategories = _catService.GetQueryableCategories(searchString,sortOrder, statusFilter);
 
         int totalRecords = queyableCategories.Count();
-        var paginatedCategories = queyableCategories.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        List<Category> paginatedCategories = queyableCategories.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 
-        var CategoryView = new CategoryViewModel
+        CategoryViewModel CategoryView = new CategoryViewModel
         {
             Categories = paginatedCategories,
             PageSize = pageSize,
@@ -62,7 +62,7 @@ public class CategoryController : Controller
             if (categoryImage != null)
                 catToAdd.CoverImage = _imgService.SaveImageService(categoryImage);
 
-            var user = _userService.GetUserById(_userManager.GetUserId(User));
+            RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
             if (catToAdd.Id == 0)
             {
                 catToAdd.CreatedBy = user.UserId;
@@ -79,7 +79,7 @@ public class CategoryController : Controller
     {
         if (catId != 0)
         {
-            var user = _userService.GetUserById(_userManager.GetUserId(User));
+            RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
             if (user == null)
                 return Ok(new { status = AjaxError.UnAuthorized.ToString() });
             else

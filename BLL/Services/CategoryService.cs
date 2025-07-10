@@ -19,7 +19,7 @@ public class CategoryService : ICategoryService
     }
     public IQueryable<Category> GetQueryableCategories(string? searchString,SortOrder sort, string statusFilter)
     {
-        var catQuery = _catRepo.GetCategoryQueryable(searchString);
+        IQueryable<Category> catQuery = _catRepo.GetCategoryQueryable(searchString);
         if (!string.IsNullOrEmpty(statusFilter))
         {
             if (statusFilter == CategoryStatus.Active.ToString())
@@ -42,8 +42,8 @@ public class CategoryService : ICategoryService
     }
     public CategoryViewModel GetCategoryDetailsService(int catId)
     {
-        var cat = _catRepo.GetCategoryDetails(catId);
-        var catDetails = new CategoryViewModel();
+        Category cat = _catRepo.GetCategoryDetails(catId);
+        CategoryViewModel catDetails = new CategoryViewModel();
         if (cat != null)
         {
             catDetails.Id = cat.Id;

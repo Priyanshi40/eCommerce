@@ -101,16 +101,17 @@
             console.log(productId);
             console.log(quantity);
             $.ajax({
-                url: '/Home/UpdateCart',
+                url: '/Cart/UpdateCart',
                 type: 'POST',
                 data: { productId: productId, quantity: quantity },
                 success: function (response) {
-                    if (response.status == "NotFound") {
+                    if (response.status == 400) {
                         toastr.error("Product not found !!");
-                    } else {
+                    } else if (response.redirect) {
+                        window.location.href = response.redirect;
                         toastr.success("Product Quantity Updated Successfully!!");
-                        $('body').html(response);
-                    }
+                        @* $('body').html(response); *@
+                            }
                 },
                 error: function () {
                     alert('An error occurred while updating the product quantity');
@@ -136,10 +137,10 @@
                 if (value <= 1) {
                     $(input).text(1);
                 } else {
-                    $(input).text(value - 1);
                     quantity = value - 1;
                     productId = $(this).closest('.card-body').attr('data-id');
                     UpdateCart();
+                    $(input).text(value - 1);
                 }
             }
         });
@@ -159,7 +160,7 @@
             }
         });
 
-        $('.rmv').click(function () {
+        $('.rmv').click(function (e) {
             e.preventDefault();
             var productId = $(this).closest('.card-body').attr('data-id');
 
@@ -174,15 +175,16 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: '/Home/RemoveFromCart',
+                        url: '/Cart/RemoveFromCart',
                         type: 'POST',
                         data: { productId: productId },
                         success: function (response) {
                             if (response.status == "NotFound") {
                                 toastr.error("Product not found !!");
-                            } else {
+                            } else if (response.redirect) {
+                                window.location.href = response.redirect;
                                 toastr.success("Product Removed From Cart Successfully!!");
-                                $('body').html(response);
+                                @* $('body').html(response); *@
                             }
                         },
                         error: function () {
@@ -193,8 +195,29 @@
             });
         });
 
-        $('.placeOrder').on('click', function () {
-            window.location.href = `/User/Order/PlaceOrder`;
+        $('.placeOrder').click(function (e) {
+        e.stopPropagation();
+        e.stopPropagation();
+
+        var productId = $(this).closest('.card').attr('data-id');
+        $.ajax({
+            url: '/User/Order/Index',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                if(response.status == 401){
+                    toastr.error("Please log in to Place Order!!");
+                }else{
+                    $('body').html(response);
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+                if (xhr.status == 401) {
+                    window.location.href = `/User/Order/Index`;
+                }
+            }
         });
+    });
     </script>
 }

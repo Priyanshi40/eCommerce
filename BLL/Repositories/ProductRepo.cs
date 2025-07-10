@@ -13,7 +13,7 @@ public class ProductRepo : IProductRepo
     }
     public IQueryable<Product> GetQueryableProducts(string? searchString)
     {
-        var products = _context.Product.Include(p => p.Category).Include(p => p.WishList).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+        IQueryable<Product> products = _context.Product.Include(p => p.Category).Include(p => p.WishList).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
         {
@@ -122,7 +122,7 @@ public class ProductRepo : IProductRepo
     {
         try
         {
-            var wishlistItem = _context.Wishlist.FirstOrDefault(w => w.ProductId == productId && w.UserId == userId);
+            Wishlist? wishlistItem = _context.Wishlist.FirstOrDefault(w => w.ProductId == productId && w.UserId == userId);
             if (wishlistItem == null)
             {
                 wishlistItem = new Wishlist

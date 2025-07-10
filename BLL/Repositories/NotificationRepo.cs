@@ -13,7 +13,7 @@ public class NotificationRepo : INotificationRepo
     }
     public int GetNotificationCount(string userId)
     {
-        var count = _context.Notification.Count(w => w.UserId == userId && !w.IsRead);
+        int count = _context.Notification.Count(w => w.UserId == userId && !w.IsRead);
         return count;
     }
     public List<Notification> GetNotifications(string userId)
@@ -31,7 +31,7 @@ public class NotificationRepo : INotificationRepo
     }
     public bool MarkAsRead(int notificationId)
     {
-        var notification = _context.Notification.Find(notificationId);
+        Notification? notification = _context.Notification.Find(notificationId);
         if (notification != null)
         {
             notification.IsRead = true;
@@ -42,7 +42,7 @@ public class NotificationRepo : INotificationRepo
     }
     public bool MarkAllAsRead(string userId)
     {
-        var notifications = _context.Notification.Where(n => n.UserId == userId && !n.IsRead).ToList();
+        List<Notification> notifications = _context.Notification.Where(n => n.UserId == userId && !n.IsRead).ToList();
         if (notifications != null)
         {
             notifications.ForEach((notif) =>
