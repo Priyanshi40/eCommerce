@@ -13,17 +13,34 @@ public class ProductRepo : IProductRepo
     }
     public IQueryable<Product> GetQueryableProducts(string? searchString)
     {
-        IQueryable<Product> products = _context.Product.Include(p => p.Category).Include(p => p.WishList).Where(u => !u.IsDeleted).OrderBy(u => u.Name).AsQueryable();
+        IQueryable<Product> products = _context.Product
+                                                    .Include(p => p.Category)
+                                                    .Include(p => p.WishList)
+                                                    .Where(u => !u.IsDeleted)
+                                                    .OrderBy(u => u.Name)
+                                                    .AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
-        {
             products = products.Where(u => u.Name.ToLower().Contains(searchString.ToLower().Trim()));
-        }
+
         return products;
     }
-    public Product GetProductDetails(int productId)
+    public Product? GetProductDetails(int productId)
     {
-        return _context.Product.Include(b => b.Category).Include(p => p.Images).FirstOrDefault(b => b.Id == productId);
+        return _context.Product
+                            .Include(b => b.Category)
+                            .Include(p => p.Images)
+                            .FirstOrDefault(b => b.Id == productId);
+    }
+    public Product UpsertProduct(Product product)
+    {
+        if (product.Id > 0)
+            _context.Product.Update(product);
+        else
+            _context.Product.Add(product);
+
+        _context.SaveChanges();
+        return product;
     }
     public Product UpSertProduct(Product product)
     {
@@ -69,20 +86,16 @@ public class ProductRepo : IProductRepo
         try
         {
             Product oldProduct = _context.Product.FirstOrDefault(b => b.Id == product.Id);
-            if (oldProduct != null)
-            {
-                oldProduct.ModifiedBy = product.ModifiedBy;
-                oldProduct.ModifiedAt = DateTime.Now;
-                oldProduct.IsDeleted = true;
+            if (oldProduct == null) return false;
 
-                _context.Product.Update(oldProduct);
-                _context.SaveChanges();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            oldProduct.ModifiedBy = product.ModifiedBy;
+            oldProduct.ModifiedAt = DateTime.Now;
+            oldProduct.IsDeleted = true;
+
+            _context.Product.Update(oldProduct);
+            _context.SaveChanges();
+            return true;
+
         }
         catch (Exception ex)
         {
@@ -95,9 +108,9 @@ public class ProductRepo : IProductRepo
         try
         {
             Product oldProduct = _context.Product.FirstOrDefault(b => b.Id == product.Id);
-            if (oldProduct != null)
-            {
-                oldProduct.ModifiedBy = product.ModifiedBy;
+            if (oldProduct == null) return -1;
+
+            oldProduct.ModifiedBy = product.ModifiedBy;
                 oldProduct.ModifiedAt = DateTime.Now;
                 oldProduct.Status = product.Status;
                 oldProduct.AdminComment = product.AdminComment;
@@ -105,11 +118,6 @@ public class ProductRepo : IProductRepo
                 _context.Product.Update(oldProduct);
                 _context.SaveChanges();
                 return oldProduct.CreatedBy;
-            }
-            else
-            {
-                return -1;
-            }
         }
         catch (Exception ex)
         {
@@ -117,7 +125,6 @@ public class ProductRepo : IProductRepo
             throw;
         }
     }
-
     public int AddProductToWishlist(int productId, int userId)
     {
         try

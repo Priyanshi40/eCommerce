@@ -32,13 +32,11 @@ public class NotificationRepo : INotificationRepo
     public bool MarkAsRead(int notificationId)
     {
         Notification? notification = _context.Notification.Find(notificationId);
-        if (notification != null)
-        {
-            notification.IsRead = true;
-            _context.SaveChanges();
-            return true;
-        }
-        return false;
+        if (notification == null) return false;
+
+        notification.IsRead = true;
+        _context.SaveChanges();
+        return true;
     }
     public bool MarkAllAsRead(string userId)
     {

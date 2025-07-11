@@ -4,7 +4,6 @@ using DAL.Models;
 using DAL.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Ecommerce.Controllers;
 
@@ -21,10 +20,14 @@ public class HomeController : Controller
         _catService = catService;
         _proService = proService;
     }
+    private string? GetUserIdentityId() => _userManager.GetUserId(User);
+    private int GetAppUserId(string identityId) => _userService.GetUserById(identityId).UserId;
+    private bool IsAuthenticated() => !string.IsNullOrEmpty(GetUserIdentityId());
+
     public IActionResult Index(string statusFilter, string searchString)
     {
-        List<Category> Categories = _catService.GetQueryableCategories(searchString, SortOrder.Name, statusFilter).ToList();
-        CategoryViewModel CategoryView = new CategoryViewModel
+        List<Category> Categories = _catService.GetCategoriesService();
+        CategoryViewModel CategoryView = new ()
         {
             Categories = Categories,
         };
@@ -32,7 +35,7 @@ public class HomeController : Controller
     }
     public IActionResult ProductByCategory(string searchString, int category, int pageNumber = 1, int pageSize = 15)
     {
-        string? userIdentityId = _userManager.GetUserId(User);
+        string? userIdentityId = GetUserIdentityId();
         if (userIdentityId != null)
             ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;
 
@@ -42,13 +45,20 @@ public class HomeController : Controller
     }
     public IActionResult ProductDetails(int productId)
     {
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (userIdentityId != null)
-            ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;
+        if (IsAuthenticated())
+        {
+            int userId = GetAppUserId(GetUserIdentityId()!);
+            ViewBag.CurrentUser = userId;
+        }
 
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
+        if (productDetails.Id < 1)
+        {
+            TempData["Error"] = "Product doesn't exist!!";
+            return RedirectToAction("ProductByCategory");
+        }
         return View("ProductDetails", productDetails);
     }
 
-    
+
 }

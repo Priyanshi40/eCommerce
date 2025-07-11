@@ -1,6 +1,8 @@
 @model DAL.ViewModels.CategoryViewModel
 <div class="p-2 align-items-center">
     <input type="text" id="bookId" asp-for="Id" hidden>
+    <input class="form-check-input" type="checkbox" asp-for="IsActive" hidden>
+    <input type="text" id="bookId" asp-for="IsActive" hidden>
     <div class="form-floating mb-2">
         <input type="text" class="form-control" id="nameLabel" asp-for="Name">
         <span asp-validation-for="@Model.Name" class="text-danger"></span>
@@ -17,9 +19,11 @@
             <div class="col d-flex flex-column align-items-center justify-content-center mt-3">
                 <i class="fa-solid fa-cloud-arrow-up"></i>
                 <p class="mb-0 imgTitle"> Browse Cover Image</p>
-                <img src="~/images/@Model.CoverImage" class="itemImage @(Model.Id != 0 ? "d-flex" : "d-none")" style="max-width: 100px;">
+                <img src="~/images/@Model.CoverImage" class="itemImage @(Model.Id != 0 ? "d-flex" : "d-none")"
+                    style="max-width: 100px;">
             </div>
-            <input type="file" id="file-input-thing" style="width: 0;" asp-for="CoverImage"
+            <input type="text" asp-for="CoverImage" hidden>
+            <input type="file" id="file-input-thing" style="width: 0;" asp-for="Cover"
                 accept="image/png, image/jpeg, image/gif">
         </div>
     </div>

@@ -6,7 +6,8 @@ namespace BLL.Interfaces;
 public interface ICartService
 {
     int GetCartItemsCount(int userId);
-    int UpdateCart(int productId, int userId, int quantity = 0);
+    int UpdateCart(int productId, int userId, int quantity);
+    bool DeleteCart(int userId, int productId);
     List<CartViewModel> GetCart(int userId);
-    int AddToCart(CartViewModel item, int userId);
+    bool AddToCart(List<CartViewModel> item, int userId);
 }

@@ -1,0 +1,153 @@
+@model DAL.ViewModels.CartViewModel
+@{
+    ViewData["Title"] = "My Cart";
+    ViewData["showLayout"] = true;
+    int currentUser = ViewBag.CurrentUser != null ? ViewBag.CurrentUser : 0;
+}
+
+<div class="m-4 p-4">
+    <h2 class="mb-4 txtCustom">My Cart</h2>
+    <div class="cartDiv"></div>
+
+</div>
+
+@section Scripts {
+    <script>
+        var quantity = 0;
+        var productId = 0;
+        
+        function UpdateTotal() {
+            var totalPrice = 0;
+            $('.price').each(function () {
+                var price = parseInt($(this).data('price'));
+                var quantity = parseInt($(this).closest('.d-flex').find('.input').text());
+                totalPrice += price * quantity;
+                $('.totalPrice').text(totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('.orderTotal').text(totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            });
+        }
+
+        function UpdateCart() {
+            $.ajax({
+                url: '/Cart/UpdateCart?isConfirmPage=false',
+                type: 'POST',
+                data: { productId: productId, quantity: quantity },
+                success: function (response) {
+                    if (response.status == 400) {
+                        toastr.error("Product not found !!");
+                    } else if (response.redirect) {
+                        $('.cartDiv').load(response.redirect);
+                        toastr.success("Product Quantity Updated Successfully!!");
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while updating the product quantity');
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $.get("/Cart/Cart", function (res) {
+                $('.cartDiv').html(res);
+                UpdateTotal();
+            });
+        });
+
+        $(document).on('click', '.productDetails', function (e) {
+            e.preventDefault();
+            var productId = $(this).data('id');
+            window.location.href = '/Home/ProductDetails/?productId=' + productId;
+        });
+
+        $(document).on('click', '.dec', function (e) {
+            e.preventDefault();
+            var input = $(this).siblings('.input')[0];
+            var value = parseInt($(input).text());
+            if (!isNaN(value)) {
+                if (value <= 1) {
+                    $(input).text(1);
+                } else {
+                    quantity = value - 1;
+                    productId = $(this).closest('.card-body').attr('data-id');
+                    UpdateCart();
+                    $(input).text(value - 1);
+                }
+            }
+        });
+
+        $(document).on('click', '.inc', function (e) {
+            e.preventDefault();
+            var input = $(this).siblings('.input')[0];
+            var value = parseInt($(input).text());
+            var maxVal = $(this).data('quantity');
+            if (value >= maxVal) {
+                $(input).text(maxVal);
+            } else if (!isNaN(value)) {
+                $(input).text(value + 1);
+                quantity = value + 1;
+                productId = $(this).closest('.card-body').attr('data-id');
+                UpdateCart();
+            }
+        });
+
+        $(document).on('click', '.rmv', function (e) {
+            e.preventDefault();
+            var productId = $(this).closest('.card-body').attr('data-id');
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You are Removing this Product from Cart !",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Remove it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Cart/RemoveFromCart?isConfirmPage=false',
+                        type: 'POST',
+                        data: { productId: productId },
+                        success: function (response) {
+                            if (response.status == "NotFound") {
+                                toastr.error("Product not found !!");
+                            } else if (response.redirect) {
+                                $('.cartDiv').load(response.redirect);
+                                toastr.success("Product Removed From Cart Successfully!!");
+                                @* $('body').html(response); *@
+                                                            }
+                        },
+                        error: function () {
+                            alert('An error occurred while adding the product to wishlist.');
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.placeOrder', function (e) {
+            e.stopPropagation();
+            e.stopPropagation();
+
+            var productId = $(this).closest('.card').attr('data-id');
+            $.ajax({
+                url: '/User/Order/Index',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (response) {
+                    if (response.status == 401) {
+                        toastr.error("Please log in to Place Order!!");
+                    } else {
+                        $('body').html(response);
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr);
+                    if (xhr.status == 401) {
+                        window.location.href = `/User/Order/Index`;
+                    }
+                }
+            });
+        });
+    </script>
+}

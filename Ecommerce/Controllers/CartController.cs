@@ -22,20 +22,36 @@ public class CartController : Controller
         _proService = proService;
         _cartService = cartService;
     }
+    private string? GetUserIdentityId() => _userManager.GetUserId(User);
+    private int GetAppUserId(string identityId) => _userService.GetUserById(identityId).UserId;
+
+    private bool IsAuthenticated() => !string.IsNullOrEmpty(GetUserIdentityId());
+
+    private List<CartViewModel> GetSessionCart()
+    {
+        string cart = HttpContext.Session.GetString("Cart") ?? "";
+        return !string.IsNullOrEmpty(cart)
+            ? JsonConvert.DeserializeObject<List<CartViewModel>>(cart)
+            : new List<CartViewModel>();
+    }
+    private void SaveSessionCart(List<CartViewModel> cartItems)
+    {
+        string updatedCart = JsonConvert.SerializeObject(cartItems);
+        HttpContext.Session.SetString("Cart", updatedCart);
+    }
     public IActionResult GetCartCount()
     {
         int count = 0;
 
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userIdentityId))
+        if (IsAuthenticated())
         {
-            int userId = _userService.GetUserById(userIdentityId).UserId;
+            int userId = GetAppUserId(GetUserIdentityId()!);
             count = _cartService.GetCartItemsCount(userId);
         }
-
-        string cart = HttpContext.Session.GetString("Cart") ?? "";
-        if (!string.IsNullOrEmpty(cart))
-            count = JsonConvert.DeserializeObject<List<CartViewModel>>(cart).Count;
+        else
+        {
+            count = GetSessionCart().Count;
+        }
 
         return Json(new { count });
     }
@@ -43,151 +59,118 @@ public class CartController : Controller
     [HttpPost]
     public IActionResult AddToCart([FromBody] CartViewModel addToCart)
     {
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userIdentityId))
+        if (IsAuthenticated())
         {
-            int userId = _userService.GetUserById(userIdentityId).UserId;
-            int cartId = _cartService.AddToCart(addToCart, userId);
-            if (cartId > 0)
-                return Ok(new { success = true });
-            return BadRequest();
+            int userId = GetAppUserId(GetUserIdentityId()!);
+            bool cartId = _cartService.AddToCart(new List<CartViewModel> { addToCart }, userId);
+            return cartId ? Ok(new { success = true }) : BadRequest();
         }
 
-        string cart = HttpContext.Session.GetString("Cart") ?? "";
-        if (!string.IsNullOrEmpty(cart))
-        {
-            List<CartViewModel>? cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
-            if (cartItems.Any(c => c.ProductId == addToCart.Id))
-            {
-                CartViewModel? existingItem = cartItems.FirstOrDefault(c => c.ProductId == addToCart.Id);
-                if (existingItem != null)
-                {
-                    existingItem.Quantity++;
-                }
-            }
-            else
-            {
-                CartViewModel newItem = new()
-                {
-                    Id = addToCart.Id,
-                    ProductId = addToCart.Id,
-                    Name = addToCart.Name,
-                    Price = addToCart.Price,
-                    CoverImage = addToCart.CoverImage,
-                    Quantity = 1,
-                    StockQuantity = addToCart.StockQuantity,
+        List<CartViewModel> cartItems = GetSessionCart();
+        CartViewModel? existing = cartItems.FirstOrDefault(c => c.ProductId == addToCart.Id);
+        if (existing != null)
+            existing.Quantity++;
 
-                };
-                cartItems.Add(newItem);
-            }
-            cart = JsonConvert.SerializeObject(cartItems);
-        }
         else
         {
-            List<CartViewModel> newCart = new()
+            cartItems.Add(new CartViewModel
             {
-                new() {
-                    Id = addToCart.Id,
-                    ProductId = addToCart.Id,
-                    Name = addToCart.Name,
-                    Price = addToCart.Price,
-                    CoverImage = addToCart.CoverImage,
-                    Quantity = 1,
-                    StockQuantity = addToCart.StockQuantity,
-                }
-            };
-            cart = JsonConvert.SerializeObject(newCart);
+                Id = addToCart.Id,
+                ProductId = addToCart.Id,
+                Name = addToCart.Name,
+                Price = addToCart.Price,
+                CoverImage = addToCart.CoverImage,
+                Quantity = 1,
+                StockQuantity = addToCart.StockQuantity,
+            });
         }
-        HttpContext.Session.SetString("Cart", cart);
+        SaveSessionCart(cartItems);
         return Ok(new { success = true });
     }
-    public IActionResult UpdateCart(int productId, int quantity)
+    public IActionResult UpdateCart(int productId, int quantity, bool isConfirmPage = false)
     {
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userIdentityId))
+        if (IsAuthenticated())
         {
-            int userId = _userService.GetUserById(userIdentityId).UserId;
+            int userId = GetAppUserId(GetUserIdentityId()!);
             int cartId = _cartService.UpdateCart(productId, userId, quantity);
             if (cartId > 0)
-                return Ok(new { redirect = Url.Action("Cart", "Cart") });
-                // return RedirectToAction("Cart", "Home");
+            {
+                return Ok(new
+                {
+                    redirect = isConfirmPage
+                        ? Url.Action("ConfirmOrder", "Order", new {area = "User"})
+                        : Url.Action("Cart", "Cart")
+                });
+            }
         }
 
-        string cart = HttpContext.Session.GetString("Cart") ?? "";
-        if (!string.IsNullOrEmpty(cart))
+        List<CartViewModel> cartItems = GetSessionCart();
+        CartViewModel? existing = cartItems.FirstOrDefault(c => c.ProductId == productId);
+
+        if (existing != null)
         {
-            List<CartViewModel>? cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
-            if (cartItems.Any(c => c.ProductId == productId))
-            {
-                CartViewModel? existingItem = cartItems.FirstOrDefault(c => c.ProductId == productId);
-                if (existingItem != null)
-                {
-                    existingItem.Quantity = quantity;
-                    cart = JsonConvert.SerializeObject(cartItems);
-                    HttpContext.Session.SetString("Cart", cart);
-                    return Ok(new { redirect = Url.Action("Cart", "Cart") });
-                }
-            }
+            existing.Quantity = quantity;
+            SaveSessionCart(cartItems);
+            return Ok(new { redirect = Url.Action("Cart", "Cart") });
         }
         return BadRequest();
     }
-    public IActionResult RemoveFromCart(int productId)
+    public IActionResult RemoveFromCart(int productId,bool isConfirmPage = false)
     {
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userIdentityId))
+        if (IsAuthenticated())
         {
-            int userId = _userService.GetUserById(userIdentityId).UserId;
-            int cartId = _cartService.UpdateCart(productId, userId);
-            if (cartId > 0)
-                return Ok(new { redirect = Url.Action("Cart", "Cart") });
-            return BadRequest();
-        }
-
-        string cart = HttpContext.Session.GetString("Cart") ?? "";
-        if (!string.IsNullOrEmpty(cart))
-        {
-            List<CartViewModel>? cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
-            if (cartItems.Any(c => c.ProductId == productId))
+            int userId = GetAppUserId(GetUserIdentityId()!);
+            bool cart = _cartService.DeleteCart(userId,productId);
+            if (cart)
             {
-                CartViewModel? existingItem = cartItems.FirstOrDefault(c => c.ProductId == productId);
-                if (existingItem != null)
+                return Ok(new
                 {
-                    cartItems.Remove(existingItem);
-                    cart = JsonConvert.SerializeObject(cartItems);
-                    HttpContext.Session.SetString("Cart", cart);
-                    return Ok(new { redirect = Url.Action("Cart", "Cart") });
-                }
+                    redirect = isConfirmPage
+                        ? Url.Action("ConfirmOrder", "Order", new {area = "User"})
+                        : Url.Action("Cart", "Cart")
+                });
             }
         }
+
+        List<CartViewModel> cartItems = GetSessionCart();
+        CartViewModel? item = cartItems.FirstOrDefault(c => c.ProductId == productId);
+
+        if (item != null)
+        {
+            cartItems.Remove(item);
+            SaveSessionCart(cartItems);
+            return Ok(new { redirect = Url.Action("Cart", "Cart") });
+        }
         return Ok(new { status = AjaxError.NotFound.ToString() });
+    }
+    public IActionResult Index()
+    {
+        return View();
     }
     public IActionResult Cart(int pageNumber = 1, int pageSize = 8)
     {
         List<CartViewModel> cartItems = new();
 
-        string? userIdentityId = _userManager.GetUserId(User);
-        if (!string.IsNullOrEmpty(userIdentityId))
+        if (IsAuthenticated())
         {
-            ViewBag.CurrentUser = _userService.GetUserById(userIdentityId).UserId;
-            int userId = _userService.GetUserById(userIdentityId).UserId;
+            string identityId = GetUserIdentityId()!;
+            int userId = GetAppUserId(identityId);
+            ViewBag.CurrentUser = userId;
             cartItems = _cartService.GetCart(userId);
         }
         else
         {
-            string cart = HttpContext.Session.GetString("Cart") ?? "";
-            if (!string.IsNullOrEmpty(cart))
-                cartItems = JsonConvert.DeserializeObject<List<CartViewModel>>(cart);
+            cartItems = GetSessionCart();
         }
-        
-        int totalRecords = cartItems.Count;
-        CartViewModel cartView = new()
+
+        CartViewModel cartView = new ()
         {
             CartItems = cartItems,
             PageNumber = pageNumber,
             PageSize = pageSize,
-            TotalRecords = totalRecords,
-            TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize),
+            TotalRecords = cartItems.Count,
+            TotalPages = (int)Math.Ceiling((double)cartItems.Count / pageSize),
         };
-        return View(cartView);
+        return PartialView("_Cart",cartView);
     }
 }

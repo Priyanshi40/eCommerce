@@ -1,5 +1,6 @@
 @model DAL.ViewModels.AddressViewModel
 <input type="hidden" asp-for="Id" />
+<input type="hidden" asp-for="UserId" />
 
 <div class="p-2">
     <div class="d-flex row m-1">
@@ -78,7 +79,7 @@
             $('#cityLabel').empty().append(new Option("Select City", null));
             if (countryId) {
                 $.ajax({
-                    url: "@Url.Action("GetStateByCountry", "Customer")",
+                    url: "@Url.Action("GetStateByCountry", "Customer",new {area = "Admin"})",
                     type: "GET",
                     data: { countryId: countryId },
                     success: function (data) {
@@ -96,7 +97,7 @@
             $('#cityLabel').empty().append(new Option("Select City", null));
             if (stateId) {
                 $.ajax({
-                    url: "@Url.Action("GetCityByState", "Customer")",
+                    url: "@Url.Action("GetCityByState", "Customer",new {area = "Admin"})",
                     type: "GET",
                     data: { stateId: stateId },
                     success: function (data) {

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "0uGgEZOVhJv82dzPi1xwGennL4ISAUSkXlLwOJlSSeI=",
+  "Hash": "BLJdVLTuVam/ibWjpePTIAulgMkA2peIEow80i1I0Xw=",
   "Source": "Ecommerce",
   "BasePath": "_content/Ecommerce",
   "Mode": "Default",
@@ -3194,6 +3194,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\vendor_docs\\OrderDetails (18).pdf",
+      "SourceId": "Ecommerce",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\",
+      "BasePath": "_content/Ecommerce",
+      "RelativePath": "vendor_docs/OrderDetails (18).pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\vendor_docs\\OrderDetails (18).pdf"
     },
     {
       "Identity": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\wwwroot\\vendor_docs\\OrderDetails (20).pdf",

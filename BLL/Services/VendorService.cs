@@ -1,5 +1,5 @@
+using AutoMapper;
 using BLL.Interfaces;
-using BLL.Utility;
 using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
@@ -9,11 +9,11 @@ namespace BLL.Services;
 public class VendorService : IVendorService
 {
     private readonly IVendorRepo _vendorRepo;
-    private readonly ImageService _imgService;
-    public VendorService(IVendorRepo vendorRepo, ImageService imgService)
+    private readonly IMapper _mapper;
+    public VendorService(IVendorRepo vendorRepo, IMapper mapper)
     {
         _vendorRepo = vendorRepo;
-        _imgService = imgService;
+        _mapper = mapper;
     }
     public VendorDetailsViewModel GetVendorsService(string searchString,SortOrder sort, string statusFilter, int pageNumber, int pageSize)
     {
@@ -50,19 +50,10 @@ public class VendorService : IVendorService
     {
         VendorDetails vendorData = _vendorRepo.GetVendorDetails(vendorId);
         VendorDetailsViewModel vendorDetails = new();
+
         if (vendorData != null)
-        {
-            vendorDetails.VendorId = vendorId;
-            vendorDetails.Email = vendorData.UserNavigation.IUser.Email;
-            vendorDetails.Phone = vendorData.UserNavigation.IUser.PhoneNumber;
-            vendorDetails.Firstname = vendorData.UserNavigation.Firstname;
-            vendorDetails.Lastname = vendorData.UserNavigation.Lastname;
-            vendorDetails.BusinessName = vendorData.BusinessName;
-            vendorDetails.GSTNumber = vendorData.GSTNumber;
-            vendorDetails.BusinessAddress = vendorData.BusinessAddress;
-            vendorDetails.DocumentType = (VendorDocuments)vendorData.DocumentType;
-            vendorDetails.FileUrl = vendorData.FileUrl;
-        }
+            vendorDetails = _mapper.Map<VendorDetailsViewModel>(vendorData);
+
         return vendorDetails;
     }
     public string ApproveVendor(UserDetails vendor)
@@ -73,22 +64,11 @@ public class VendorService : IVendorService
     {
         if (vendor != null)
         {
-            VendorDetails newVendor = new()
-            {
-                BusinessName = vendor.BusinessName,
-                BusinessAddress = vendor.BusinessAddress,
-                DocumentType = (int)vendor.DocumentType,
-                GSTNumber = vendor.GSTNumber,
-                FileUrl = vendor.FileUrl,
-                VendorId = vendor.VendorId
-            };
-
+            VendorDetails vendorMapped = _mapper.Map<VendorDetails>(vendor);
             if (vendor.Id != 0)
-            {
-                newVendor.Id = vendor.Id;
-            }
+                vendorMapped.Id = vendor.Id;
 
-            _vendorRepo.AddVendor(newVendor); 
+            _vendorRepo.AddVendor(vendorMapped); 
         }
     }
 }

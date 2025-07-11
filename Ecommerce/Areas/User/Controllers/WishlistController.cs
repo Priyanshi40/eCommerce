@@ -20,21 +20,24 @@ public class WishListController : Controller
         _userService = userService;
         _wishService = wishService;
     }
+    private string? GetUserIdentityId() => _userManager.GetUserId(User);
+    private int GetAppUserId(string identityId) => _userService.GetUserById(identityId).UserId;
+    private bool IsAuthenticated() => !string.IsNullOrEmpty(GetUserIdentityId());
     public IActionResult GetWishlistCount()
     {
-        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        int userId = GetAppUserId(GetUserIdentityId()!);
         int count = _wishService.GetWishlistCount(userId);
         return Json(new { count });
     }
     public IActionResult Index(int pageNumber = 1, int pageSize = 8)
     {
-        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        int userId = GetAppUserId(GetUserIdentityId()!);
         ProductViewModel viewModel = _wishService.GetWishlistItems(userId, pageNumber, pageSize);
         return View(viewModel);
     }
     public IActionResult RemoveFromWishlist(int productId)
     {
-        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        int userId = GetAppUserId(GetUserIdentityId()!);
         if (userId < 0)
             return Unauthorized();
 
@@ -47,10 +50,10 @@ public class WishListController : Controller
     }
     public IActionResult ToggleWishlist(int productId,int categoryId)
     {
-        int userId = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
-        if (userId < 0)
+        if (!IsAuthenticated())
             TempData["Error"] = "Please log in to use wishlist.";
 
+        int userId = GetAppUserId(GetUserIdentityId()!);
         bool result = _wishService.AddProductToWishlist(productId, userId);
         if (result)
             TempData["Message"] = "Wishlist updated !!";

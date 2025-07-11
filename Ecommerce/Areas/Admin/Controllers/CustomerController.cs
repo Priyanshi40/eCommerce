@@ -1,5 +1,4 @@
 using BLL.Interfaces;
-using BLL.Services;
 using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
@@ -23,7 +22,12 @@ public class CustomerController : Controller
     private readonly IVendorService _vendorService;
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly INotificationService _noficationService;
-    public CustomerController(UserManager<IdentityUser> userManager, IUserService userService,IAddressService addService, IVendorService vendorService, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
+    public CustomerController(UserManager<IdentityUser> userManager,
+                                IUserService userService,
+                                IAddressService addService,
+                                IVendorService vendorService,
+                                IHubContext<NotificationHub> hubContext,
+                                INotificationService noficationService)
     {
         _userManager = userManager;
         _userService = userService;
@@ -32,6 +36,9 @@ public class CustomerController : Controller
         _hubContext = hubContext;
         _noficationService = noficationService;
     }
+    private string? GetUserIdentityId() => _userManager.GetUserId(User);
+    private int GetAppUserId(string identityId) => _userService.GetUserById(identityId).UserId;
+
     public IActionResult Index()
     {
         return View();
@@ -51,11 +58,15 @@ public class CustomerController : Controller
         AddressViewModel addresses = _addService.GetUserAddresses(userId);
         return PartialView("_addresses", addresses);
     }
+
+    [AllowAnonymous]
     public IActionResult GetStateByCountry(int countryId)
     {
         IEnumerable<State> stateList = _addService.GetStateService(countryId);
         return Json(stateList);
     }
+
+    [AllowAnonymous]
     public IActionResult GetCityByState(int stateId)
     {
         IEnumerable<City> cityList = _addService.GetCityService(stateId);
@@ -70,8 +81,7 @@ public class CustomerController : Controller
     }
     public IActionResult EditDetails(RegisterViewModel userDetails)
     {
-        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
-        userDetails.ModifiedBy = user.UserId;
+        userDetails.ModifiedBy = GetAppUserId(GetUserIdentityId()!);
         _userService.AddUser(userDetails);
         return RedirectToAction("CustomerList", "Customer");
     }
@@ -80,8 +90,8 @@ public class CustomerController : Controller
         if (!ModelState.IsValid)
             return Ok(new { status = AjaxError.ValidationError.ToString() });
 
-        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
-        address.ModifiedBy = user.UserId;
+        int userId = GetAppUserId(GetUserIdentityId()!);
+        address.ModifiedBy = userId;
         _addService.AddUserAddress(address);
         return Ok(new { status = AjaxError.Success.ToString() });
     }

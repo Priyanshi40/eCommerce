@@ -9,20 +9,10 @@ namespace Ecommerce.Areas.User.Controllers;
 [Authorize(Roles = "User")]
 public class HomeController : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IUserService _userService;
-    private readonly ICartService _cartService;
-    public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IUserService userService, ICartService cartService)
+    public HomeController(SignInManager<IdentityUser> signInManager)
     {
-        _userManager = userManager;
         _signInManager = signInManager;
-        _userService = userService;
-        _cartService = cartService;
     }
-    public async Task<IActionResult> Logout()
-    {
-        await _signInManager.SignOutAsync();
-        return RedirectToAction("Login", "Account", new { area = "" });
-    }
+    
 }

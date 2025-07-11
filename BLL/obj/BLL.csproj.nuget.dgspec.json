@@ -44,7 +44,19 @@
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
-              "version": "[7.0.1, )"
+              "version": "[9.0.0, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.4, )"
+            },
+            "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[7.0.4, )"
             },
             "Microsoft.AspNetCore.SignalR": {
               "target": "Package",

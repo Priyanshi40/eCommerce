@@ -1,8 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @{
     bool isLoggedIn = User.Identity.IsAuthenticated;
+    @* bool isSignedIn = SignInM.isSignedIn(User); *@
 }
 
 <head>
@@ -38,7 +40,7 @@
                 </div>
                 <ul class="navbar-nav me-3 d-flex flex-row  align-items-center justify-content-end">
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="/Cart/Cart">
+                        <a class="nav-link position-relative" href="/Cart/Index">
                             <i class="fa-solid fa-cart-plus text-white fs-5"></i>
                             <span id="cartCount" class="position-absolute top-0 badge rounded-pill bg-danger">
                                 0
@@ -97,7 +99,7 @@
                     <div>Are you sure you want to logout?
                     </div>
                     <div class="d-flex align-items-center">
-                        <form asp-area="User" asp-controller="Home" asp-action="Logout">
+                        <form asp-area="" asp-controller="Account" asp-action="Logout">
                             <button type="submit" class="btn btn-primary m-2 mt-2">Yes</button>
                         </form>
                         <button type="button" class="btn btn-outline-primary m-1" data-bs-dismiss="modal">No</button>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.Repositories;
+
 public class AddressRepo : IAddressRepo
 {
     private readonly E_CommerceContext _context;
@@ -22,18 +23,15 @@ public class AddressRepo : IAddressRepo
     {
         List<State> stateList = _context.State.Where(c => c.CountryId == countryId).ToList();
         if (stateList == null)
-        {
             return _context.State.ToList();
-        }
+
         return stateList;
     }
     public IEnumerable<City> GetCity(int? stateId)
     {
         List<City> cityList = _context.City.Where(c => c.StateId == stateId).ToList();
         if (cityList == null)
-        {
             return _context.City.ToList();
-        }
         return cityList;
     }
     public Address GetAddressById(int AddressId)
@@ -50,8 +48,6 @@ public class AddressRepo : IAddressRepo
     {
         List<Address> addresses = _context.Addresses
             .Include(a => a.City)
-            .ThenInclude(c => c.State)
-            .ThenInclude(s => s.Country)
             .Include(a => a.State)
             .Include(a => a.Country)
             .Where(a => a.UserId == userId)
@@ -63,40 +59,39 @@ public class AddressRepo : IAddressRepo
     {
         try
         {
-            if (address != null)
+            if (address == null) return 0;
+            Address oldAddress = _context.Addresses.FirstOrDefault(u => u.Id == address.Id);
+            if (oldAddress != null)
             {
-                Address oldAddress = _context.Addresses.FirstOrDefault(u => u.Id == address.Id);
-                if (oldAddress != null)
+                if (address.IsDefault)
                 {
-                    if (address.IsDefault)
-                    {
-                        List<Address> otherAdd = _context.Addresses.Where(a => a.UserId == oldAddress.UserId).ToList();
-                        foreach (Address add in otherAdd)
-                            add.IsDefault = false;
-                            
-                        oldAddress.IsDefault = true;
-                    }
-                    oldAddress.Street = address.Street ?? oldAddress.Street;
-                    oldAddress.Landmark = address.Landmark ?? oldAddress.Landmark;
-                    oldAddress.PostalCode = address.PostalCode ?? oldAddress.PostalCode;
-                    oldAddress.HouseName = address.HouseName ?? oldAddress.HouseName;
-                    oldAddress.CityId = address.CityId != 0 ? address.CityId : oldAddress.CityId;
-                    oldAddress.CountryId = address.CountryId != 0 ? address.CountryId : oldAddress.CountryId;
-                    oldAddress.StateId = address.StateId != 0 ? address.StateId : oldAddress.StateId;
-                    oldAddress.ModifiedBy = address.ModifiedBy;
-                    oldAddress.Modifiedat = DateTime.Now;
-                    _context.Addresses.Update(oldAddress);
-                    _context.SaveChanges();
-                    return oldAddress.Id;
+                    List<Address> otherAdd = _context.Addresses.Where(a => a.UserId == oldAddress.UserId).ToList();
+                    foreach (Address add in otherAdd)
+                        add.IsDefault = false;
+
+                    oldAddress.IsDefault = true;
                 }
-                else
-                {
-                    _context.Addresses.Add(address);
-                    _context.SaveChanges();
-                    return address.Id;
-                }
+                
+                oldAddress.Street = address.Street ?? oldAddress.Street;
+                oldAddress.Landmark = address.Landmark ?? oldAddress.Landmark;
+                oldAddress.PostalCode = address.PostalCode ?? oldAddress.PostalCode;
+                oldAddress.HouseName = address.HouseName ?? oldAddress.HouseName;
+                oldAddress.CityId = address.CityId != 0 ? address.CityId : oldAddress.CityId;
+                oldAddress.CountryId = address.CountryId != 0 ? address.CountryId : oldAddress.CountryId;
+                oldAddress.StateId = address.StateId != 0 ? address.StateId : oldAddress.StateId;
+                oldAddress.ModifiedBy = address.ModifiedBy;
+                oldAddress.Modifiedat = DateTime.Now;
+                _context.Addresses.Update(oldAddress);
+                _context.SaveChanges();
+                return oldAddress.Id;
             }
-            return 0;
+            else
+            {
+                _context.Addresses.Add(address);
+                _context.SaveChanges();
+                return address.Id;
+            }
+
         }
         catch (Exception ex)
         {

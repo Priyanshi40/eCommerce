@@ -9,5 +9,7 @@ public interface ICartRepo
     Cart GetCartWithItemsByUserId(int userId);
     void AddCart(Cart cart);
     void UpdateCart(Cart cart);
+    public void RemoveCartItem(CartItem cartItem);
+    public void RemoveCart(Cart cart);
     void Save();
 }

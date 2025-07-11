@@ -3,7 +3,10 @@
     <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
   </ItemGroup>
   <PropertyGroup>

@@ -14,23 +14,24 @@ public class CartRepo : ICartRepo
     public int GetCartItemsCount(int userId)
     {
         return (from c in _context.Cart
-                    join ci in _context.CartItem
-                    on c.Id equals ci.CartId
-                    where c.UserId == userId && !ci.IsDeleted
-                    select ci).Count();
+                join ci in _context.CartItem
+                on c.Id equals ci.CartId
+                where c.UserId == userId && !ci.IsDeleted
+                select ci).Count();
     }
-    public bool CheckUserCart(int userId,int productId)
+    public bool CheckUserCart(int userId, int productId)
     {
         return (from c in _context.Cart
-                    join ci in _context.CartItem
-                    on c.Id equals ci.CartId
-                    where c.UserId == userId && !ci.IsDeleted && ci.ProductId == productId
-                    select ci).Any();
+                join ci in _context.CartItem
+                on c.Id equals ci.CartId
+                where c.UserId == userId && !ci.IsDeleted && ci.ProductId == productId
+                select ci).Any();
     }
     public Cart GetCartWithItemsByUserId(int userId)
     {
         return _context.Cart
-            .Include(c => c.CartItems.Where(c => !c.IsDeleted))
+            .Include(c => c.CartItems)
+            .ThenInclude(ci => ci.ProductNavigation)
             .FirstOrDefault(c => c.UserId == userId);
     }
     public void AddCart(Cart cart)
@@ -41,9 +42,23 @@ public class CartRepo : ICartRepo
     {
         _context.Cart.Update(cart);
     }
+    public void RemoveCartItem(CartItem cartItem)
+    {
+        _context.CartItem.Remove(cartItem);
+    }
+    public void RemoveCart(Cart cart)
+    {
+        _context.Cart.Remove(cart);
+    }
     public void Save()
     {
         _context.SaveChanges();
     }
-        
+
 }
+
+
+
+
+    
+

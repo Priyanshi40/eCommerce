@@ -98,16 +98,16 @@
 
     function UpdateCart() {
         $.ajax({
-            url: '/Cart/UpdateCart',
+            url: '/Cart/UpdateCart?isConfirmPage=true',
             type: 'POST',
             data: { productId: productId, quantity: quantity },
             success: function (response) {
                 if (response.status == 400) {
                     toastr.error("Product not found !!");
                 } else if (response.redirect) {
+                    $('.checkOutDetails').load(response.redirect);
                     toastr.success("Product Quantity Updated Successfully!!");
-                    @* $('body').html(response); *@
-                            }
+                }
             },
             error: function () {
                 alert('An error occurred while updating the product quantity');
@@ -171,16 +171,16 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/Cart/RemoveFromCart',
+                    url: '/Cart/RemoveFromCart?isConfirmPage=true',
                     type: 'POST',
                     data: { productId: productId },
                     success: function (response) {
                         if (response.status == "NotFound") {
                             toastr.error("Product not found !!");
                         } else if (response.redirect) {
+                            $('.checkOutDetails').load(response.redirect);
                             toastr.success("Product Removed From Cart Successfully!!");
-                            @* $('body').html(response); *@
-                            }
+                        }
                     },
                     error: function () {
                         alert('An error occurred while adding the product to wishlist.');

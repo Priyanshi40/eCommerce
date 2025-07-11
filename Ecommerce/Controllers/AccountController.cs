@@ -1,40 +1,34 @@
 using BLL.Interfaces;
-using BLL.Utility;
 using DAL.ViewModels;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 namespace Ecommerce.Controllers;
-
 public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly IUserService _userService;
-    private readonly IVendorService _vendorService;
-    private readonly ImageService _imgService;
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ImageService imgService, IUserService userService, IVendorService vendorService)
+    private readonly IAccountService _accountService;
+    public AccountController(UserManager<IdentityUser> userManager,
+                            SignInManager<IdentityUser> signInManager,
+                            IAccountService accountService)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _imgService = imgService;
-        _userService = userService;
-        _vendorService = vendorService;
+        _accountService = accountService;
     }
 
     [HttpGet]
     public IActionResult Login(string? ReturnUrl = null)
     {
         ViewData["ReturnUrl"] = ReturnUrl;
-        if (User.Identity != null && User.Identity.IsAuthenticated && _signInManager.IsSignedIn(User))
+        if (User.Identity.IsAuthenticated && _signInManager.IsSignedIn(User))
         {
             IdentityUser? user = _userManager.GetUserAsync(User).Result;
             if (user != null)
             {
                 IList<string> userRole = _userManager.GetRolesAsync(user).Result;
-                
+
                 if (userRole[0].ToString() == "User")
                     return RedirectToAction("Index", "Home");
 
@@ -47,65 +41,46 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model, string? ReturnUrl)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
+            return View(model);
+
+        IdentityUser? user = await _userManager.FindByEmailAsync(model.Email);
+        if (user != null)
         {
-            IdentityUser? user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null)
+            Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+            if (result.Succeeded)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    TempData["Message"] = "Welcome" + model.Email;
-                    IList<string> userRole = _userManager.GetRolesAsync(user).Result;
+                TempData["Message"] = "Welcome" + model.Email;
+                IList<string> userRole = _userManager.GetRolesAsync(user).Result;
 
-                    if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
-                        return Redirect(ReturnUrl);
-                        
-                    if (userRole[0].ToString() == "User")
-                        return RedirectToAction("Index", "Home");
+                if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
+                    return Redirect(ReturnUrl);
 
-                    return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
-                }
+                if (userRole[0].ToString() == "User")
+                    return RedirectToAction("Index", "Home");
+
+                return RedirectToAction("Index", "Home", new { area = userRole[0].ToString() });
             }
-            TempData["Error"] = "Invalid login attempt.";
         }
+        TempData["Error"] = "Invalid login attempt.";
         return View(model);
     }
-    public IActionResult Register()
-    {
-        return View();
-    }
-    public IActionResult CommonRegistration()
-    {
-        return PartialView("_commonRegistration");
-    }
+    public IActionResult Register() => View();
+    public IActionResult CommonRegistration() => PartialView("_commonRegistration");
 
     [HttpPost]
     public async Task<IActionResult> RegisterCustomer(RegisterViewModel model)
     {
-        if (ModelState.IsValid)
+        (bool Success, List<string> Errors) result = await _accountService.RegisterCustomer(model);
+        if (result.Success)
         {
-            IdentityUser user = new()
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                PhoneNumber = model.Phone,
-            };
-            IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
-            {
-                model.IdentityUserId = user.Id;
-                _userService.AddUser(model);
-
-                await _userManager.AddToRoleAsync(user, "User");
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                TempData["Message"] = "User Registered Successfully";
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (IdentityError error in result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
+            TempData["Message"] = "User Registered Successfully";
+            return RedirectToAction("Login");
         }
+
+        foreach (string error in result.Errors)
+            ModelState.AddModelError(string.Empty, error);
+
         return View("Register", model);
     }
     public IActionResult VendorBusinessDetails(RegisterViewModel model)
@@ -120,9 +95,7 @@ public class AccountController : Controller
     public IActionResult VendorDocuments(VendorViewModel model)
     {
         foreach (string? key in new[] { "File", "DocumentType" })
-        {
             ModelState.Remove(key);
-        }
 
         if (!ModelState.IsValid)
             return PartialView("_vendorDocuments", model);
@@ -132,69 +105,27 @@ public class AccountController : Controller
     }
     public async Task<IActionResult> RegisterVendor(VendorViewModel model)
     {
-        foreach (string? key in new[] { "BusinessName", "GSTNumber" })
-        {
-            ModelState.Remove(key);
-        }
+        ModelState.Remove("BusinessName");
+        ModelState.Remove("GSTNumber");
 
         if (!ModelState.IsValid)
             return PartialView("_vendorDocuments", model);
 
-        string? step1Json = HttpContext.Session.GetString("VendorStep1");
-        string? step2Json = HttpContext.Session.GetString("VendorStep2");
-
-        if (string.IsNullOrWhiteSpace(step1Json) || string.IsNullOrWhiteSpace(step2Json))
+        (bool Success, List<string> Errors) result = await _accountService.RegisterVendor(HttpContext, model);
+        if (result.Success)
         {
-            ModelState.AddModelError("", "Session expired. Please complete steps again.");
-            return RedirectToAction("Register");
-        }
-
-        RegisterViewModel? step1 = JsonConvert.DeserializeObject<RegisterViewModel>(step1Json);
-        VendorViewModel? step2 = JsonConvert.DeserializeObject<VendorViewModel>(step2Json);
-
-        IdentityUser user = new()
-        {
-            UserName = step1.Email,
-            Email = step1.Email,
-            PhoneNumber = step1.Phone,
-        };
-        IdentityResult result = await _userManager.CreateAsync(user, step1.Password);
-        if (result.Succeeded)
-        {
-            RegisterViewModel user1 = new RegisterViewModel
-            {
-                FirstName = step1.FirstName,
-                LastName = step1.LastName,
-                IdentityUserId = user.Id,
-            };
-            int newUserId = _userService.AddUser(user1);
-            string savedFile = _imgService.SaveImageService(model.File, "vendor_docs");
-
-            VendorViewModel fullVendor = new VendorViewModel
-            {
-                VendorId = newUserId,
-                BusinessName = step2.BusinessName,
-                BusinessAddress = step2.BusinessAddress,
-                GSTNumber = step2.GSTNumber,
-                DocumentType = model.DocumentType,
-                FileUrl = savedFile
-            };
-
-            _vendorService.AddVendor(fullVendor);
-
-            await _userManager.AddToRoleAsync(user, "Vendor");
-            await _signInManager.SignInAsync(user, isPersistent: false);
-
             TempData["Message"] = "Vendor Registered Successfully";
-
-            HttpContext.Session.Remove("VendorStep1");
-            HttpContext.Session.Remove("VendorStep2");
-
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login");
         }
-        foreach (IdentityError error in result.Errors)
-            ModelState.AddModelError(string.Empty, error.Description);
+
+        foreach (string error in result.Errors)
+            ModelState.AddModelError(string.Empty, error);
 
         return View("Register", model);
+    }
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Login");
     }
 }

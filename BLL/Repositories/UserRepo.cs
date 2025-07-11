@@ -30,9 +30,8 @@ public class UserRepo : IUserRepo
         IQueryable<UserDetails> users = _context.UserDetails.Include(p => p.IUser).Where(p => customerIds.Contains(p.IUser.Id)).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
-        {
             users = users.Where(u => u.Firstname.ToLower().Contains(searchString.ToLower().Trim())).AsQueryable();
-        }
+
         return users;
     }
     public int AddUser(UserDetails user)

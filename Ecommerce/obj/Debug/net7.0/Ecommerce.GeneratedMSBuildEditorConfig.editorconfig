@@ -176,8 +176,12 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxfdmVuZG9yRG9jdW1lbnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Cart/Cart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxDYXJ0LmNzaHRtbA==
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Cart/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Cart/_Cart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FydFxfQ2FydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/pci72/Desktop/Ecommerce/Ecommerce/Views/Home/Index.cshtml]

@@ -7,9 +7,9 @@ namespace BLL.Interfaces;
 public interface ICategoryService
 {
     List<Category> GetCategoriesService();
-    IQueryable<Category> GetQueryableCategories(string? searchString,SortOrder sortOrder, string statusFilter);
+    CategoryViewModel GetCategories(string? searchString, SortOrder sort, string statusFilter, int pageNumber, int pageSize);
     CategoryViewModel GetCategoryDetailsService(int catId);
-    Category UpSertCategory(CategoryViewModel category);
+    int UpSertCategory(CategoryViewModel model, int userId);
     bool CheckCategoryService(string name, int id);
-    void DeleteCategoryService(Category category);
+    void SoftDeleteOrDeactivate(int catId, bool? isActive, bool isDelete, int userId);
 }

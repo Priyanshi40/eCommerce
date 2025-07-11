@@ -1,5 +1,4 @@
 using BLL.Interfaces;
-using BLL.Utility;
 using DAL.Enums;
 using DAL.Models;
 using DAL.ViewModels;
@@ -22,7 +21,12 @@ public class ProductController : Controller
     private readonly IProductService _proService;
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly INotificationService _noficationService;
-    public ProductController(UserManager<IdentityUser> userManager, IUserService userService, ICategoryService catService, IProductService proService, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
+    public ProductController(UserManager<IdentityUser> userManager,
+                            IUserService userService,
+                            ICategoryService catService,
+                            IProductService proService,
+                            IHubContext<NotificationHub> hubContext,
+                            INotificationService noficationService)
     {
         _userManager = userManager;
         _userService = userService;
@@ -31,14 +35,16 @@ public class ProductController : Controller
         _hubContext = hubContext;
         _noficationService = noficationService;
     }
+
+    private int GetCurrentUserId() => _userService.GetUserById(_userManager.GetUserId(User)!).UserId;
     public IActionResult Index()
     {
         ViewBag.Category = new SelectList(_catService.GetCategoriesService(), "Id", "Name");
         return View();
     }
-    public IActionResult ProductList(string searchString,SortOrder sortOrder, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
+    public IActionResult ProductList(string searchString, SortOrder sortOrder, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
-        ProductViewModel productsView = _proService.GetProductsService(searchString,sortOrder,category, statusFilter, pageNumber, pageSize);
+        ProductViewModel productsView = _proService.GetProductsService(searchString, sortOrder, category, statusFilter, pageNumber, pageSize);
         return PartialView("_productList", productsView);
     }
     public IActionResult ProductDetails(int productId)
@@ -51,26 +57,24 @@ public class ProductController : Controller
         if (productToModify.Id <= 0)
             return Ok(new { status = AjaxError.NotFound.ToString() });
 
-        productToModify.ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId;
+        productToModify.ModifiedBy = GetCurrentUserId();
 
         string? userId = _proService.ApproveProduct(productToModify);
 
-        if (!string.IsNullOrEmpty(userId))
-        {
-            Notification notification = new Notification
-            {
-                Message = "Your Product has been " + productToModify.Status + " By Admin !!",
-                IsRead = false,
-                UserId = userId,
-            };
-            _noficationService.AddNotification(notification);
-            if (_hubContext?.Clients != null && !string.IsNullOrEmpty(notification.UserId))
-            {
-                await _hubContext.Clients.User(notification.UserId).SendAsync("ReceiveNotification", notification.Message);
-            }
-        }
-        else
+        if (string.IsNullOrEmpty(userId))
             return Ok(new { status = AjaxError.NotFound.ToString() });
+
+        Notification notification = new()
+        {
+            Message = "Your Product has been " + productToModify.Status + " By Admin !!",
+            IsRead = false,
+            UserId = userId,
+        };
+        _noficationService.AddNotification(notification);
+        if (_hubContext?.Clients != null && !string.IsNullOrEmpty(notification.UserId))
+        {
+            await _hubContext.Clients.User(notification.UserId).SendAsync("ReceiveNotification", notification.Message);
+        }
 
         return RedirectToAction("ProductList");
     }

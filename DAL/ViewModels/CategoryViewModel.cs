@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using DAL.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAL.ViewModels;
@@ -21,6 +22,7 @@ public class CategoryViewModel
 
     [MaxLength(200, ErrorMessage = "Description can't be longer than 200 characters")]
     public string? Description { get; set; }
+    public string? Cover { get; set; }
     public string? CoverImage { get; set; }
     public bool IsActive { get; set; }
     public int PageSize { get; set; }

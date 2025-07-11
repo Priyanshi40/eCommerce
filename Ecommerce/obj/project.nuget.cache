@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "2XPKZB+C9yL/nIw2SL9fAL31x21Vo8KO4Jb3MKQAqyfLLO4ucLXDNjOwnwoZg8n6z8KG8sTH/2In0cdVNU/Y1Q==",
+  "dgSpecHash": "/zr/5zzjcHI9k2otoEBStkDmIpXicNH/9BJqebcOVGQd6XzYQHr5LHFansRtGQME3QfiN1kLQ6iwPJmblJ93fA==",
   "success": true,
   "projectFilePath": "C:\\Users\\pci72\\Desktop\\Ecommerce\\Ecommerce\\Ecommerce.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\pci72\\.nuget\\packages\\automapper\\7.0.1\\automapper.7.0.1.nupkg.sha512",
+    "C:\\Users\\pci72\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
+    "C:\\Users\\pci72\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\7.0.0\\automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.3.0\\microsoft.aspnetcore.antiforgery.2.3.0.nupkg.sha512",
@@ -185,7 +186,6 @@
     "C:\\Users\\pci72\\.nuget\\packages\\system.threading.tasks\\4.3.0\\system.threading.tasks.4.3.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\system.threading.tasks.extensions\\4.6.0\\system.threading.tasks.extensions.4.6.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\system.threading.timer\\4.3.0\\system.threading.timer.4.3.0.nupkg.sha512",
-    "C:\\Users\\pci72\\.nuget\\packages\\system.valuetuple\\4.5.0\\system.valuetuple.4.5.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\system.windows.extensions\\5.0.0\\system.windows.extensions.5.0.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\pci72\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512"

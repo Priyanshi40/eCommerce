@@ -1,3 +1,4 @@
+using AutoMapper;
 using BLL.Interfaces;
 using BLL.Middleware;
 using BLL.Repositories;
@@ -26,6 +27,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     // options.SlidingExpiration = true; 
 });
 
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAddressRepo, AddressRepo>();
@@ -47,6 +49,7 @@ builder.Services.AddScoped<ImageService>();
 
 
 builder.Services.AddSingleton<NotificationHub>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
@@ -67,7 +70,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+// app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseRouting();
 
 app.UseAuthentication();

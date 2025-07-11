@@ -25,7 +25,14 @@ public class ProductController : Controller
     private readonly IHubContext<NotificationHub> _hubContext;
     private readonly INotificationService _noficationService;
 
-    public ProductController(UserManager<IdentityUser> userManager, ICategoryService catService, IUserService userService, ImageService imgService, IProductService proService, RoleManager<IdentityRole> roleManager, IHubContext<NotificationHub> hubContext, INotificationService noficationService)
+    public ProductController(UserManager<IdentityUser> userManager,
+                            ICategoryService catService,
+                            IUserService userService,
+                            ImageService imgService,
+                            IProductService proService,
+                            RoleManager<IdentityRole> roleManager,
+                            IHubContext<NotificationHub> hubContext,
+                            INotificationService noficationService)
     {
         _userManager = userManager;
         _catService = catService;
@@ -36,6 +43,7 @@ public class ProductController : Controller
         _hubContext = hubContext;
         _noficationService = noficationService;
     }
+    private int GetCurrentUserId() => _userService.GetUserById(_userManager.GetUserId(User)!).UserId;
     public IActionResult Index()
     {
         ViewBag.Category = new SelectList(_catService.GetCategoriesService(), "Id", "Name");
@@ -43,8 +51,8 @@ public class ProductController : Controller
     }
     public IActionResult ProductList(string searchString, SortOrder sortOrder, int category, string statusFilter, int pageNumber = 1, int pageSize = 5)
     {
-        RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
-        ProductViewModel productsView = _proService.GetProductsService(searchString, sortOrder, category, statusFilter, pageNumber, pageSize, user.UserId);
+        int userId = GetCurrentUserId();
+        ProductViewModel productsView = _proService.GetProductsService(searchString, sortOrder, category, statusFilter, pageNumber, pageSize, userId);
         return PartialView("_productList", productsView);
     }
     public IActionResult ProductModal(int productId)
@@ -58,6 +66,7 @@ public class ProductController : Controller
         ProductViewModel productDetails = _proService.GetProductDetailsService(productId);
         return View("ProductDetails", productDetails);
     }
+
     public async Task<IActionResult> AddProduct(ProductViewModel productToAdd, IFormFile? ProductImage, string? RemovedImages)
     {
         if (!ModelState.IsValid)
@@ -70,21 +79,21 @@ public class ProductController : Controller
 
             productToAdd.RemovedImages = RemovedImages?.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            RegisterViewModel user = _userService.GetUserById(_userManager.GetUserId(User));
+            int userId = GetCurrentUserId();
             if (productToAdd.Id == 0)
             {
-                productToAdd.CreatedBy = user.UserId;
-                productToAdd.ModifiedBy = user.UserId;
+                productToAdd.CreatedBy = userId;
+                productToAdd.ModifiedBy = userId;
             }
             else
-                productToAdd.ModifiedBy = user.UserId;
+                productToAdd.ModifiedBy = userId;
 
             _proService.UpSertProduct(productToAdd);
 
-            Notification notification = new Notification
+            Notification notification = new()
+
             {
                 Message = productToAdd.Id == 0 ? "New Product has been added!!" : "Product has been Updated",
-                // Message = productToAdd.Id == 0 ? "New Product has been added!!" : productToAdd.Name + "has been Updated",
                 IsRead = false,
                 UserId = "ba76242f-8d36-4bf7-ab67-b8bdcb0552d3",
             };
@@ -104,7 +113,7 @@ public class ProductController : Controller
         Product product = new()
         {
             Id = productId,
-            ModifiedBy = _userService.GetUserById(_userManager.GetUserId(User)).UserId
+            ModifiedBy = GetCurrentUserId(),
         };
 
         bool isDeleted = _proService.DeleteProduct(product);

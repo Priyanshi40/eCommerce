@@ -2,19 +2,37 @@
   "version": 3,
   "targets": {
     "net7.0": {
-      "AutoMapper/7.0.1": {
+      "AutoMapper/9.0.0": {
         "type": "package",
         "dependencies": {
-          "System.ValueTuple": "4.5.0"
+          "Microsoft.CSharp": "4.5.0",
+          "System.Reflection.Emit": "4.3.0"
         },
         "compile": {
-          "lib/netcoreapp2.0/AutoMapper.dll": {
+          "lib/netstandard2.0/AutoMapper.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/netcoreapp2.0/AutoMapper.dll": {
+          "lib/netstandard2.0/AutoMapper.dll": {
             "related": ".pdb;.xml"
+          }
+        }
+      },
+      "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
+        "type": "package",
+        "dependencies": {
+          "AutoMapper": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
+            "related": ".pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {
+            "related": ".pdb"
           }
         }
       },
@@ -3202,15 +3220,6 @@
           }
         }
       },
-      "System.ValueTuple/4.5.0": {
-        "type": "package",
-        "compile": {
-          "ref/netcoreapp2.0/_._": {}
-        },
-        "runtime": {
-          "lib/netcoreapp2.0/_._": {}
-        }
-      },
       "System.Windows.Extensions/5.0.0": {
         "type": "package",
         "dependencies": {
@@ -3290,8 +3299,11 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
-          "AutoMapper": "7.0.1",
+          "AutoMapper": "9.0.0",
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": "7.0.0",
           "DAL": "1.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "7.0.4",
+          "Microsoft.AspNetCore.Identity.UI": "7.0.4",
           "Microsoft.AspNetCore.SignalR": "1.2.0"
         },
         "compile": {
@@ -3321,27 +3333,34 @@
     }
   },
   "libraries": {
-    "AutoMapper/7.0.1": {
-      "sha512": "6xHbhsW09sWjjYuE1sqhYn25PQzB6UEUVPME5uhlaIz2NR2+L3+FGbVxvknJKug1BLp6VTLxDb5RcGXKMm0ieQ==",
+    "AutoMapper/9.0.0": {
+      "sha512": "xCqvoxT4HIrNY/xlXG9W+BA/awdrhWvMTKTK/igkGSRbhOhpl3Q8O8Gxlhzjc9JsYqE7sS6AxgyuUUvZ6R5/Bw==",
       "type": "package",
-      "path": "automapper/7.0.1",
+      "path": "automapper/9.0.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "automapper.7.0.1.nupkg.sha512",
+        "automapper.9.0.0.nupkg.sha512",
         "automapper.nuspec",
-        "lib/net45/AutoMapper.dll",
-        "lib/net45/AutoMapper.pdb",
-        "lib/net45/AutoMapper.xml",
-        "lib/netcoreapp2.0/AutoMapper.dll",
-        "lib/netcoreapp2.0/AutoMapper.pdb",
-        "lib/netcoreapp2.0/AutoMapper.xml",
-        "lib/netstandard1.3/AutoMapper.dll",
-        "lib/netstandard1.3/AutoMapper.pdb",
-        "lib/netstandard1.3/AutoMapper.xml",
+        "lib/net461/AutoMapper.dll",
+        "lib/net461/AutoMapper.pdb",
+        "lib/net461/AutoMapper.xml",
         "lib/netstandard2.0/AutoMapper.dll",
         "lib/netstandard2.0/AutoMapper.pdb",
         "lib/netstandard2.0/AutoMapper.xml"
+      ]
+    },
+    "AutoMapper.Extensions.Microsoft.DependencyInjection/7.0.0": {
+      "sha512": "szI4yeRIM7GWe9JyekW0dKYehPB0t6M+I55fPeCebN6PhS7zQZa0eG3bgOnOx+eP3caSNoE7KEJs2rk7MLsh8w==",
+      "type": "package",
+      "path": "automapper.extensions.microsoft.dependencyinjection/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512",
+        "automapper.extensions.microsoft.dependencyinjection.nuspec",
+        "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll",
+        "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.pdb"
       ]
     },
     "Azure.Core/1.24.0": {
@@ -9250,50 +9269,6 @@
         "system.threading.timer.nuspec"
       ]
     },
-    "System.ValueTuple/4.5.0": {
-      "sha512": "okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
-      "type": "package",
-      "path": "system.valuetuple/4.5.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.TXT",
-        "THIRD-PARTY-NOTICES.TXT",
-        "lib/MonoAndroid10/_._",
-        "lib/MonoTouch10/_._",
-        "lib/net461/System.ValueTuple.dll",
-        "lib/net461/System.ValueTuple.xml",
-        "lib/net47/System.ValueTuple.dll",
-        "lib/net47/System.ValueTuple.xml",
-        "lib/netcoreapp2.0/_._",
-        "lib/netstandard1.0/System.ValueTuple.dll",
-        "lib/netstandard1.0/System.ValueTuple.xml",
-        "lib/netstandard2.0/_._",
-        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
-        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.xml",
-        "lib/uap10.0.16299/_._",
-        "lib/xamarinios10/_._",
-        "lib/xamarinmac20/_._",
-        "lib/xamarintvos10/_._",
-        "lib/xamarinwatchos10/_._",
-        "ref/MonoAndroid10/_._",
-        "ref/MonoTouch10/_._",
-        "ref/net461/System.ValueTuple.dll",
-        "ref/net47/System.ValueTuple.dll",
-        "ref/netcoreapp2.0/_._",
-        "ref/netstandard2.0/_._",
-        "ref/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
-        "ref/uap10.0.16299/_._",
-        "ref/xamarinios10/_._",
-        "ref/xamarinmac20/_._",
-        "ref/xamarintvos10/_._",
-        "ref/xamarinwatchos10/_._",
-        "system.valuetuple.4.5.0.nupkg.sha512",
-        "system.valuetuple.nuspec",
-        "useSharedDesignerContext.txt",
-        "version.txt"
-      ]
-    },
     "System.Windows.Extensions/5.0.0": {
       "sha512": "c1ho9WU9ZxMZawML+ssPKZfdnrg/OjR3pe0m9v8230z3acqphwvPJqzAkH54xRYm5ntZHGG1EPP3sux9H3qSPg==",
       "type": "package",
@@ -9471,7 +9446,8 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
-      "AutoMapper >= 7.0.1",
+      "AutoMapper >= 9.0.0",
+      "AutoMapper.Extensions.Microsoft.DependencyInjection >= 7.0.0",
       "BLL >= 1.0.0",
       "DAL >= 1.0.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 7.0.4",
@@ -9525,7 +9501,11 @@
         "dependencies": {
           "AutoMapper": {
             "target": "Package",
-            "version": "[7.0.1, )"
+            "version": "[9.0.0, )"
+          },
+          "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+            "target": "Package",
+            "version": "[7.0.0, )"
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",

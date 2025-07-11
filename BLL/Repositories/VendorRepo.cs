@@ -17,9 +17,8 @@ public class VendorRepo : IVendorRepo
         IQueryable<VendorDetails> vendors = _context.VendorDetails.Include(p => p.UserNavigation.IUser).AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
-        {
             vendors = vendors.Where(u => u.BusinessName.ToLower().Contains(searchString.ToLower().Trim()));
-        }
+
         return vendors;
     }
     public VendorDetails? GetVendorDetails(int vendorId)
@@ -73,9 +72,8 @@ public class VendorRepo : IVendorRepo
                     _context.VendorDetails.Update(oldVendor);
                 }
                 else
-                {
                     _context.VendorDetails.Add(vendor);
-                }
+
                 _context.SaveChanges();
 
             }

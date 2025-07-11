@@ -95,9 +95,10 @@
             type: "GET",
             data: { AddressId: Id },
             success: function (data) {
-                $('#addressModal').modal('show');
                 $('.addModal').html(data);
                 $('.modal-title').text('Add New Address');
+                let modal = new bootstrap.Modal(document.getElementById('addressModal'));
+                modal.show();
                 @* $.validator.unobtrusive.parse(".addModal"); *@
             },
             error: function () {
@@ -113,9 +114,10 @@
             type: "GET",
             data: { AddressId: Id },
             success: function (data) {
-                $('#addressModal').modal('show');
                 $('.addModal').html(data);
                 $('.modal-title').text('Edit Address');
+                let modal = new bootstrap.Modal(document.getElementById('addressModal'));
+                modal.show();
                 @* $.validator.unobtrusive.parse(".addModal"); *@
             },
             error: function () {
@@ -138,7 +140,7 @@
         console.log(result);
         if (result) {
             $.ajax({
-                url: '/Admin/Category/AddCategory',
+                url: '/User/Order/EditAddress',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -149,9 +151,12 @@
                         return;
                     }
                     else {
-                        toastr.success("Category Added/Updated Successfully!!");
-                        $('#PartialCatDiv').html(response);
-                        $('#addressModal').modal('hide');
+                        let modal = bootstrap.Modal.getInstance(document.getElementById('addressModal'));
+                        modal.hide();
+
+                        $.get("/User/Order/Address", function (res) {
+                            $('.checkOutDetails').html(res);
+                        });
                     }
                 }
             });
